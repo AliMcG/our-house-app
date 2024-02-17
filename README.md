@@ -38,3 +38,7 @@ If you are not familiar with the different technologies used in this project, pl
 ## Learn More
 
 - [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorial
+
+## Deployed on Vercal
+
+The site is live with Google Auth at https://our-house-app.vercel.app/
