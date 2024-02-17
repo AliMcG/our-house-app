@@ -16,7 +16,7 @@ This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3
 To help catch type errors in this repo the helper script has been added to the `package.json`
 - `npm run type-check`
 
-This script will check and print out in the terminal an type errors in the code base.
+This script will check and print out in the terminal any type errors in the code base.
 
 Please do this beofre pushing to production as the build will fail if there are any uncaught type errors in the code.
 
@@ -33,7 +33,7 @@ If you are not familiar with the different technologies used in this project, pl
 
 ### Notes
 
-- [Prisma and MondoDB](https://www.prisma.io/docs/orm/overview/databases/mongodb)
+- [Prisma and MongoDB](https://www.prisma.io/docs/orm/overview/databases/mongodb)
 
 ## Learn More
 
