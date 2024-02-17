@@ -11,6 +11,16 @@ This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3
 - run the command `npm run db:push` to generate the prisma client
 - run the command `npm run dev` to check everything is working.
 
+## Working with type-script
+
+To help catch type errors in this repo the helper script has been added to the `package.json`
+- `npm run type-check`
+
+This script will check and print out in the terminal an type errors in the code base.
+
+Please do this beofre pushing to production as the build will fail if there are any uncaught type errors in the code.
+
+
 ## Resources
 
 If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.

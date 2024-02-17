@@ -10,7 +10,8 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "type-check": "tsc --noemit"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",
