@@ -42,3 +42,5 @@ If you are not familiar with the different technologies used in this project, pl
 ## Deployed on Vercal
 
 The site is live with Google Auth at https://our-house-app.vercel.app/
+
+![diagram](docs/wireframes/wireframe1.excalidraw.svg)
