@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Our House",
+  title: "Our House App",
   description: "The one stop app",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
