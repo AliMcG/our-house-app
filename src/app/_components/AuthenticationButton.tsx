@@ -1,16 +1,17 @@
 "use client";
 
 import { signIn, signOut, useSession } from "next-auth/react";
+import Button from "@/app/_components/Button";
 
 export default function AuthShowcase() {
   const { data: sessionData } = useSession();
 
   return (
-    <button
-      className="flex w-3/6 items-center justify-center rounded-lg bg-[#b372f0] px-5 py-3 font-semibold text-white no-underline transition hover:bg-[#cdacec]"
+    <Button
+      text={sessionData ? "Sign out" : "Sign in"}
+      intent={"primary"}
+      size={"large"}
       onClick={sessionData ? () => void signOut() : () => void signIn("google")}
-    >
-      {sessionData ? "Sign out" : "Sign in"}
-    </button>
+    />
   );
 }

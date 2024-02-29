@@ -1,6 +1,6 @@
 import { unstable_noStore as noStore } from "next/cache";
-import Link from "next/link";
 import { CreatePost } from "@/app/_components/create-post";
+import AutenticationButton from "@/app/_components/AuthenticationButton";
 import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 import Image from "next/image";
@@ -22,12 +22,9 @@ export default async function Home() {
             <div className="mt-4 flex flex-col items-center justify-center text-lg">
               <p>Your one stop shop</p>
               <p>to organise your home</p>
-              <Link
-                href={session ? "/api/auth/signout" : "/api/auth/signin"}
-                className="mt-4 flex w-3/6 items-center justify-center rounded-lg bg-[#b372f0] px-5 py-3 font-semibold text-white no-underline transition hover:bg-[#cdacec]"
-              >
-                {session ? "Sign out" : "Sign in"}
-              </Link>
+              <div className="mt-4 flex w-full justify-center">
+                <AutenticationButton />
+              </div>
             </div>
           </div>
           <div className="mt-8 flex items-center  justify-center">
