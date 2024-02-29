@@ -9,12 +9,12 @@ export interface ButtonProps
   text: string;
 }
 
-/** Documentation on CVA - https://cva.style/docs/getting-started/variants 
+/** Documentation on CVA - https://cva.style/docs/getting-started/variants
  * We can add or modfiy the "intent". For example to have "primary", "secondary" and "danger"
  * We can add or modfiy the "size". For example to have "small", "normal", "large" and "extra large"
-*/
+ */
 const buttonStyles = cva(
-  "flex w-3/6 items-center justify-center rounded-lg   font-semibold no-underline transition ",
+  "flex w-3/6 items-center justify-center rounded-lg font-semibold no-underline transition shadow-2xl shadow-slate-800",
   {
     variants: {
       intent: {
@@ -23,14 +23,14 @@ const buttonStyles = cva(
       },
       size: {
         normal: "px-2 py-1",
-        large: "px-5 py-3"
-      }
+        large: "px-5 py-3",
+      },
     },
     defaultVariants: {
       intent: "primary",
-      size: "normal"
+      size: "normal",
     },
-  }
+  },
 );
 export interface CombinedButtonProps
   extends ButtonProps,
