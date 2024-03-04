@@ -22,6 +22,7 @@ const buttonStyles = cva(
         secondary: "text-slate-800 bg-white hover:bg-slate-200",
       },
       size: {
+        small: "px-1 py-0.1",
         normal: "px-2 py-1",
         large: "px-5 py-3",
       },
