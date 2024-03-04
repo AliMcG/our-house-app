@@ -23,7 +23,7 @@ export default async function Home() {
               <p>Your one stop shop</p>
               <p>to organise your home</p>
               <div className="mt-4 flex w-full justify-center">
-                <AutenticationButton />
+                <AutenticationButton size={"large"} />
               </div>
             </div>
           </div>
@@ -41,13 +41,3 @@ export default async function Home() {
   );
 }
 
-async function CrudShowcase() {
-  const session = await getServerAuthSession();
-  if (!session?.user) return null;
-
-  return (
-    <div className="w-full max-w-xs">
-      <CreatePost />
-    </div>
-  );
-}
