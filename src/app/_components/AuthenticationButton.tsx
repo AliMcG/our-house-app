@@ -5,7 +5,7 @@ import Button from "@/app/_components/Button";
 
 export type Size = "small" | "normal" | "large"
 
-export default function AuthShowcase({ size }: { size: Size}) {
+export default function AuthButton({ size }: { size: Size}) {
   const { data: sessionData } = useSession();
 
   return (
