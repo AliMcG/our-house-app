@@ -20,6 +20,8 @@ const buttonStyles = cva(
       intent: {
         primary: "text-white hover:bg-[#cdacec] bg-[#b372f0]",
         secondary: "text-slate-800 bg-white hover:bg-slate-200",
+        singin: "text-white hover:bg-[#cdacec] bg-[#b372f0]",
+        singout: "text-black bg-[#b372f0] hover:bg-[#cdacec] shadow-sm active:shadow-inner"
       },
       size: {
         small: "px-1 py-0.1",
@@ -27,6 +29,13 @@ const buttonStyles = cva(
         large: "px-5 py-3",
       },
     },
+    compoundVariants: [
+      {
+        intent: "singout",
+        size: "small",
+        class: "w-full px-1 py-3 text-xs",
+      },
+    ],
     defaultVariants: {
       intent: "primary",
       size: "normal",
