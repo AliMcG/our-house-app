@@ -5,7 +5,7 @@ export default async function Chores() {
         <div className="flex flex-col-reverse md:flex-wrap xl:flex-row ">
           <div className="mt-4 flex flex-col justify-center">
             <h1 className="flex items-center justify-center text-5xl font-extrabold tracking-tight md:text-[5rem]">
-              Our House
+              Our House - Chores
             </h1>
           </div>
         </div>
