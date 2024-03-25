@@ -7,6 +7,7 @@ import AuthButton from "./AuthenticationButton";
 import HomePageImage from "@/public/home_logo_final.svg";
 import ShoppingImage from "@/public/shopping_icon.svg";
 import ChoresImage from "@/public/chores_icon.svg";
+import Button from "./Button";
 
 
 export default function SideNavigationBar(): JSX.Element {
@@ -78,15 +79,14 @@ export default function SideNavigationBar(): JSX.Element {
         </ul>
       </nav>
       <AuthButton size="small" />
-      <button 
-        type="button"
+      <Button type="button"
         aria-pressed={menuOpen}
         aria-haspopup="menu"
         aria-expanded={menuOpen}
         aria-label="menu button"
-        className="absolute top-[100px] left-[40px] w-[80px] h-[80px] rounded-full bg-fuchsia-500 md:hidden"
-        onClick={() => setMenuOpen(prevState => !prevState)}
-      ></button>
+        className="absolute top-[100px] left-[40px] w-[80px] h-[80px] rounded-full bg-fuchsia-500 md:hidden hover:bg-fuchsia-500 shadow-none"
+        onClick={() => setMenuOpen(prevState => !prevState)}>
+      </Button>
     </aside>
   )
 }
