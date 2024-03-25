@@ -5,11 +5,15 @@ import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 import Image from "next/image";
 import HomePageImage from "@/public/home_logo_final.svg";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
   noStore();
   const hello = await api.post.hello.query({ text: "from tRPC" });
   const session = await getServerAuthSession();
+  if (session) {
+   return redirect('/home')
+  }
 
   return (
     <main className="flex min-h-screen flex-col bg-white text-slate-800 md:items-center md:justify-center">
@@ -29,8 +33,7 @@ export default async function Home() {
           </div>
           <div className="mt-8 flex items-center  justify-center">
             <Image
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              src={HomePageImage}
+              src={HomePageImage as string}
               alt={"Home page image"}
               className=" w-5/6"
             />
