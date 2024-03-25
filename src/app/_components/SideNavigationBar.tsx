@@ -38,8 +38,7 @@ export default function SideNavigationBar(): JSX.Element {
     <aside className={`flex flex-col justify-between h-screen w-[80px] px-1 py-2 ${xTranslateMenu} md:translate-x-0 transition transform ease-in-out duration-300 bg-fuchsia-500 z-50`}>
       <Link href={"/home"} className="flex self-center relative w-9/12">
         <Image
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          src={HomePageImage} 
+          src={HomePageImage as string} 
           alt="logo" 
           width={60} 
           height={60} 
@@ -51,8 +50,7 @@ export default function SideNavigationBar(): JSX.Element {
           <li>
             <Link href={"/shoppingLists"}>
               <Image
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                src={ShoppingImage} 
+                src={ShoppingImage as string} 
                 alt="shopping cart icon" 
                 width={60} 
                 height={60} 
@@ -66,8 +64,7 @@ export default function SideNavigationBar(): JSX.Element {
           <li>
             <Link href={"/chores"}>
               <Image
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                src={ChoresImage} 
+                src={ChoresImage as string} 
                 alt="brush and pan icon" 
                 width={60} 
                 height={60} 
