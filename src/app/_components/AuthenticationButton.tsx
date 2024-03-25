@@ -10,10 +10,10 @@ export default function AuthButton({ size }: { size: Size}) {
 
   return (
     <Button
-      text={sessionData ? "sign out" : "Sign in"}
+      
       intent={sessionData ? "singout" : "singin"}
       size={`${size}`}
       onClick={sessionData ? () => void signOut() : () => void signIn("google")}
-    />
+    >{sessionData ? "sign out" : "Sign in"}</Button>
   );
 }
