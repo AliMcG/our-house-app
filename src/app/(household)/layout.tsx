@@ -10,13 +10,13 @@ export default async function HouseholdLayout({ children }: { children: React.Re
   }
   return (
     <article>
-      <div className="fixed top-1 left-0">
+      <div className="fixed top-1 left-0 z-[998]">
         <TopNavigationBar />
       </div>
-      <div className="fixed top-0 left-0">
+      <div className="fixed top-0 left-0 z-[999]">
         <SideNavigationBar />
       </div>
-      <main>
+      <main className="md:pl-[80px]">
         {children}
       </main>
     </article>
