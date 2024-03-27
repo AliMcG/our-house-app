@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "../utlis/cn";
 
 /** The extends type "HTMLButtonElement" allows us to use any attributes that a <button> tag can have
  *  without having to explicitly define the arttibutes
@@ -6,7 +7,7 @@ import { cva, type VariantProps } from "class-variance-authority";
  * */
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  text: string;
+  children?: React.ReactNode
 }
 
 /** Documentation on CVA - https://cva.style/docs/getting-started/variants
@@ -46,10 +47,10 @@ export interface CombinedButtonProps
   extends ButtonProps,
     VariantProps<typeof buttonStyles> {}
 
-const Button = ({ text, intent, size, ...rest }: CombinedButtonProps) => {
+const Button = ({ children, className, intent, size, ...rest }: CombinedButtonProps) => {
   return (
-    <button className={buttonStyles({ intent, size })} {...rest}>
-      {text}
+    <button className={cn(buttonStyles({ intent, size, className }))} {...rest}>
+      {children}
     </button>
   );
 };
