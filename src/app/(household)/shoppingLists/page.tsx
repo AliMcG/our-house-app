@@ -9,7 +9,10 @@ export default async function ShoppingLists() {
         Shopping Lists
         </h1>
       </header>
+      <div className="flex justify-center mt-5">
       <AddItemForm />
+      </div>
+
     </article>
   );
 }
