@@ -1,4 +1,4 @@
-import AddItemForm from "@/app/_components/AddItemForm";
+import AddItemForm from "./AddItemForm";
 
 
 export default async function ShoppingLists() {
