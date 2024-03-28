@@ -5,8 +5,13 @@ import { navbarLinks } from "@/app/utils/navbarLinks";
 
 export default async function Home() {
   return (
-    <main className="flex min-h-screen flex-col pt-16 bg-white text-slate-800 md:items-center md:justify-center">
-      <ul className="container flex flex-col items-center justify-center gap-y-16 px-4 pt-16 pb-4 md:flex-row md:gap-2 lg:gap-16">
+    <article className="flex min-h-screen flex-col pt-16 bg-white text-slate-800">
+      <header className="flex items-center justify-center p-4">
+        <h1 className="text-center text-5xl font-extrabold tracking-tight md:text-[5rem]">
+          HOUSEHOLD
+        </h1>
+      </header>
+      <ul className="container flex flex-col items-center justify-center gap-y-16 grow px-4 pt-16 pb-4 md:flex-row md:gap-2 lg:gap-16">
         {
           navbarLinks.map((item, index) => (
             <li key={index} className="flex flex-col items-center justify-center border-2 border-solid border-slate-400 rounded-2xl w-full max-w-[320px] h-[180px] shadow-lg hover:bg-">
@@ -24,6 +29,6 @@ export default async function Home() {
           ))
         }
       </ul>
-    </main>
+    </article>
   );
 }
