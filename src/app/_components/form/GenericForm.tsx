@@ -4,6 +4,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/app/utils/cn";
 import type { z, ZodType } from "zod";
+import React from "react";
 
 export default function GenericForm({
   children,
@@ -19,6 +20,13 @@ export default function GenericForm({
   const methods = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+  React.useEffect(() => {
+    if (methods.formState.isSubmitSuccessful) {
+      methods.reset()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [methods.formState.isSubmitting])
 
   // takes the passed in handleSubmit function and calls it with the data from the form
   function onSubmit(data: z.infer<typeof formSchema>) {
