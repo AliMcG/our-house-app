@@ -6,35 +6,17 @@
 
 /// <reference types="cypress" />
 // ***********************************************
-// This example commands.ts shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
 // For more comprehensive examples of custom
 // commands please read more here:
 // https://on.cypress.io/custom-commands
 // ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-//
+
+/** Custom command functions must be declared in the following code block: */
 declare global {
   namespace Cypress {
     interface Chainable {
       loginByGoogleApi(): Chainable<void>;
+      logout(): Chainable<void>;
     }
   }
 }
@@ -43,6 +25,11 @@ const genRanHex = (length: number) =>
   [...Array(length)]
     .map(() => Math.floor(Math.random() * 16).toString(16))
     .join("");
+
+Cypress.Commands.add("logout", () => {
+  cy.log("Logging in to Google");
+  cy.get('[data-cy"auth-button').click()
+})
 
 Cypress.Commands.add("loginByGoogleApi", () => {
   cy.log("Logging in to Google");
@@ -84,7 +71,7 @@ Cypress.Commands.add("loginByGoogleApi", () => {
       /** Generates random values for session */
       const sessionCookie = genRanHex(24)
       const sessionId = genRanHex(24)
-      /** Post a new session to the database to authenicated by nextAuth in the broswer. */
+      /** Post a new session to the database to be authenticated by nextAuth in the browser. */
       cy.request({
         method: "POST",
         url: Cypress.env("databaseApiUrl"),
