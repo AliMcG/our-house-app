@@ -27,8 +27,8 @@ const genRanHex = (length: number) =>
     .join("");
 
 Cypress.Commands.add("logout", () => {
-  cy.log("Logging in to Google");
-  cy.get('[data-cy"auth-button').click()
+  cy.log("Logging out of site");
+  cy.get('[data-cy="auth-button"]').click()
 })
 
 Cypress.Commands.add("loginByGoogleApi", () => {
