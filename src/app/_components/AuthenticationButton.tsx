@@ -10,7 +10,7 @@ export default function AuthButton({ size }: { size: Size}) {
 
   return (
     <Button
-      
+      data-cy="auth-button"
       intent={sessionData ? "singout" : "singin"}
       size={`${size}`}
       onClick={sessionData ? () => void signOut() : () => void signIn("google")}
