@@ -5,8 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import AuthButton from "./AuthenticationButton";
 import HomePageImage from "@/public/home_logo_final.svg";
-import ShoppingImage from "@/public/shopping_icon.svg";
-import ChoresImage from "@/public/chores_icon.svg";
+import Button from "./Button";
+import { navbarLinks } from "../utils/navbarLinks";
 
 
 export default function SideNavigationBar(): JSX.Element {
@@ -35,7 +35,7 @@ export default function SideNavigationBar(): JSX.Element {
   });
 
   return (
-    <aside className={`flex flex-col justify-between h-screen w-[80px] px-1 py-2 ${xTranslateMenu} md:translate-x-0 transition transform ease-in-out duration-300 bg-fuchsia-500 z-50`}>
+    <aside className={`flex flex-col justify-between h-screen w-[80px] px-1 py-2 ${xTranslateMenu} md:translate-x-0 transition transform ease-in-out duration-300 bg-fuchsia-500 z-[999]`}>
       <Link href={"/home"} className="flex self-center relative w-9/12">
         <Image
           src={HomePageImage as string} 
@@ -47,46 +47,34 @@ export default function SideNavigationBar(): JSX.Element {
       </Link>
       <nav>
         <ul onClick={() => setMenuOpen(prevState => !prevState)}>
-          <li>
-            <Link href={"/shoppingLists"}>
-              <Image
-                src={ShoppingImage as string} 
-                alt="shopping cart icon" 
-                width={60} 
-                height={60} 
-                style={{
-                  width: '100%',
-                  height: 'auto'
-                }}
-              />
-            </Link>
-          </li>
-          <li>
-            <Link href={"/chores"}>
-              <Image
-                src={ChoresImage as string} 
-                alt="brush and pan icon" 
-                width={60} 
-                height={60} 
-                style={{
-                  width: '100%',
-                  height: 'auto'
-                }}
-              />
-            </Link>
-          </li>
+        {
+          navbarLinks.map((item, index) => {
+            return (
+              <li key={index}>
+                <Link href={item.link}>
+                  <Image
+                    src={item.icon} 
+                    alt={item.name} 
+                    width={60} 
+                    height={60} 
+                    className="w-full h-auto"
+                  />
+                </Link>
+              </li>
+            )
+          })
+        }
         </ul>
       </nav>
       <AuthButton size="small" />
-      <button 
-        type="button"
+      <Button type="button"
         aria-pressed={menuOpen}
         aria-haspopup="menu"
         aria-expanded={menuOpen}
         aria-label="menu button"
-        className="absolute top-[100px] left-[40px] w-[80px] h-[80px] rounded-full bg-fuchsia-500 md:hidden"
-        onClick={() => setMenuOpen(prevState => !prevState)}
-      ></button>
+        className="absolute top-[100px] left-[40px] w-[80px] h-[80px] rounded-full bg-fuchsia-500 md:hidden hover:bg-fuchsia-500 shadow-none"
+        onClick={() => setMenuOpen(prevState => !prevState)}>
+      </Button>
     </aside>
-  )
+  );
 }
