@@ -2,7 +2,7 @@
 
 import * as z from "zod";
 import GenericForm from "@/app/_components/form/GenericForm";
-import Inputfield from "@/app/_components/form/InputFiled";
+import Inputfield from "@/app/_components/form/InputField";
 import Button from "@/app/_components/Button";
 import FormItem from "@/app/_components/form/FormItem";
 import FormLabel from "@/app/_components/form/FormLabel";
