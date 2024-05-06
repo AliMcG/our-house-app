@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import type { ShoppingList } from "@prisma/client";
+import Link from "next/link";
 
 export default function ShoppingListCard({
   shoppingList,
@@ -30,12 +31,14 @@ export default function ShoppingListCard({
   };
   return (
     <Card>
-      {shoppingList.title}
+      <Link href={`/shoppingLists/${shoppingList.title}`}>
+        {shoppingList.title}
+      </Link>
       <Button
         type="button"
         className="h-8 w-8"
         onClick={() => deleteList(shoppingList.id)}
-      >
+        >
         <XCircleIcon />
       </Button>
     </Card>
