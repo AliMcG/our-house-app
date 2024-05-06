@@ -9,24 +9,34 @@ import FormLabel from "@/app/_components/form/FormLabel";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
-export default function AddItemForm() {
+interface AddItemFormProps {
+  apiName: "shoppingList";
+}
+
+
+export default function AddItemForm(props: AddItemFormProps) {
   /** As the api mutation in this Component is interacting with a Page (Server Component)
    * we need to use `router.refresh()` to invaliadate the cached data in the Page (Server Component).
    * If the cache data is in a "use client" component then we can use `api.useUtils()` hook instead.
    * further reading here: https://trpc.io/docs/client/react/useUtils
    */
   const router = useRouter();
+  const { apiName } = props;
 
-  const { mutate } = api.shoppingList.create.useMutation({
+  const { mutate } = api[apiName].create.useMutation({
     onSuccess: (response) => {
       console.log("CREATED shoping list", response);
       router.refresh();
     },
   });
 
+  // schema definition can be kept here as its the same for shopping list and chores list
+  // we could pass in more specific schema as a props if needed
   const formSchema = z.object({
     title: z.string().min(1, { message: "Name is required" }),
   });
+
+  // uses the schema and mutate funnction setup above
   function handleSubmit(data: z.infer<typeof formSchema>) {
     console.log("SUBMITTING ITEM TO ADD: ", data);
     mutate(data);
