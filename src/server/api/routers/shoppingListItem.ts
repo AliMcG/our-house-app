@@ -12,28 +12,45 @@ type listItemType = {
   shoppingListId: string | null;
 }
 
+type ListItemResponseType = {
+  items?: listItemType[];
+  listID?: string;
+  status: 'list items found' | 'list not found' | 'strange, list id not found' | 'list items not found';
+}
+
 
 export const shoppingListItemRouter = createTRPCRouter({
   list: protectedProcedure
-    .input(z.object({ title: z.string().min(1) }))
-    .query(async ({ ctx, input }) => {
-      // fetching shopping list by its name as we expect uniqueness between households
-      // stores empty array or a list of items
-      let listItems: [] | listItemType[] = [];
-      const listFound = await ctx.db.shoppingList.findFirst({
-        where: {
-          title: input.title,
-        }
-      });
-      // look for the list items
-      if (listFound !== null) {
-        listItems = await ctx.db.shoppingItem.findMany({
+  .input(z.object({ title: z.string().min(1) }))
+  .query(async ({ ctx, input }) => {
+    // will be used to store custom response.
+    let response: ListItemResponseType = { status: 'list items not found' };
+    // fetching shopping list by its name as we expect uniqueness between households
+    const listFound = await ctx.db.shoppingList.findFirst({
+      where: {
+        title: input.title,
+      }
+    });
+    // only query the database futher if the list was found
+    if (listFound !== null) {
+      // the list must contain an id, otherwise something strange is happening
+      if (listFound.id) {
+        const items = await ctx.db.shoppingItem.findMany({
           where: {
             shoppingListId: listFound.id
           }
         });
+        // finally check if the items were found
+        response = items.length === 0
+          ? { status: 'list not found' }
+          : { items, listID: listFound.id, status: 'list items found' }
+      }else{
+        response = { status: 'strange, list id not found' } 
       }
-      // return the list of items or null if the list was not found
-      return listItems.length === 0 ? 'items not found' : listItems;
-    }),
+    }
+
+    console.log("YOU HATE: ", response)
+    // lets return the response
+    return response;
+  }),
 });
