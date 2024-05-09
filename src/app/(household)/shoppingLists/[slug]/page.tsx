@@ -6,7 +6,7 @@ import { api } from "@/trpc/server";
 export default async function Page({ params }: { params: { slug: string } }) {
   // lets try fetching shopping list by its name as we expect uniqueness between households
   const shoppingListName = params.slug;
-  const shoppingListItems = await api.shoppingListItem.list.query({ title: shoppingListName });
+  const shoppingList = await api.shoppingListItem.list.query({ title: shoppingListName });
 
   return (
     <div>
@@ -18,15 +18,15 @@ export default async function Page({ params }: { params: { slug: string } }) {
       </header>
       <div className="mt-5 flex justify-center">
         <Card>
-          <AddItemForm apiName="shoppingListItem" />
+          <AddItemForm apiName="shoppingListItem" listId={shoppingList.listID ?? shoppingList.status} />
         </Card>
       </div>
       <div className="p-4">
-      {(shoppingListItems === 'items not found' || shoppingListItems.length === 0) 
+      {(shoppingList.status !== 'list items found') 
         ? 
           <p className="text-center">No items in this list</p> 
         : 
-          shoppingListItems.map((item, index) => {
+          shoppingList.items?.map((item, index) => {
             return <Card key={index}>{item.name}</Card>
           }
       )}
