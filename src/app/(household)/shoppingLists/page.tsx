@@ -1,5 +1,5 @@
 import Card from "@/app/_components/Card";
-import AddItemForm from "../../_components/AddItemForm";
+import AddListForm from "../../_components/AddListForm";
 import ShoppingListCard from "./ShoppingListCard";
 import { api } from "@/trpc/server";
 
@@ -19,7 +19,7 @@ export default async function ShoppingLists() {
       </header>
       <div className="mt-5 flex justify-center">
         <Card>
-          <AddItemForm apiName="shoppingList" />
+          <AddListForm apiName="shoppingList" />
         </Card>
       </div>
       {shoppingList?.map((listItem, index) => {
