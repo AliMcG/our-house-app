@@ -18,7 +18,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
       </header>
       <div className="mt-5 flex justify-center">
         <Card>
-          <AddItemForm apiName="shoppingListItem" listId={shoppingList.listID ?? shoppingList.status} />
+          <AddItemForm apiName="shoppingListItem" listID={shoppingList.listID ?? null} />
         </Card>
       </div>
       <div className="p-4">
