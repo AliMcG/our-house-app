@@ -9,23 +9,24 @@ import FormLabel from "@/app/_components/form/FormLabel";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
-interface AddItemFormProps {
-  apiName: "shoppingList";
+interface iAddItemFormProps {
+  apiName: "shoppingListItem";
+  listID: string | null;
 }
 
 
-export default function AddItemForm(props: AddItemFormProps) {
+export default function AddItemForm(params: iAddItemFormProps) {
   /** As the api mutation in this Component is interacting with a Page (Server Component)
    * we need to use `router.refresh()` to invaliadate the cached data in the Page (Server Component).
    * If the cache data is in a "use client" component then we can use `api.useUtils()` hook instead.
    * further reading here: https://trpc.io/docs/client/react/useUtils
    */
   const router = useRouter();
-  const { apiName } = props;
+  const { apiName, listID } = params;
 
   const { mutate } = api[apiName].create.useMutation({
     onSuccess: (response) => {
-      console.log("CREATED shoping list", response);
+      console.log(`CREATED ${apiName}`, response);
       router.refresh();
     },
   });
@@ -33,13 +34,17 @@ export default function AddItemForm(props: AddItemFormProps) {
   // schema definition can be kept here as its the same for shopping list and chores list
   // we could pass in more specific schema as a props if needed
   const formSchema = z.object({
-    title: z.string().min(1, { message: "Name is required" }),
+    name: z.string().min(1, { message: "Name is required" }),
   });
 
   // uses the schema and mutate funnction setup above
   function handleSubmit(data: z.infer<typeof formSchema>) {
+    if (listID === null) {
+      console.error("List ID is null, cannot add item");
+      return;
+    }
     console.log("SUBMITTING ITEM TO ADD: ", data);
-    mutate(data);
+    mutate({ ...data, listID });
   }
 
   return (
@@ -47,7 +52,7 @@ export default function AddItemForm(props: AddItemFormProps) {
       <FormItem>
         <FormLabel fieldName={"title"}>Create a new list</FormLabel>
         <Inputfield
-          fieldName={"title"}
+          fieldName="name"
           placeholder="Enter a name..."
           className="w-40"
         />
