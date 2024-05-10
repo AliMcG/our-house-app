@@ -33,7 +33,6 @@ export const shoppingListItemRouter = createTRPCRouter({
     });
     // only query the database futher if the list was found
     if (listFound !== null) {
-      console.log("LIST FOUND55: ", listFound)
       // the list must contain an id, otherwise something strange is happening
       if (listFound.id) {
         const items = await ctx.db.shoppingItem.findMany({
@@ -51,5 +50,17 @@ export const shoppingListItemRouter = createTRPCRouter({
     }
     // lets return the response
     return response;
+  }),
+  create: protectedProcedure
+  .input(z.object({ name: z.string().min(1), listID: z.string().min(1) }))
+  .mutation(async ({ ctx, input }) => {
+    return ctx.db.shoppingItem.create({
+      data: {
+        active: true,
+        name: input.name,
+        quantity: 1,
+        ShoppingList: { connect: { id: input.listID } },
+      },
+    });
   }),
 });
