@@ -24,7 +24,7 @@ export const shoppingListItemRouter = createTRPCRouter({
   .input(z.object({ title: z.string().min(1) }))
   .query(async ({ ctx, input }) => {
     // will be used to store custom response.
-    let response: ListItemResponseType = { status: 'list items not found' };
+    let response: ListItemResponseType = { status: 'list not found' };
     // fetching shopping list by its name as we expect uniqueness between households
     const listFound = await ctx.db.shoppingList.findFirst({
       where: {
@@ -33,6 +33,7 @@ export const shoppingListItemRouter = createTRPCRouter({
     });
     // only query the database futher if the list was found
     if (listFound !== null) {
+      console.log("LIST FOUND55: ", listFound)
       // the list must contain an id, otherwise something strange is happening
       if (listFound.id) {
         const items = await ctx.db.shoppingItem.findMany({
@@ -42,14 +43,12 @@ export const shoppingListItemRouter = createTRPCRouter({
         });
         // finally check if the items were found
         response = items.length === 0
-          ? { status: 'list not found' }
+          ? { items, listID: listFound.id, status: 'list items not found' }
           : { items, listID: listFound.id, status: 'list items found' }
       }else{
         response = { status: 'strange, list id not found' } 
       }
     }
-
-    console.log("YOU HATE: ", response)
     // lets return the response
     return response;
   }),
