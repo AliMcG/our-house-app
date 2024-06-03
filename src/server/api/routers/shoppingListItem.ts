@@ -63,4 +63,13 @@ export const shoppingListItemRouter = createTRPCRouter({
       },
     });
   }),
+  delete: protectedProcedure
+  .input(z.object({ id: z.string().min(1) }))
+  .mutation(async ({ ctx, input }) => {
+    return ctx.db.shoppingItem.delete({
+      where: {
+        id: input.id
+      }
+    });
+  }),
 });
