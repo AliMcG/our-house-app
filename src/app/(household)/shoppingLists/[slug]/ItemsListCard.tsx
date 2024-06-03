@@ -15,7 +15,7 @@ export default function ItemsList({
   shoppingItem: ShoppingItem;
 }) {
   const router = useRouter();
-  const { mutate } = api.shoppingListItem.delete.useMutation({
+  const { mutate: deleteMutate } = api.shoppingListItem.delete.useMutation({
     onSuccess: (response) => {
       console.log("DELETED list item", response);
       router.refresh();
@@ -23,8 +23,8 @@ export default function ItemsList({
   });
 
   // removes the item from the database
-  const deleteItem = (id: string) => {
-    mutate({ id: id });
+  const handleDeleteItem = (id: string) => {
+    deleteMutate({ id: id });
   };
 
   // TODO: Style component to look like an item in a list
@@ -34,7 +34,7 @@ export default function ItemsList({
       <Button
         type="button"
         className="h-8 w-8"
-        onClick={() => deleteItem(shoppingItem.id)}
+        onClick={() => handleDeleteItem(shoppingItem.id)}
       >
         <XCircleIcon />
       </Button>
