@@ -1,6 +1,7 @@
 import Card from "@/app/_components/Card";
 import AddItemForm from "@/app/_components/AddItemForm";
 import { api } from "@/trpc/server";
+import ItemsListCard from "./ItemsListCard";
 
 
 export default async function Page({ params }: { params: { slug: string } }) {
@@ -27,7 +28,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
           <p className="text-center">No items in this list</p> 
         : 
           shoppingList.items?.map((item, index) => {
-            return <Card key={index}>{item.name}</Card>
+            return <ItemsListCard key={index} shoppingItem={item} />
           }
       )}
       </div>
