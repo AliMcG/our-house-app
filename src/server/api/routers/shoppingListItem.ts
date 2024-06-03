@@ -72,4 +72,14 @@ export const shoppingListItemRouter = createTRPCRouter({
       }
     });
   }),
+  updateActive: protectedProcedure
+  .input(z.object({ id: z.string().min(1), active: z.boolean() }))
+  .mutation(async ({ ctx, input }) => {
+    const { id, active } = input;
+    const updateRecord = await ctx.db.shoppingItem.update({
+      where: { id },
+      data: { active }
+    });
+    return updateRecord
+  }),
 });
