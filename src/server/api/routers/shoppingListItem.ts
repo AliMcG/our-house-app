@@ -3,20 +3,7 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "@/server/api/trpc";
-
-type listItemType = { 
-  id: string;
-  name: string;
-  quantity: number;
-  active: boolean;
-  shoppingListId: string | null;
-}
-
-type ListItemResponseType = {
-  items?: listItemType[];
-  listID?: string;
-  status: 'list items found' | 'list not found' | 'strange, list id not found' | 'list items not found';
-}
+import type { ListItemResponseType } from "@/types/index";
 
 
 export const shoppingListItemRouter = createTRPCRouter({
