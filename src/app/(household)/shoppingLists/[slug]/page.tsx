@@ -1,7 +1,7 @@
 import Card from "@/app/_components/Card";
 import AddItemForm from "@/app/_components/AddItemForm";
 import { api } from "@/trpc/server";
-import ItemsListCard from "./ItemsListCard";
+import ItemsList from "./ItemsList";
 
 
 export default async function Page({ params }: { params: { slug: string } }) {
@@ -12,27 +12,25 @@ export default async function Page({ params }: { params: { slug: string } }) {
   return (
     <div>
       <article className="flex min-h-screen flex-col bg-white pt-16 text-slate-800">
-      <header className="flex items-center justify-center p-4">
-        <h1 className="text-center text-3xl font-extrabold tracking-tight md:text-[2rem] lg:text-[3rem] xl:text-[4rem]">
-          {shoppingListName}
-        </h1>
-      </header>
-      <div className="mt-5 flex justify-center">
-        <Card>
-          <AddItemForm apiName="shoppingListItem" listID={shoppingList.listID ?? null} />
-        </Card>
-      </div>
-      <div className="p-4">
-      {(shoppingList.status !== 'list items found') 
-        ? 
-          <p className="text-center">No items in this list</p> 
-        : 
-          shoppingList.items?.map((item, index) => {
-            return <ItemsListCard key={index} shoppingItem={item} />
-          }
-      )}
-      </div>
-    </article>
+        <header className="flex items-center justify-center p-4">
+          <h1 className="text-center text-3xl font-extrabold tracking-tight md:text-[2rem] lg:text-[3rem] xl:text-[4rem]">
+            {shoppingListName}
+          </h1>
+        </header>
+        <div className="mt-5 flex justify-center">
+          <Card>
+            <AddItemForm apiName="shoppingListItem" listID={shoppingList.listID ?? null} />
+          </Card>
+        </div>
+        <div className="p-4">
+        {(shoppingList.status !== 'list items found') 
+          ? 
+            <p className="text-center">No items in this list</p> 
+          : 
+            <ItemsList list={shoppingList} />
+        }
+        </div>
+      </article>
     </div>
   );
 }
