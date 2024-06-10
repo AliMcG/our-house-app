@@ -28,7 +28,7 @@ All the project components designs and how they related to each other.
     - ✅ shoppingLists/ _ROUTE SEGMENT_
       - ✅ page.tsx
       - shoppingListCards.tsx _maps through the shopping lists to display each list_
-      - [slug]/ _dynamically displays the name of the shop in the url_
+      - [shoppingListName]/ _dynamically displays the name of the shop in the url_
         - page.tsx
         - itemsList.tsx
     - ✅ chores/ _ROUTE SEGMENT_
