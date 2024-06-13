@@ -21,8 +21,15 @@ export default function ItemsListCard({
 }) {
   const { id, name, active } = shoppingItem;
 
+  // styles the item when is marked as completed
+  const cardStyles = !active ? "bg-red" : "bg-white";
+  const textStyles = !active ? "line-through" : "none";
+
+  console.log("shoppingItem: ", name)
+  console.log("active: ", active)
+
   return (
-    <Card>
+    <Card className={`grid grid-cols-[32px_1fr_32px] gap-2 w-full px-2 py-4 ${cardStyles}`}>
       <Button
         type="button"
         className="h-8 w-8"
@@ -30,7 +37,7 @@ export default function ItemsListCard({
         >
         <CheckCircleIcon />
       </Button>
-        <p>{name}</p>
+        <p className={textStyles}>{name}</p>
       <Button
         type="button"
         className="h-8 w-8"
