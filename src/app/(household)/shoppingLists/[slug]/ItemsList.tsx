@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
 import ItemsListCard from "./ItemsListCard";
-import ConfirmModal from "@/app/_components/modals/ConfirmModal";
+import ConfirmDeleteModal from "@/app/_components/modals/ConfirmDeleteModal";
 import type { ListItemResponseType } from "@/types/index";
 
 
@@ -16,6 +16,9 @@ export default function ItemsList({ list }: { list: ListItemResponseType }) {
   // mutate the item to be deleted
   const { mutate: deleteMutate } = api.shoppingListItem.delete.useMutation({
     onSuccess: () => {
+      // lets make sure the modal is close and item to delete is removed from state
+      setIsConfirmModalOpen(false);
+      setItemToDelete("");
       router.refresh();
     },
   });
@@ -27,7 +30,7 @@ export default function ItemsList({ list }: { list: ListItemResponseType }) {
     },
   });
 
-  // open and close the confirm modal.
+  // open and close the confirm modal. Used by ItemsListCard component.
   // wrapper function to open the modal and set the item to delete
   const openConfirmModal = (id: string) => {
     setIsConfirmModalOpen(true);
@@ -35,13 +38,7 @@ export default function ItemsList({ list }: { list: ListItemResponseType }) {
   }
 
   // callback function to handle the user action, passed to modal as prop
-  const handleDeleteItem = (userAction: boolean) => {
-    // removes the item from the database
-    if (userAction) {
-      deleteMutate({ id: itemToDelete });
-    }
-    setIsConfirmModalOpen(false);
-  };
+  const handleDeleteItem = (userAction: boolean) => { deleteMutate({ id: itemToDelete }); };
 
   // update the item to active or not active
   // the item will have a strike through if it is not active
@@ -54,9 +51,9 @@ export default function ItemsList({ list }: { list: ListItemResponseType }) {
       {
         list.items?.map((item, index) => <ItemsListCard key={index} shoppingItem={item} updateActive={handleUpdateActive} deleteItem={openConfirmModal} />)
       }
-      <ConfirmModal onModalClose={handleDeleteItem} openModal={isConfirmModalOpen}>
+      <ConfirmDeleteModal confirmDelete={handleDeleteItem} isConfirmModalOpen={isConfirmModalOpen} setIsConfirmModalOpen={setIsConfirmModalOpen}>
         <p>You are about to delete this item?</p>
-      </ConfirmModal>
+      </ConfirmDeleteModal>
     </>
   );
 }
