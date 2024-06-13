@@ -19,22 +19,22 @@ export default function ItemsListCard({
   deleteItem: (id: string) => void;
   updateActive: (id: string, active: boolean) => void;
 }) {
-  
-  // TODO: Style component to look like an item in a list
+  const { id, name, active } = shoppingItem;
+
   return (
     <Card>
-      {shoppingItem.name}
       <Button
         type="button"
         className="h-8 w-8"
-        onClick={() => updateActive(shoppingItem.id, shoppingItem.active)}
-      >
+        onClick={() => updateActive(id, active)}
+        >
         <CheckCircleIcon />
       </Button>
+        <p>{name}</p>
       <Button
         type="button"
         className="h-8 w-8"
-        onClick={() => deleteItem(shoppingItem.id)}
+        onClick={() => deleteItem(id)}
       >
         <XCircleIcon />
       </Button>
