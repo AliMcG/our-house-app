@@ -38,7 +38,7 @@ export default function ItemsList({ list }: { list: ListItemResponseType }) {
   }
 
   // callback function to handle the user action, passed to modal as prop
-  const handleDeleteItem = (userAction: boolean) => { deleteMutate({ id: itemToDelete }); };
+  const handleDeleteItem = () => { deleteMutate({ id: itemToDelete }); };
 
   // update the item to active or not active
   // the item will have a strike through if it is not active
