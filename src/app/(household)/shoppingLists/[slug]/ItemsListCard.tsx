@@ -25,9 +25,6 @@ export default function ItemsListCard({
   const cardStyles = !active ? "bg-red" : "bg-white";
   const textStyles = !active ? "line-through" : "none";
 
-  console.log("shoppingItem: ", name)
-  console.log("active: ", active)
-
   return (
     <Card className={`grid grid-cols-[32px_1fr_32px] gap-2 w-full px-2 py-4 ${cardStyles}`}>
       <Button
