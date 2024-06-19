@@ -16,3 +16,10 @@ export const appRouter = createTRPCRouter({
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
+
+// only a set of api names are allowed
+// this is to prevent any typos in the apiName prop
+export enum ApiName {
+  shoppingList = "shoppingList",
+  shoppingListItem = "shoppingListItem"
+}
