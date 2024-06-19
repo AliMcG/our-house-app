@@ -8,15 +8,10 @@ import FormItem from "@/app/_components/form/FormItem";
 import FormLabel from "@/app/_components/form/FormLabel";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
-
-// only a set of api names are allowed
-// this is to prevent any typos in the apiName prop
-enum ApiName {
-  shoppingList = "shoppingList"
-}
+import type { ApiName } from "@/server/api/root";
 
 
-export default function AddItemForm({ apiName }: { apiName: ApiName }) {
+export default function AddItemForm({ apiName }: { apiName: ApiName.shoppingList }) {
   /** As the api mutation in this Component is interacting with a Page (Server Component)
    * we need to use `router.refresh()` to invaliadate the cached data in the Page (Server Component).
    * If the cache data is in a "use client" component then we can use `api.useUtils()` hook instead.
