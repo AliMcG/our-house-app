@@ -9,8 +9,14 @@ import FormLabel from "@/app/_components/form/FormLabel";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
+// only a set of api names are allowed
+// this is to prevent any typos in the apiName prop
+enum ApiName {
+  shoppingList = "shoppingListItem"
+}
+
 interface iAddItemFormProps {
-  apiName: "shoppingListItem";
+  apiName: ApiName;
   listID: string | null;
 }
 
