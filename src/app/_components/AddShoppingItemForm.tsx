@@ -47,16 +47,31 @@ export default function AddShoppingItemForm(params: iAddItemFormProps) {
   }
 
   return (
-    <GenericForm formSchema={formSchema} handleSubmit={handleSubmit}>
+    <GenericForm 
+      formSchema={formSchema} 
+      handleSubmit={handleSubmit}
+      className="grid gap-2 grid-cols-[70%_30%] grid-rows-2 w-full"
+    >
       <FormItem>
         <FormLabel fieldName={"title"}>Create a new item</FormLabel>
         <Inputfield
           fieldName="name"
           placeholder="Enter a name..."
-          className="w-40"
+          className="w-full"
         />
       </FormItem>
-      <FormItem className="flex justify-end">
+      <FormItem className="!my-0">
+        <FormLabel fieldName={"title"}>Quantity</FormLabel>
+        <Inputfield
+          fieldName="quantity"
+          placeholder="1"
+          className="w-full"
+          type="number"
+          max="99"
+          min="1"
+        />
+      </FormItem>
+      <FormItem className="flex justify-end col-span-2">
         <Button type="submit" className="w-20">
           Submit
         </Button>
