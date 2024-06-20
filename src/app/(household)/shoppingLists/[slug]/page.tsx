@@ -2,7 +2,6 @@ import Card from "@/app/_components/Card";
 import AddShoppingItemForm from "@/app/_components/AddShoppingItemForm";
 import { api } from "@/trpc/server";
 import ItemsList from "./ItemsList";
-import { ApiName } from "@/server/api/root";
 
 
 export default async function Page({ params }: { params: { slug: string } }) {
@@ -20,7 +19,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
         </header>
         <div className="mt-5 flex justify-center">
           <Card>
-            <AddShoppingItemForm apiName={ApiName.shoppingListItem} listID={shoppingList.listID ?? null} />
+            <AddShoppingItemForm listID={shoppingList.listID ?? null} />
           </Card>
         </div>
         <div className="p-4">

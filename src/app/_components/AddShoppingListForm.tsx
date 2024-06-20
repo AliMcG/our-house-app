@@ -8,10 +8,9 @@ import FormItem from "@/app/_components/form/FormItem";
 import FormLabel from "@/app/_components/form/FormLabel";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
-import type { ApiName } from "@/server/api/root";
 
 
-export default function AddShoppingListForm({ apiName }: { apiName: ApiName.shoppingList }) {
+export default function AddShoppingListForm() {
   /** As the api mutation in this Component is interacting with a Page (Server Component)
    * we need to use `router.refresh()` to invaliadate the cached data in the Page (Server Component).
    * If the cache data is in a "use client" component then we can use `api.useUtils()` hook instead.
@@ -20,9 +19,9 @@ export default function AddShoppingListForm({ apiName }: { apiName: ApiName.shop
   const router = useRouter();
 
   // Using the apiName to determine which api to use dynamically.
-  const { mutate } = api[apiName].create.useMutation({
+  const { mutate } = api.shoppingList.create.useMutation({
     onSuccess: (response) => {
-      console.log(`CREATED ${apiName}`, response);
+      console.log('CREATED: ', response);
       router.refresh();
     },
   });

@@ -8,11 +8,8 @@ import FormItem from "@/app/_components/form/FormItem";
 import FormLabel from "@/app/_components/form/FormLabel";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
-import type { ApiName } from "@/server/api/root";
 
 interface iAddItemFormProps {
-  apiName: ApiName.shoppingListItem;
-  // apiName: "shoppingList" 
   listID: string | null;
 }
 
@@ -24,11 +21,11 @@ export default function AddShoppingItemForm(params: iAddItemFormProps) {
    * further reading here: https://trpc.io/docs/client/react/useUtils
    */
   const router = useRouter();
-  const { apiName, listID } = params;
+  const { listID } = params;
 
-  const { mutate } = api[apiName].create.useMutation({
+  const { mutate } = api.shoppingListItem.create.useMutation({
     onSuccess: (response) => {
-      console.log(`CREATED ${apiName}`, response);
+      console.log('CREATED', response);
       router.refresh();
     },
   });

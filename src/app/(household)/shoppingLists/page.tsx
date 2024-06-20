@@ -2,7 +2,6 @@ import Card from "@/app/_components/Card";
 import AddShoppingListForm from "../../_components/AddShoppingListForm";
 import ShoppingListCard from "./ShoppingListCard";
 import { api } from "@/trpc/server";
-import { ApiName } from "@/server/api/root";
 
 
 export default async function ShoppingLists() {
@@ -11,7 +10,6 @@ export default async function ShoppingLists() {
    * Which should result in faster load times for the data.
    */
   const shoppingList = await api.shoppingList.list.query();
-  const apiName: ApiName = ApiName.shoppingList;
  
   return (
     <article className="flex min-h-screen flex-col bg-white pt-16 text-slate-800">
@@ -22,7 +20,7 @@ export default async function ShoppingLists() {
       </header>
       <div className="mt-5 flex justify-center">
         <Card>
-          <AddShoppingListForm apiName={apiName} />
+          <AddShoppingListForm />
         </Card>
       </div>
       {shoppingList?.map((listItem, index) => {
