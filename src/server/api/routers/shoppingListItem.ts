@@ -39,13 +39,13 @@ export const shoppingListItemRouter = createTRPCRouter({
     return response;
   }),
   create: protectedProcedure
-  .input(z.object({ name: z.string().min(1), listID: z.string().min(1) }))
+  .input(z.object({ name: z.string().min(1), listID: z.string().min(1), quantity: z.number().int().min(1).max(99) }))
   .mutation(async ({ ctx, input }) => {
     return ctx.db.shoppingItem.create({
       data: {
         active: true,
         name: input.name,
-        quantity: 1,
+        quantity: input.quantity,
         ShoppingList: { connect: { id: input.listID } },
       },
     });
