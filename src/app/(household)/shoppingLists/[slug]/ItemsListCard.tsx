@@ -19,7 +19,7 @@ export default function ItemsListCard({
   deleteItem: (id: string) => void;
   updateActive: (id: string, active: boolean) => void;
 }) {
-  const { id, name, active } = shoppingItem;
+  const { id, name, active, quantity } = shoppingItem;
 
   // styles the item when is marked as completed
   const cardStyles = !active ? "bg-red" : "bg-white";
@@ -34,7 +34,7 @@ export default function ItemsListCard({
         >
         <CheckCircleIcon />
       </Button>
-        <p className={textStyles}>{name}</p>
+        <p className={textStyles}>{name} <span className="font-bold">x{quantity}</span></p>
       <Button
         type="button"
         className="h-8 w-8"
