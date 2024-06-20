@@ -34,6 +34,7 @@ export default function AddShoppingItemForm(params: iAddItemFormProps) {
   // we could pass in more specific schema as a props if needed
   const formSchema = z.object({
     name: z.string().min(1, { message: "Name is required" }),
+    quantity: z.coerce.number().int().min(1).max(99, { message: "Quantity must be less than 100" }).default(1).catch(1),
   });
 
   // uses the schema and mutate funnction setup above
