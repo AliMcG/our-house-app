@@ -62,7 +62,7 @@ model Chores {
 model ChoresItem {
   id          String @id @default(auto()) @map("_id") @db.ObjectId
   name        String
-  completedBy String
+  completedBy String?
   active      Boolean
 
   Chores   Chores? @relation(fields: [choresId], references: [id])
