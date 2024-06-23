@@ -48,7 +48,7 @@ export default function ItemsList({ list }: { list: ChoresListItemResponseType }
   // the item will have a strike through if it is not active
   const handleUpdateActive = (id: string, active: boolean) => {
     // when the item is marked as completed, we need to store the user id
-    const completedBy = active && session?.user?.id ? session.user.id : null;
+    const completedBy = active && session?.user?.name ? session.user.name : null;
     updateActiveMutate({ id: id, active: !active, completedBy: completedBy });
   }
 
