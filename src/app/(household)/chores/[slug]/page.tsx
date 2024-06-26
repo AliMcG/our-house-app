@@ -11,7 +11,6 @@ export default async function Page({ params }: { params: { slug: string } }) {
   // lets try fetching chores by their name as we expect uniqueness between households
   const choresName = params.slug;
   const choresList = await api.choresItem.list.query({ title: choresName });
-  console.log("CHORES LIST: ", choresList)
 
   return (
     <div>
