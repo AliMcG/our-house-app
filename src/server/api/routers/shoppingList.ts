@@ -1,24 +1,19 @@
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-} from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const shoppingListRouter = createTRPCRouter({
-  list: protectedProcedure
-    .query(({ ctx }) => {
-      return ctx.db.shoppingList.findMany({
-        where: {
-          createdBy: { id: ctx.session.user.id }
-        }
-      });
-    }),
+  list: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.shoppingList.findMany({
+      where: {
+        createdBy: { id: ctx.session.user.id },
+      },
+    });
+  }),
 
   create: protectedProcedure
     .input(z.object({ title: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-
       return ctx.db.shoppingList.create({
         data: {
           title: input.title,
@@ -26,14 +21,27 @@ export const shoppingListRouter = createTRPCRouter({
         },
       });
     }),
-    delete: protectedProcedure
+
+  edit: protectedProcedure
+    .input(z.object({ id: z.string().min(1), title: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.shoppingList.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          title: input.title,
+        },
+      });
+    }),
+
+  delete: protectedProcedure
     .input(z.object({ id: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-
       return ctx.db.shoppingList.delete({
         where: {
-          id: input.id
-        }
+          id: input.id,
+        },
       });
     }),
 });
