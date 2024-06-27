@@ -3,10 +3,10 @@
 import React, { useState } from "react";
 import Card from "@/app/_components/Card";
 import Button from "@/app/_components/Button";
-import ConfirmDeleteModal from "@/app/_components/modals/ConfirmDeleteModal";
+import ConfirmDeleteModal from "@/app/_components/modals/ConfirmModal";
 import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
-import { XCircleIcon } from "@heroicons/react/24/solid";
+import { XCircleIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
 import type { ShoppingList } from "@prisma/client";
 import Link from "next/link";
 
@@ -22,7 +22,7 @@ export default function ShoppingListCard({
   shoppingList: ShoppingList;
 }) {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [newName, setNewName] = useState("");
 
   const router = useRouter();
@@ -50,47 +50,63 @@ export default function ShoppingListCard({
     setNewName(e.target.value);
   };
 
-  const handleNameBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    setIsEditing(false);
+  const editList = () => {
+    setIsEditModalOpen(false)
     editMutate({ id: shoppingList.id, title: newName})
   };
 
-  const handleDoubleClick = () => {
-    setIsEditing(true)
+  const confirmEdit = () => {
+    setIsEditModalOpen(true)
   }
   return (
     <>
-    {/* <Link href={`/shoppingLists/${shoppingList.title}`}> */}
+    
       <Card>
-      {isEditing ? (
-          <input
-            type="text"
-            value={newName}
-            onChange={handleNameChange}
-            onBlur={handleNameBlur}
-            autoFocus
-          />
-        ) : (
-        <div onClick={handleDoubleClick}>
+    <Link href={`/shoppingLists/${shoppingList.title}`} className="w-full flex justify-center p-4">
         {shoppingList.title}
-        </div>
-        )}
-       
-        <Button
+             </Link>
+
+       <div className="flex gap-2 w-full justify-end">
+       <Button
           type="button"
           className="h-8 w-8"
           onClick={() => confirmDeleteById()}
         >
           <XCircleIcon />
         </Button>
+        <Button
+          type="button"
+          className="h-8 w-8"
+          onClick={() => confirmEdit()}
+        >
+          <PencilSquareIcon />
+        </Button>
+       </div>
+
       </Card>
-      {/* </Link> */}
+
       <ConfirmDeleteModal
-        confirmDelete={deleteList}
+        confirmFunction={deleteList}
+        confirmFunctionText={"Delete"}
         isConfirmModalOpen={isConfirmModalOpen}
         setIsConfirmModalOpen={setIsConfirmModalOpen}
       >
         <p>You are about to delete this list: {shoppingList.title}</p>
+      </ConfirmDeleteModal>
+      <ConfirmDeleteModal
+        confirmFunction={editList}
+        confirmFunctionText={"Edit"}
+        isConfirmModalOpen={isEditModalOpen}
+        setIsConfirmModalOpen={setIsEditModalOpen}
+      >
+        <p>Edit name:</p>
+        <input
+        className="focus:ring-primary-500 focus:border-primary-500 mb-4 block w-80 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm"
+            type="text"
+            value={newName}
+            onChange={handleNameChange}
+            autoFocus
+          />
       </ConfirmDeleteModal>
     </>
   );
