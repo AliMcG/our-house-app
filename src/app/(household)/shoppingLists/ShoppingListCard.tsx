@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Card from "@/app/_components/Card";
 import Button from "@/app/_components/Button";
-import ConfirmDeleteModal from "@/app/_components/modals/ConfirmModal";
+import ConfirmModal from "@/app/_components/modals/ConfirmModal";
 import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
 import { XCircleIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
@@ -23,7 +23,7 @@ export default function ShoppingListCard({
 }) {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [newName, setNewName] = useState("");
+  const [newName, setNewName] = useState(shoppingList.title);
 
   const router = useRouter();
   const { mutate } = api.shoppingList.delete.useMutation({
@@ -85,15 +85,15 @@ export default function ShoppingListCard({
 
       </Card>
 
-      <ConfirmDeleteModal
+      <ConfirmModal
         confirmFunction={deleteList}
         confirmFunctionText={"Delete"}
         isConfirmModalOpen={isConfirmModalOpen}
         setIsConfirmModalOpen={setIsConfirmModalOpen}
       >
         <p>You are about to delete this list: {shoppingList.title}</p>
-      </ConfirmDeleteModal>
-      <ConfirmDeleteModal
+      </ConfirmModal>
+      <ConfirmModal
         confirmFunction={editList}
         confirmFunctionText={"Edit"}
         isConfirmModalOpen={isEditModalOpen}
@@ -107,7 +107,7 @@ export default function ShoppingListCard({
             onChange={handleNameChange}
             autoFocus
           />
-      </ConfirmDeleteModal>
+      </ConfirmModal>
     </>
   );
 }
