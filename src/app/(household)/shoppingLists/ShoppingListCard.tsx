@@ -62,7 +62,7 @@ export default function ShoppingListCard({
 
   return (
     <>
-      <Card>
+      <Card data-cy="ShoppingListCard">
         <Link
           href={sanitiseTitleStringForURL(
             `/shoppingLists/${shoppingList.title}`,
@@ -76,6 +76,7 @@ export default function ShoppingListCard({
             type="button"
             className="h-8 w-8"
             onClick={() => confirmDeleteById()}
+            data-cy={`ShoppingListCard-delete-${shoppingList.title}`}
           >
             <XCircleIcon />
           </Button>
@@ -83,6 +84,7 @@ export default function ShoppingListCard({
             type="button"
             className="h-8 w-8"
             onClick={() => confirmEdit()}
+            data-cy="ShoppingListCard-edit"
           >
             <PencilSquareIcon />
           </Button>
