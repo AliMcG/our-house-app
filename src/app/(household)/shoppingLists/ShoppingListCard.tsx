@@ -9,6 +9,7 @@ import { api } from "@/trpc/react";
 import { XCircleIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
 import type { ShoppingList } from "@prisma/client";
 import Link from "next/link";
+import { sanitiseTitleStringForURL } from "@/app/utils/helperFunctions";
 
 /** As the api mutation in this Component is interacting with a Page (Server Component)
  * we need to use `router.refresh()` to invaliadate the cached data in the Page (Server Component).
@@ -58,11 +59,12 @@ export default function ShoppingListCard({
   const confirmEdit = () => {
     setIsEditModalOpen(true)
   }
+  
   return (
     <>
     
       <Card>
-    <Link href={`/shoppingLists/${shoppingList.title}`} className="w-full flex justify-center p-4">
+    <Link href={sanitiseTitleStringForURL(`/shoppingLists/${shoppingList.title}`)} className="w-full flex justify-center p-4">
         {shoppingList.title}
              </Link>
 

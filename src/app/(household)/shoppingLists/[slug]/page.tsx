@@ -5,6 +5,7 @@ import ItemsList from "./ItemsList";
 import Link from "next/link";
 import {navbarLinks} from "@/app/utils/navbarLinks";
 import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
+import { convertURLtoTitle } from "@/app/utils/helperFunctions";
 
 
 export default async function Page({ params }: { params: { slug: string } }) {
@@ -20,7 +21,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
             <ArrowUturnLeftIcon className="text-[#b372f0]" />
           </Link>
           <h1 className="text-center text-3xl font-extrabold tracking-tight md:text-[2rem] lg:text-[3rem] xl:text-[4rem]">
-            {shoppingListName}
+            {convertURLtoTitle(shoppingListName)}
           </h1>
         </header>
         <div className="mt-5 flex justify-center">
