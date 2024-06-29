@@ -3,45 +3,37 @@
 import React, { useState } from "react";
 import Card from "@/app/_components/Card";
 import Button from "@/app/_components/Button";
+import { PencilSquareIcon, XCircleIcon } from "@heroicons/react/24/solid";
+import type { Chores } from "@prisma/client";
+import Link from "next/link";
 import ConfirmModal from "@/app/_components/modals/ConfirmModal";
 import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
-import { XCircleIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
-import type { ShoppingList } from "@prisma/client";
-import Link from "next/link";
 import { sanitiseTitleStringForURL } from "@/app/utils/helperFunctions";
 
-/** As the api mutation in this Component is interacting with a Page (Server Component)
- * we need to use `router.refresh()` to invaliadate the cached data in the Page (Server Component).
- * If the cache data is in a "use client" component then we can use `api.useUtils()` hook instead.
- * further reading here: https://trpc.io/docs/client/react/useUtils
- */
-
-export default function ShoppingListCard({
-  shoppingList,
-}: {
-  shoppingList: ShoppingList;
-}) {
+export default function ChoresCard({ choresList }: { choresList: Chores }) {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [newName, setNewName] = useState(shoppingList.title);
+  const [newName, setNewName] = useState(choresList.title);
 
   const router = useRouter();
-  const { mutate } = api.shoppingList.delete.useMutation({
+  const { mutate } = api.chores.delete.useMutation({
     onSuccess: (response) => {
-      console.log("DELETED shoping list", response);
+      console.log("DELETED chores list", response);
       setIsConfirmModalOpen(false);
       router.refresh();
     },
   });
-  const { mutate: editMutate } = api.shoppingList.edit.useMutation({
+  const { mutate: editMutate } = api.chores.edit.useMutation({
     onSuccess: (response) => {
       console.log("Edited shoping list", response);
       router.refresh();
     },
   });
+
+  // uses a modal to confirm Selection before heading to the server
   const deleteList = () => {
-    mutate({ id: shoppingList.id });
+    mutate({ id: choresList.id });
   };
   const confirmDeleteById = () => {
     setIsConfirmModalOpen(true);
@@ -53,7 +45,7 @@ export default function ShoppingListCard({
 
   const editList = () => {
     setIsEditModalOpen(false);
-    editMutate({ id: shoppingList.id, title: newName });
+    editMutate({ id: choresList.id, title: newName });
   };
 
   const confirmEdit = () => {
@@ -64,12 +56,10 @@ export default function ShoppingListCard({
     <>
       <Card>
         <Link
-          href={sanitiseTitleStringForURL(
-            `/shoppingLists/${shoppingList.title}`,
-          )}
+          href={sanitiseTitleStringForURL(`/chores/${choresList.title}`)}
           className="flex w-full justify-center p-4"
         >
-          {shoppingList.title}
+          {choresList.title}
         </Link>
         <div className="flex w-full justify-end gap-2">
           <Button
@@ -90,11 +80,11 @@ export default function ShoppingListCard({
       </Card>
       <ConfirmModal
         confirmFunction={deleteList}
-        confirmFunctionText={"Delete"}
         isConfirmModalOpen={isConfirmModalOpen}
         setIsConfirmModalOpen={setIsConfirmModalOpen}
+        confirmFunctionText={"Delete"}
       >
-        <p>You are about to delete this list: {shoppingList.title}</p>
+        <p>You are about to delete the chores: {choresList.title}</p>
       </ConfirmModal>
       <ConfirmModal
         confirmFunction={editList}

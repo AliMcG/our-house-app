@@ -2,14 +2,15 @@
 
 import * as z from "zod";
 import GenericForm from "@/app/_components/form/GenericForm";
-import Inputfield from "@/app/_components/form/InputFiled";
+import Inputfield from "@/app/_components/form/InputField";
 import Button from "@/app/_components/Button";
 import FormItem from "@/app/_components/form/FormItem";
 import FormLabel from "@/app/_components/form/FormLabel";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
-export default function AddItemForm() {
+
+export default function AddShoppingListForm() {
   /** As the api mutation in this Component is interacting with a Page (Server Component)
    * we need to use `router.refresh()` to invaliadate the cached data in the Page (Server Component).
    * If the cache data is in a "use client" component then we can use `api.useUtils()` hook instead.
@@ -17,16 +18,20 @@ export default function AddItemForm() {
    */
   const router = useRouter();
 
+  // Using the apiName to determine which api to use dynamically.
   const { mutate } = api.shoppingList.create.useMutation({
     onSuccess: (response) => {
-      console.log("CREATED shoping list", response);
+      console.log('CREATED: ', response);
       router.refresh();
     },
   });
 
+  // schema definition can be kept here as its the same for shopping list and chores list
   const formSchema = z.object({
     title: z.string().min(1, { message: "Name is required" }),
   });
+
+  // uses the schema and mutate funnction setup above
   function handleSubmit(data: z.infer<typeof formSchema>) {
     console.log("SUBMITTING ITEM TO ADD: ", data);
     mutate(data);
@@ -50,3 +55,4 @@ export default function AddItemForm() {
     </GenericForm>
   );
 }
+

@@ -1,7 +1,8 @@
 import Card from "@/app/_components/Card";
-import AddItemForm from "./AddItemForm";
+import AddShoppingListForm from "../../_components/AddShoppingListForm";
 import ShoppingListCard from "./ShoppingListCard";
 import { api } from "@/trpc/server";
+
 
 export default async function ShoppingLists() {
   /** By default pages are server components in next.js 14
@@ -19,7 +20,7 @@ export default async function ShoppingLists() {
       </header>
       <div className="mt-5 flex justify-center">
         <Card>
-          <AddItemForm />
+          <AddShoppingListForm />
         </Card>
       </div>
       {shoppingList?.map((listItem, index) => {
