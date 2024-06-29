@@ -33,7 +33,7 @@ export default function ConfirmModal({
                 {children}
                 <div className="flex gap-4">
                   <Button onClick={() => setIsConfirmModalOpen(false)}>Cancel</Button>
-                  <Button onClick={() => confirmFunction()}>{confirmFunctionText}</Button>
+                  <Button onClick={() => confirmFunction()} data-cy={`confirmModal-${confirmFunctionText}`}>{confirmFunctionText}</Button>
                 </div>
               </DialogPanel>
             </TransitionChild>
