@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
 import ItemsListCard from "./ItemsListCard";
-import ConfirmDeleteModal from "@/app/_components/modals/ConfirmDeleteModal";
+import ConfirmDeleteModal from "@/app/_components/modals/ConfirmModal";
 import type { ListItemResponseType } from "@/types/index";
 
 
@@ -51,7 +51,7 @@ export default function ItemsList({ list }: { list: ListItemResponseType }) {
       {
         list.items?.map((item, index) => <ItemsListCard key={index} shoppingItem={item} updateActive={handleUpdateActive} deleteItem={openConfirmModal} />)
       }
-      <ConfirmDeleteModal confirmDelete={handleDeleteItem} isConfirmModalOpen={isConfirmModalOpen} setIsConfirmModalOpen={setIsConfirmModalOpen}>
+      <ConfirmDeleteModal confirmFunction={handleDeleteItem} isConfirmModalOpen={isConfirmModalOpen} setIsConfirmModalOpen={setIsConfirmModalOpen} confirmFunctionText={"Delete"}>
         <p>You are about to delete this item?</p>
       </ConfirmDeleteModal>
     </>

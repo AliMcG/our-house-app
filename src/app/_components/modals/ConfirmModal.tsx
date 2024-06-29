@@ -1,14 +1,16 @@
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
 import Button from '../Button'
 
-export default function ConfirmDeleteModal({ 
+export default function ConfirmModal({ 
   children,
-  confirmDelete,
+  confirmFunction,
+  confirmFunctionText,
   isConfirmModalOpen,
   setIsConfirmModalOpen
 }: { 
   children: React.ReactNode;
-  confirmDelete: () => void;
+  confirmFunction: () => void;
+  confirmFunctionText: string;
   setIsConfirmModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   isConfirmModalOpen: boolean;
 }) {
@@ -31,7 +33,7 @@ export default function ConfirmDeleteModal({
                 {children}
                 <div className="flex gap-4">
                   <Button onClick={() => setIsConfirmModalOpen(false)}>Cancel</Button>
-                  <Button onClick={() => confirmDelete()}>Delete</Button>
+                  <Button onClick={() => confirmFunction()}>{confirmFunctionText}</Button>
                 </div>
               </DialogPanel>
             </TransitionChild>
