@@ -9,6 +9,7 @@ import Link from "next/link";
 import ConfirmModal from "@/app/_components/modals/ConfirmModal";
 import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
+import { sanitiseTitleStringForURL } from "@/app/utils/helperFunctions";
 
 
 export default function ChoresCard({
@@ -38,7 +39,7 @@ export default function ChoresCard({
   return (
     <>
       <Card>
-        <Link href={`/chores/${choresList.title}`}>
+        <Link href={sanitiseTitleStringForURL(`/chores/${choresList.title}`)}>
           {choresList.title}
         </Link>
         <Button
