@@ -30,7 +30,7 @@ export default function ShoppingListCard({
   const { mutate } = api.shoppingList.delete.useMutation({
     onSuccess: (response) => {
       console.log("DELETED shoping list", response);
-      setIsConfirmModalOpen(false)
+      setIsConfirmModalOpen(false);
       router.refresh();
     },
   });
@@ -52,41 +52,42 @@ export default function ShoppingListCard({
   };
 
   const editList = () => {
-    setIsEditModalOpen(false)
-    editMutate({ id: shoppingList.id, title: newName})
+    setIsEditModalOpen(false);
+    editMutate({ id: shoppingList.id, title: newName });
   };
 
   const confirmEdit = () => {
-    setIsEditModalOpen(true)
-  }
-  
+    setIsEditModalOpen(true);
+  };
+
   return (
     <>
-    
       <Card>
-    <Link href={sanitiseTitleStringForURL(`/shoppingLists/${shoppingList.title}`)} className="w-full flex justify-center p-4">
-        {shoppingList.title}
-             </Link>
-
-       <div className="flex gap-2 w-full justify-end">
-       <Button
-          type="button"
-          className="h-8 w-8"
-          onClick={() => confirmDeleteById()}
+        <Link
+          href={sanitiseTitleStringForURL(
+            `/shoppingLists/${shoppingList.title}`,
+          )}
+          className="flex w-full justify-center p-4"
         >
-          <XCircleIcon />
-        </Button>
-        <Button
-          type="button"
-          className="h-8 w-8"
-          onClick={() => confirmEdit()}
-        >
-          <PencilSquareIcon />
-        </Button>
-       </div>
-
+          {shoppingList.title}
+        </Link>
+        <div className="flex w-full justify-end gap-2">
+          <Button
+            type="button"
+            className="h-8 w-8"
+            onClick={() => confirmDeleteById()}
+          >
+            <XCircleIcon />
+          </Button>
+          <Button
+            type="button"
+            className="h-8 w-8"
+            onClick={() => confirmEdit()}
+          >
+            <PencilSquareIcon />
+          </Button>
+        </div>
       </Card>
-
       <ConfirmModal
         confirmFunction={deleteList}
         confirmFunctionText={"Delete"}
@@ -103,12 +104,12 @@ export default function ShoppingListCard({
       >
         <p>Edit name:</p>
         <input
-        className="focus:ring-primary-500 focus:border-primary-500 mb-4 block w-80 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm"
-            type="text"
-            value={newName}
-            onChange={handleNameChange}
-            autoFocus
-          />
+          className="focus:ring-primary-500 focus:border-primary-500 mb-4 block w-80 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm"
+          type="text"
+          value={newName}
+          onChange={handleNameChange}
+          autoFocus
+        />
       </ConfirmModal>
     </>
   );
