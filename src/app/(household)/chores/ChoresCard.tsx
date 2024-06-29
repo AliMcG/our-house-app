@@ -6,7 +6,7 @@ import Button from "@/app/_components/Button";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import type { Chores } from "@prisma/client";
 import Link from "next/link";
-import ConfirmDeleteModal from "@/app/_components/modals/ConfirmDeleteModal";
+import ConfirmModal from "@/app/_components/modals/ConfirmModal";
 import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
 
@@ -49,13 +49,12 @@ export default function ChoresCard({
           <XCircleIcon />
         </Button>
       </Card>
-      <ConfirmDeleteModal
-        confirmDelete={deleteList}
+      <ConfirmModal
+        confirmFunction={deleteList}
         isConfirmModalOpen={isConfirmModalOpen}
-        setIsConfirmModalOpen={setIsConfirmModalOpen}
-      >
+        setIsConfirmModalOpen={setIsConfirmModalOpen} confirmFunctionText={"Delete"}      >
         <p>You are about to delete the chores: {choresList.title}</p>
-      </ConfirmDeleteModal>
+      </ConfirmModal>
     </>
   );
 }
