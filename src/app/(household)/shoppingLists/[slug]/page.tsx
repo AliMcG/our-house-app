@@ -5,12 +5,12 @@ import ItemsList from "./ItemsList";
 import Link from "next/link";
 import {navbarLinks} from "@/app/utils/navbarLinks";
 import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
-import { convertURLtoTitle } from "@/app/utils/helperFunctions";
+import { convertURLtoString } from "@/app/utils/helperFunctions";
 
 
 export default async function Page({ params }: { params: { slug: string } }) {
   // lets try fetching shopping list by its name as we expect uniqueness between households
-  const shoppingListName = convertURLtoTitle(params.slug);
+  const shoppingListName = convertURLtoString(params.slug);
   const shoppingList = await api.shoppingListItem.list.query({ title: shoppingListName });
   
   return (
