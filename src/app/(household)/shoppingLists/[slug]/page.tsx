@@ -10,7 +10,7 @@ import { convertURLtoTitle } from "@/app/utils/helperFunctions";
 
 export default async function Page({ params }: { params: { slug: string } }) {
   // lets try fetching shopping list by its name as we expect uniqueness between households
-  const shoppingListName = params.slug;
+  const shoppingListName = convertURLtoTitle(params.slug);
   const shoppingList = await api.shoppingListItem.list.query({ title: shoppingListName });
   
   return (
@@ -21,7 +21,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
             <ArrowUturnLeftIcon className="text-[#b372f0]" />
           </Link>
           <h1 className="text-center text-3xl font-extrabold tracking-tight md:text-[2rem] lg:text-[3rem] xl:text-[4rem]">
-            {convertURLtoTitle(shoppingListName)}
+            {shoppingListName}
           </h1>
         </header>
         <div className="mt-5 flex justify-center">
