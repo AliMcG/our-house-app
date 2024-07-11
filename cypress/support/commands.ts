@@ -26,11 +26,6 @@ const genRanHex = (length: number) =>
     .map(() => Math.floor(Math.random() * 16).toString(16))
     .join("");
 
-Cypress.Commands.add("logout", () => {
-  cy.log("Logging out of site");
-  cy.get('[data-cy="auth-button"]').click()
-})
-
 Cypress.Commands.add("loginByGoogleApi", () => {
   cy.log("Logging in to Google");
   /** Programmatically logs into Google
@@ -98,4 +93,11 @@ Cypress.Commands.add("loginByGoogleApi", () => {
       })
     });
   });
+})
+
+// Custom command to logout of the site
+Cypress.Commands.add("logout", () => {
+  cy.log("Logging out of site");
+  // we need to be more specific with selection here
+  cy.get('[data-cy="auth-button"]').contains("sign out").click();
 })
