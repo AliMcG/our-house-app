@@ -101,3 +101,22 @@ Cypress.Commands.add("logout", () => {
   // we need to be more specific with selection here
   cy.get('[data-cy="auth-button"]').contains("sign out").click();
 })
+
+
+// Custom command to login to the site
+Cypress.Commands.add('login', () => {
+  cy.session([], () => {
+    cy.visit('http://localhost:3000/')
+    cy.loginByGoogleApi()
+    cy.wait(1000)
+  })
+})
+
+// extend Chainable interface with custom commands
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      login(): Chainable<void>;
+    }
+  }
+}
