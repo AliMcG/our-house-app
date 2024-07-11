@@ -1,4 +1,18 @@
-
+/**
+ * Shopping list page test suite
+ * 
+ * Test LIST steps:
+ * 1. Visit shopping list page
+ * 2. Create new list: FUNCTIONAL TEST LIST
+ * 3. Edit list name: FUNCTIONAL TEST LIST -> FUNCTIONAL TEST LIST EDITED
+ * 3. Delete list
+ * 
+ * Test ITEM steps:
+ * 1. Create new list: FUNCTIONAL TEST LIST
+ * 2. Create new item: FUNCTIONAL TEST LIST ITEM
+ * 3. Edit item name: FUNCTIONAL TEST LIST ITEM -> FUNCTIONAL TEST LIST ITEM EDITED
+ * 4. Delete item
+ */
 
 describe('Test suite for shoppinglists-route', () => {
   before(() => {
