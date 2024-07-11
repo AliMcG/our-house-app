@@ -111,6 +111,7 @@ export default function ShoppingListCard({
           value={newName}
           onChange={handleNameChange}
           autoFocus
+          data-cy="confirmModal-edit-input"
         />
       </ConfirmModal>
     </>
