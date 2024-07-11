@@ -23,7 +23,7 @@ describe('Test suite for shoppinglists-route', () => {
   
   after(() => {
     // make sure you logout from the app
-    // cy.logout();
+    cy.logout();
   });
   
   it('visit Shopping list page, creates new list, edits the name and deletes it', () => {
