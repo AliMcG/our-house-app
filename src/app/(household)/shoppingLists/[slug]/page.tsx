@@ -17,7 +17,10 @@ export default async function Page({ params }: { params: { slug: string } }) {
     <div>
       <article className="flex min-h-screen flex-col bg-white pt-16 text-slate-800">
         <header className="flex items-center justify-center p-4">
-          <Link href={navbarLinks[0]!.link} className="w-[32px] h-[32px] mr-2 rounded-md hover:bg-gray-200 transition">
+          <Link 
+            href={navbarLinks[0]!.link} className="w-[32px] h-[32px] mr-2 rounded-md hover:bg-gray-200 transition"
+            data-cy="back-to-shoppings-lists-link"
+          >
             <ArrowUturnLeftIcon className="text-[#b372f0]" />
           </Link>
           <h1 className="text-center text-3xl font-extrabold tracking-tight md:text-[2rem] lg:text-[3rem] xl:text-[4rem]">
