@@ -16,6 +16,7 @@ declare global {
   namespace Cypress {
     interface Chainable {
       loginByGoogleApi(): Chainable<void>;
+      login(): Chainable<void>;
       logout(): Chainable<void>;
     }
   }
@@ -108,15 +109,6 @@ Cypress.Commands.add('login', () => {
   cy.session([], () => {
     cy.visit('http://localhost:3000/')
     cy.loginByGoogleApi()
-    cy.wait(1000)
+    cy.wait(3000)
   })
 })
-
-// extend Chainable interface with custom commands
-declare global {
-  namespace Cypress {
-    interface Chainable {
-      login(): Chainable<void>;
-    }
-  }
-}
