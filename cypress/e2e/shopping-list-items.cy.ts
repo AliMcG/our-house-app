@@ -35,8 +35,8 @@ describe('Test suite for shoppinglists-items-route', () => {
     cy.login();
   });
 
-  after(() => {
-    // cy.logout();
+  afterEach(() => {
+    cy.logout();
   });
 
   it('visit Shopping list items page, creates new item, edits the name and deletes it', () => {
@@ -81,7 +81,7 @@ describe('Test suite for shoppinglists-items-route', () => {
     // check that the text is striked through
     cy.get('[data-cy="ItemsListCard"]')
       .contains('EGGS x12')
-      .should('have.css', 'text-decoration', 'line-through rgb(30, 41, 59)')
+      .should('have.css', 'text-decoration', 'line-through solid rgb(30, 41, 59)')
 
     // unmark BANANAS as completed
     cy.get('[data-cy="ItemsListCard"]')
