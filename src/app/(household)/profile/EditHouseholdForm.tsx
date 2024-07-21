@@ -20,7 +20,7 @@ export default function EditHouseHoldForm() {
   // Using the apiName to determine which api to use dynamically.
   const { mutate } = api.householdRouter.updateHouseholdMembers.useMutation({
     onSuccess: (response) => {
-      console.log("CREATED Household: ", response);
+      console.log("Edited Household: ", response);
       router.refresh();
     },
   });
