@@ -30,7 +30,7 @@ model ShoppingList {
   items     ShoppingItem[]
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
-
+  sharedHouseholds String[]
   createdBy   User   @relation(fields: [createdById], references: [id])
   createdById String @db.ObjectId
 
@@ -54,7 +54,7 @@ model Chores {
   items     ChoresItem[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+  sharedHouseholds String[]
   createdBy   User @relation(fields: [createdById], references: [id])
   createdById String @db.ObjectId
 
