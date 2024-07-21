@@ -49,10 +49,9 @@ export default function EditHouseHoldForm() {
       </FormItem>
       <Inputfield
           fieldName={"householdId"}
-          placeholder="Enter a email..."
+          placeholder="Enter an id..."
           className="w-40"
           data-cy="household-edit-input"
-          value="669bd7e8f9b0f7e7b1c6fa3b"
         />
       <FormItem className="flex justify-end">
         <Button
