@@ -1,13 +1,29 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import type { HouseholdUser } from "@prisma/client";
+import type { PrismaClient } from "@prisma/client";
 
-const member: HouseholdUser = {
-  id: "",
-  userId: "",
-  householdId: "",
-};
+/**
+ * Seperate reusable database logic to own functions to avoid creating new context
+ * re docs = https://trpc.io/docs/server/server-side-calls
+ */
+const findUserByEmail = async (userEmail: string, prismaCtx: PrismaClient) => {
+  const userId = await prismaCtx.user.findUnique({
+    where: {
+      email: userEmail
+    }
+  })
+  return userId?.id
+}
+const addSingleUserToHousehold = async (householdId: string, userId: string, prismaCtx: PrismaClient) => {
+  const addedUser = await prismaCtx.householdUser.create({
+    data: {
+      userId: userId,
+      householdId: householdId
+    }
+  })
+  return addedUser
+}
 
 export const householdRouter = createTRPCRouter({
   list: protectedProcedure.query(({ ctx }) => {
@@ -18,12 +34,11 @@ export const householdRouter = createTRPCRouter({
     });
   }),
   locate: protectedProcedure
-    .input(z.object({ name: z.string() }))
+    .input(z.object({ householdId: z.string() }))
     .query(({ ctx, input }) => {
-      return ctx.db.household.findMany({
+      return ctx.db.household.findUnique({
         where: {
-          name: input.name,
-          createdBy: { id: ctx.session.user.id },
+          id: input.householdId,
         },
       });
     }),
@@ -31,7 +46,7 @@ export const householdRouter = createTRPCRouter({
   create: protectedProcedure
     .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.household.create({
+      const newHousehold = await ctx.db.household.create({
         data: {
           name: input.name,
           createdBy: { connect: { id: ctx.session.user.id } },
@@ -39,6 +54,8 @@ export const householdRouter = createTRPCRouter({
           // members: [member]
         },
       });
+      const addUser = await addSingleUserToHousehold(newHousehold.id, ctx.session.user.id, ctx.db)
+      return { newHousehold: newHousehold, addedUser: addUser }
     }),
 
   delete: protectedProcedure
