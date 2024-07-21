@@ -5,11 +5,17 @@ import Card from "@/app/_components/Card";
 import Button from "@/app/_components/Button";
 import ConfirmModal from "@/app/_components/modals/ConfirmModal";
 import { useRouter } from "next/navigation";
+import Select, { type SingleValue } from 'react-select'
 import { api } from "@/trpc/react";
-import { XCircleIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
+import {
+  XCircleIcon,
+  PencilSquareIcon,
+  ShareIcon,
+} from "@heroicons/react/24/solid";
 import type { ShoppingList } from "@prisma/client";
 import Link from "next/link";
 import { sanitiseTitleStringForURL } from "@/app/utils/helperFunctions";
+import { Label } from "@headlessui/react";
 
 /** As the api mutation in this Component is interacting with a Page (Server Component)
  * we need to use `router.refresh()` to invaliadate the cached data in the Page (Server Component).
@@ -24,7 +30,11 @@ export default function ShoppingListCard({
 }) {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [newName, setNewName] = useState(shoppingList.title);
+  const [householdId, sethouseholdId] = useState("");
+
+  const { data: listOfHouseHolds } = api.householdRouter.list.useQuery();
 
   const router = useRouter();
   const { mutate } = api.shoppingList.delete.useMutation({
@@ -40,6 +50,12 @@ export default function ShoppingListCard({
       router.refresh();
     },
   });
+  const { mutate: shareMutate } = api.shoppingList.addToHousehold.useMutation({
+    onSuccess: (response) => {
+      console.log("Added shoping list to household", response);
+      router.refresh();
+    }
+  })
   const deleteList = () => {
     mutate({ id: shoppingList.id });
   };
@@ -50,7 +66,14 @@ export default function ShoppingListCard({
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewName(e.target.value);
   };
-
+  const handleSelectChange = (e: SingleValue<{ value: string; label: string; }>) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    sethouseholdId(e?.value as string);
+  };
+const shareList = () => {
+  setIsShareModalOpen(false)
+  shareMutate({ id: shoppingList.id, householdId: householdId})
+}
   const editList = () => {
     setIsEditModalOpen(false);
     editMutate({ id: shoppingList.id, title: newName });
@@ -59,6 +82,12 @@ export default function ShoppingListCard({
   const confirmEdit = () => {
     setIsEditModalOpen(true);
   };
+  const confirmShare = () => {
+    setIsShareModalOpen(true);
+  };
+  const selectOptions = listOfHouseHolds?.map((household) => {
+    return { value: household.id, label: household.name}
+  })
 
   return (
     <>
@@ -88,6 +117,14 @@ export default function ShoppingListCard({
           >
             <PencilSquareIcon />
           </Button>
+          <Button
+            type="button"
+            className="h-8 w-8"
+            onClick={() => confirmShare()}
+            data-cy="ShoppingListCard-share"
+          >
+            <ShareIcon />
+          </Button>
         </div>
       </Card>
       <ConfirmModal
@@ -113,6 +150,15 @@ export default function ShoppingListCard({
           autoFocus
           data-cy="confirmModal-edit-input"
         />
+      </ConfirmModal>
+      <ConfirmModal
+        confirmFunction={shareList}
+        confirmFunctionText={"Share"}
+        isConfirmModalOpen={isShareModalOpen}
+        setIsConfirmModalOpen={setIsShareModalOpen}
+      >
+        <label>Select household</label>
+        <Select options={selectOptions} onChange={(e) => handleSelectChange(e)}/>
       </ConfirmModal>
     </>
   );
