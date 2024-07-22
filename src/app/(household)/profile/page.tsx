@@ -1,6 +1,6 @@
 import AddHouseHoldForm from "./AddHouseholdForm";
 import { api } from "@/trpc/server";
-import AddUserToHouseHoldForm from "./EditHouseholdForm";
+import AddUserToHouseHoldForm from "./AddUserToHouseholdForm";
 
 export default async function Profile() {
   /** By default pages are server components in next.js 14
