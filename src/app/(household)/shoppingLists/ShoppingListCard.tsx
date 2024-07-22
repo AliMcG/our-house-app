@@ -15,7 +15,6 @@ import {
 import type { ShoppingList } from "@prisma/client";
 import Link from "next/link";
 import { sanitiseTitleStringForURL } from "@/app/utils/helperFunctions";
-import { Label } from "@headlessui/react";
 
 /** As the api mutation in this Component is interacting with a Page (Server Component)
  * we need to use `router.refresh()` to invaliadate the cached data in the Page (Server Component).
@@ -67,7 +66,7 @@ export default function ShoppingListCard({
     setNewName(e.target.value);
   };
   const handleSelectChange = (e: SingleValue<{ value: string; label: string; }>) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+ 
     sethouseholdId(e?.value as string);
   };
 const shareList = () => {
