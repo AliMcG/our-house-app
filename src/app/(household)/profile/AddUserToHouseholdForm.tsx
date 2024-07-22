@@ -9,7 +9,7 @@ import FormLabel from "@/app/_components/form/FormLabel";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
-export default function EditHouseHoldForm() {
+export default function AddUserToHouseHoldForm() {
   /** As the api mutation in this Component is interacting with a Page (Server Component)
    * we need to use `router.refresh()` to invaliadate the cached data in the Page (Server Component).
    * If the cache data is in a "use client" component then we can use `api.useUtils()` hook instead.
@@ -37,7 +37,7 @@ export default function EditHouseHoldForm() {
   }
 
   return (
-    <GenericForm formSchema={formSchema} handleSubmit={handleSubmit}>
+    <GenericForm formSchema={formSchema} handleSubmit={handleSubmit} className="border border-slate-600 p-4 rounded-md">
       <FormItem>
         <FormLabel fieldName={"userEmail"}>Edit household</FormLabel>
         <Inputfield
