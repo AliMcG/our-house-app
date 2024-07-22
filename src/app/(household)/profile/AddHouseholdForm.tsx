@@ -36,7 +36,7 @@ export default function AddHouseHoldForm() {
   }
 
   return (
-    <GenericForm formSchema={formSchema} handleSubmit={handleSubmit}>
+    <GenericForm formSchema={formSchema} handleSubmit={handleSubmit} className="border border-slate-600 p-4 rounded-md">
       <FormItem>
         <FormLabel fieldName={"name"}>Create a new household</FormLabel>
         <Inputfield
