@@ -29,8 +29,12 @@ export default function AddUserToHouseHoldForm() {
       router.refresh();
     },
     onError: (error) => {
-      console.log("create error", error.data?.zodError?.fieldErrors)
-      // setError(error.data)
+      console.log("create error:", error.shape?.message)
+
+      setError("userEmail", {
+        type: "test",
+        message: error.shape?.message
+      })
     }
   });
 
@@ -39,7 +43,7 @@ export default function AddUserToHouseHoldForm() {
     userEmail: z.string().email(),
     householdId: z.string()
   });
-  const { handleSubmit, control, register, setError } = useForm<z.infer<typeof formSchema>>()
+  const { handleSubmit, control, register, setError, formState: { errors} } = useForm<z.infer<typeof formSchema>>()
 
   // uses the schema and mutate funnction setup above
   function onSubmit(data: z.infer<typeof formSchema>) {
@@ -60,6 +64,7 @@ export default function AddUserToHouseHoldForm() {
           className="border-input flex h-10 w-full rounded-md border px-3 py-3 text-sm file:border-0 file:bg-transparent file:font-medium placeholder:text-slate-400"
           data-cy="household-edit-input"
         />
+        {errors.userEmail && <p>{errors.userEmail.message}</p>}
       </FormItem>
       <Controller 
         control={control}

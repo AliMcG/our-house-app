@@ -111,11 +111,15 @@ export const householdRouter = createTRPCRouter({
           if (e.code === "P2002") {
             console.log('There is a unique constraint violation, a new user cannot be created with this email')
             // TODO - this is not type safe on the front-end yet
-            return {
-              status: "error",
-              field: "userEmail",
-              message: "Email address already in use"
-            }
+            // return {
+            //   status: "error",
+            //   field: "userEmail",
+            //   message: "Email address already in use"
+            // }
+            throw new TRPCError({
+              code: 'INTERNAL_SERVER_ERROR',
+              message: `Email address already in use'${input.userEmail}'`,
+            });
           } else {
             console.log("e.code", e.code)
           }
