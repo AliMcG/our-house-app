@@ -8,6 +8,8 @@ import FormItem from "@/app/_components/form/FormItem";
 import FormLabel from "@/app/_components/form/FormLabel";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
+import Select, { type SingleValue } from 'react-select'
+import { useForm, Controller } from "react-hook-form"
 
 export default function AddUserToHouseHoldForm() {
   /** As the api mutation in this Component is interacting with a Page (Server Component)
@@ -16,13 +18,20 @@ export default function AddUserToHouseHoldForm() {
    * further reading here: https://trpc.io/docs/client/react/useUtils
    */
   const router = useRouter();
+  const { data: listOfHouseHolds } = api.householdRouter.list.useQuery();
+
 
   // Using the apiName to determine which api to use dynamically.
   const { mutate } = api.householdRouter.updateHouseholdMembers.useMutation({
     onSuccess: (response) => {
       console.log("Edited Household: ", response);
+      // if (response?.status === "error" )
       router.refresh();
     },
+    onError: (error) => {
+      console.log("create error", error.data?.zodError?.fieldErrors)
+      // setError(error.data)
+    }
   });
 
   // schema definition for Household input
@@ -30,29 +39,35 @@ export default function AddUserToHouseHoldForm() {
     userEmail: z.string().email(),
     householdId: z.string()
   });
+  const { handleSubmit, control, register, setError } = useForm<z.infer<typeof formSchema>>()
 
   // uses the schema and mutate funnction setup above
-  function handleSubmit(data: z.infer<typeof formSchema>) {
+  function onSubmit(data: z.infer<typeof formSchema>) {
     mutate(data);
   }
 
+  const selectOptions = listOfHouseHolds?.map((household) => {
+    return { value: household.id, label: household.name}
+  })
+
   return (
-    <GenericForm formSchema={formSchema} handleSubmit={handleSubmit} className="border border-slate-600 p-4 rounded-md">
+    <form onSubmit={handleSubmit(onSubmit)} className="border border-slate-600 p-4 rounded-md">
       <FormItem>
-        <FormLabel fieldName={"userEmail"}>Edit household</FormLabel>
-        <Inputfield
-          fieldName={"userEmail"}
+        <label >Add a user to  household</label>
+        <input
+          {...register("userEmail")}
           placeholder="Enter a email..."
-          className="w-40"
+          className="border-input flex h-10 w-full rounded-md border px-3 py-3 text-sm file:border-0 file:bg-transparent file:font-medium placeholder:text-slate-400"
           data-cy="household-edit-input"
         />
       </FormItem>
-      <Inputfield
-          fieldName={"householdId"}
-          placeholder="Enter an id..."
-          className="w-40"
-          data-cy="household-edit-input"
-        />
+      <Controller 
+        control={control}
+        name="householdId"
+        render={({ field: { onChange, name } }) => (
+          <Select name={name} options={selectOptions} onChange={val => onChange(val?.value)}/>
+        )}
+      />
       <FormItem className="flex justify-end">
         <Button
           type="submit"
@@ -62,6 +77,6 @@ export default function AddUserToHouseHoldForm() {
           Submit
         </Button>
       </FormItem>
-    </GenericForm>
+    </form>
   );
 }
