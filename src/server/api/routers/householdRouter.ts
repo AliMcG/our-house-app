@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import type { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 
 /**
  * Seperate reusable database logic to own functions to avoid creating new context
@@ -92,11 +93,34 @@ export const householdRouter = createTRPCRouter({
     .input(z.object({ householdId: z.string(), userEmail: z.string().email() }))
     .mutation(async ({ ctx, input }) => {
       const newMemberId = await findUserByEmail(input.userEmail, ctx.db);
-      return await addSingleUserToHousehold(
-        input.householdId,
-        newMemberId!,
-        ctx.db,
-      );
+      if (!newMemberId) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `User with email ${input.userEmail} not found`,
+        });
+      }
+      try {
+        const result = await addSingleUserToHousehold(
+          input.householdId,
+          newMemberId,
+          ctx.db,
+        );
+        return result
+      } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+          if (e.code === "P2002") {
+            console.log('There is a unique constraint violation, a new user cannot be created with this email')
+            // TODO - this is not type safe on the front-end yet
+            return {
+              status: "error",
+              field: "userEmail",
+              message: "Email address already in use"
+            }
+          } else {
+            console.log("e.code", e.code)
+          }
+        }
+      }
     }),
 
   delete: protectedProcedure
