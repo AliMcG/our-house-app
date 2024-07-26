@@ -9,10 +9,10 @@ The prisma schema supports [models](https://www.prisma.io/docs/orm/prisma-schema
 
 ### Full User Modal
 
-![user model design](wireframes/database_models/user_house_shop_and_chors.svg)
+![user model design](wireframes/database_models/model_design.svg)
 
 ### User with shopping and chores modals()
 
 ### User with Shopping and Chores
 
-![shopping and chores design](wireframes/database_models/user_house_shop_and_chors.svg)
+![shopping and chores design](wireframes/database_models/user_with_shop_and_chors.svg)
