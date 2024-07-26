@@ -1,14 +1,11 @@
 "use client";
 
 import * as z from "zod";
-import GenericForm from "@/app/_components/form/GenericForm";
-import Inputfield from "@/app/_components/form/InputField";
 import Button from "@/app/_components/Button";
 import FormItem from "@/app/_components/form/FormItem";
-import FormLabel from "@/app/_components/form/FormLabel";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
-import Select, { type SingleValue } from 'react-select'
+import Select from 'react-select'
 import { useForm, Controller } from "react-hook-form"
 
 export default function AddUserToHouseHoldForm() {
@@ -22,14 +19,13 @@ export default function AddUserToHouseHoldForm() {
 
 
   // Using the apiName to determine which api to use dynamically.
-  const { mutate } = api.householdRouter.updateHouseholdMembers.useMutation({
+  const { mutate } = api.householdUserRouter.updateHouseholdMembers.useMutation({
     onSuccess: (response) => {
       console.log("Edited Household: ", response);
-      // if (response?.status === "error" )
       router.refresh();
     },
     onError: (error) => {
-      console.log("create error:", error.shape?.message)
+      console.log("editing error:", error.shape?.message)
 
       setError("userEmail", {
         type: "test",
@@ -64,7 +60,7 @@ export default function AddUserToHouseHoldForm() {
           className="border-input flex h-10 w-full rounded-md border px-3 py-3 text-sm file:border-0 file:bg-transparent file:font-medium placeholder:text-slate-400"
           data-cy="household-edit-input"
         />
-        {errors.userEmail && <p>{errors.userEmail.message}</p>}
+        {errors.userEmail && <p className="text-red-600 p-2">{errors.userEmail.message}</p>}
       </FormItem>
       <Controller 
         control={control}
