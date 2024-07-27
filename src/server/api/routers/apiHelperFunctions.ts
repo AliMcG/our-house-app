@@ -37,3 +37,26 @@ export const addSingleUserToHousehold = async (
   });
   return addedUser;
 };
+export const checkUserIsOwnerOfHousehold= async (householdId: string, userId: string, prismaCtx: PrismaClient) => {
+  if (!householdId || !userId) {
+    console.log("Invalid householdId or userId");
+    return false;
+  }
+  try {
+    const isOwner = await prismaCtx.household.findFirst({
+      where: {
+        id: householdId,
+        createdById: userId,
+      },
+    });
+    if (isOwner) {
+      return true
+    } else {
+      return false
+    }
+  } catch (error) {
+    console.error("Error checking ownership:", error);
+    return false;
+  }
+ 
+};
