@@ -2,6 +2,7 @@ import AddHouseHoldForm from "./AddHouseholdForm";
 import { api } from "@/trpc/server";
 import AddUserToHouseHoldForm from "./AddUserToHouseholdForm";
 import DeleteUserToHouseHoldForm from "./deleteUserToHouseholdForm";
+import DeleteHouseHoldForm from "./deleteHouseholdForm";
 
 export default async function Profile() {
   /** By default pages are server components in next.js 14
@@ -25,6 +26,7 @@ export default async function Profile() {
       <div className="mt-5 flex justify-center">
         <div className="flex gap-4">
           <AddHouseHoldForm />
+          <DeleteHouseHoldForm />
           <AddUserToHouseHoldForm />
           <DeleteUserToHouseHoldForm />
         </div>
