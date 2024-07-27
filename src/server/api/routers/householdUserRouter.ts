@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { findUserByEmail, addSingleUserToHousehold, findHouseholdUserUniqueId } from "./apiHelperFunctions";
+import { findUserByEmail, addSingleUserToHousehold, findHouseholdUserUniqueId, checkUserIsOwnerOfHousehold } from "./apiHelperFunctions";
 
 export const householdUserRouter = createTRPCRouter({
   /**
@@ -58,28 +58,29 @@ export const householdUserRouter = createTRPCRouter({
           message: `User with email findUserByEmail ${input.userEmail} not found`,
         });
       }
-      // const userToDelete = await findHouseholdUserUniqueId(userId, input.householdId, ctx.db);
-      // if (!userToDelete) {
-      //   throw new TRPCError({
-      //     code: 'NOT_FOUND',
-      //     message: `User with email findHouseholdUserUniqueId ${input.userEmail} not found`,
-      //   });
-      // }
-      try {
-        const result = ctx.db.householdUser.deleteMany({
-          where: {
-            userId: userId,
-            householdId: input.householdId
-          }
-        })
-        return result
-
-      } catch (e) {
-        console.log("error: ", e)
-        const message = e
+      const isHouseholeOwner = await checkUserIsOwnerOfHousehold(input.householdId, ctx.session.user.id, ctx.db)
+      if (isHouseholeOwner) {
+        try {
+          const result = ctx.db.householdUser.delete({
+            where: {
+              userId_householdId: {
+                userId: userId,
+                householdId: input.householdId
+              }
+            }
+          })
+          return result
+        } catch (e) {
+          console.log("error: ", e)
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: `Prisma error: `,
+          });
+        }
+      } else {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: `Prisma error: ${message}`,
+          code: 'UNAUTHORIZED',
+          message: `You are not the owner of the household - no permission to delete`,
         });
       }
     }),
