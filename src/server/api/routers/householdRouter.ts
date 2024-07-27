@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { addSingleUserToHousehold } from "./apiHelperFunctions";
+import { addSingleUserToHousehold, checkUserIsOwnerOfHousehold } from "./apiHelperFunctions";
+import { TRPCError } from "@trpc/server";
 
 /**
  * household router handles routes to list, locate, edit and delete a household
@@ -55,12 +56,30 @@ export const householdRouter = createTRPCRouter({
     }),
 
   delete: protectedProcedure
-    .input(z.object({ id: z.string().min(1) }))
+    .input(z.object({ householdId: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.household.delete({
-        where: {
-          id: input.id,
-        },
-      });
+      const isHouseholeOwner = await checkUserIsOwnerOfHousehold(input.householdId, ctx.session.user.id, ctx.db)
+      if (isHouseholeOwner) {
+        try {
+          const result = ctx.db.household.delete({
+            where: {
+              id: input.householdId,
+            },
+          });
+          return result
+        } catch (e) {
+          console.log("error: ", e)
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: `Prisma error: `,
+          });
+        }
+      } else {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: `You are not the owner of the household - no permission to delete`,
+        });
+      }
+      return 
     }),
 });
