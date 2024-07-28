@@ -46,7 +46,7 @@ export default function DeleteUserToHouseHoldForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="border border-slate-600 p-4 rounded-md">
       <FormItem>
-        <label >Delete a user to  household</label>
+        <label >Delete a user from household</label>
         <input
           {...register("userEmail")}
           placeholder="Enter a email..."
