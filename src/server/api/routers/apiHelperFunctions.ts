@@ -1,12 +1,14 @@
-import { type PrismaClient, Prisma } from "@prisma/client";
-import { TRPCError } from "@trpc/server";
+import { type PrismaClient } from "@prisma/client";
 
 /**
  * Seperate reusable database logic to own functions to avoid creating new context
  * re docs = https://trpc.io/docs/server/server-side-calls
  */
 
-export const findUserByEmail = async (userEmail: string, prismaCtx: PrismaClient) => {
+export const findUserByEmail = async (
+  userEmail: string,
+  prismaCtx: PrismaClient,
+) => {
   const userId = await prismaCtx.user.findUnique({
     where: {
       email: userEmail,
@@ -14,12 +16,15 @@ export const findUserByEmail = async (userEmail: string, prismaCtx: PrismaClient
   });
   return userId?.id;
 };
-export const findHouseholdUserUniqueId = async (householdId: string, userId: string, prismaCtx: PrismaClient) => {
+export const findHouseholdUserUniqueId = async (
+  householdId: string,
+  userId: string,
+  prismaCtx: PrismaClient,
+) => {
   const userToDelete = await prismaCtx.householdUser.findFirst({
     where: {
       householdId: householdId,
-      userId: userId
-
+      userId: userId,
     },
   });
   return userToDelete?.id;
@@ -37,7 +42,11 @@ export const addSingleUserToHousehold = async (
   });
   return addedUser;
 };
-export const checkUserIsOwnerOfHousehold= async (householdId: string, userId: string, prismaCtx: PrismaClient) => {
+export const checkUserIsOwnerOfHousehold = async (
+  householdId: string,
+  userId: string,
+  prismaCtx: PrismaClient,
+) => {
   if (!householdId || !userId) {
     console.log("Invalid householdId or userId");
     return false;
@@ -50,13 +59,12 @@ export const checkUserIsOwnerOfHousehold= async (householdId: string, userId: st
       },
     });
     if (isOwner) {
-      return true
+      return true;
     } else {
-      return false
+      return false;
     }
   } catch (error) {
     console.error("Error checking ownership:", error);
     return false;
   }
- 
 };
