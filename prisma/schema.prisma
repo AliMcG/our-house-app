@@ -43,7 +43,7 @@ model ShoppingItem {
   quantity Int
   active   Boolean
 
-  ShoppingList   ShoppingList? @relation(fields: [shoppingListId], references: [id])
+  ShoppingList   ShoppingList? @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
   shoppingListId String?       @db.ObjectId
 }
 
@@ -51,7 +51,7 @@ model ShoppingItem {
 model Chores {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
   title     String
-  items     ChoresItem[]
+  items     ChoresItem[] 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   sharedHouseholds String[]
@@ -67,7 +67,7 @@ model ChoresItem {
   completedBy String?
   active      Boolean
 
-  Chores   Chores? @relation(fields: [choresId], references: [id])
+  Chores   Chores? @relation(fields: [choresId], references: [id], onDelete: Cascade)
   choresId String? @db.ObjectId
 }
 
@@ -85,7 +85,7 @@ model HouseholdUser {
   userId      String    @db.ObjectId
   householdId String    @db.ObjectId
   user        User      @relation(fields: [userId], references: [id])
-  household   Household @relation(fields: [householdId], references: [id])
+  household   Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
 
   @@unique([userId, householdId]) // Ensures unique pairs
 }
