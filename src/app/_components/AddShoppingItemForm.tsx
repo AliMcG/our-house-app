@@ -28,6 +28,9 @@ export default function AddShoppingItemForm(params: iAddItemFormProps) {
       console.log('CREATED', response);
       router.refresh();
     },
+    onError: (error) => {
+      console.log("error", error)
+    }
   });
 
   // schema definition can be kept here as its the same for shopping list and chores list
