@@ -1,11 +1,14 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { addSingleUserToHousehold, checkUserIsOwnerOfHousehold } from "./apiHelperFunctions";
+import {
+  addSingleUserToHousehold,
+  checkUserIsOwnerOfHousehold,
+} from "./apiHelperFunctions";
 import { TRPCError } from "@trpc/server";
 
 /**
- * household router handles routes to list, locate, edit and delete a household
+ * household router handles routes to list, locate, create, edit and delete a household.
  */
 export const householdRouter = createTRPCRouter({
   list: protectedProcedure.query(({ ctx }) => {
@@ -55,10 +58,47 @@ export const householdRouter = createTRPCRouter({
       return { newHousehold: newHousehold, addedUser: addUser };
     }),
 
+  edit: protectedProcedure
+    .input(z.object({ name: z.string().min(1), householdId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const isHouseholeOwner = await checkUserIsOwnerOfHousehold(
+        input.householdId,
+        ctx.session.user.id,
+        ctx.db,
+      );
+      if (isHouseholeOwner) {
+        try {
+          const result = ctx.db.household.update({
+            where: {
+              id: input.householdId,
+            },
+            data: {
+              name: input.name,
+            },
+          });
+          return result;
+        } catch (e) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: `Household not found - not updated`,
+          });
+        }
+      } else {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: `You are not the owner of the household - no permission to edit`,
+        });
+      }
+    }),
+
   delete: protectedProcedure
     .input(z.object({ householdId: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      const isHouseholeOwner = await checkUserIsOwnerOfHousehold(input.householdId, ctx.session.user.id, ctx.db)
+      const isHouseholeOwner = await checkUserIsOwnerOfHousehold(
+        input.householdId,
+        ctx.session.user.id,
+        ctx.db,
+      );
       if (isHouseholeOwner) {
         try {
           const result = ctx.db.household.delete({
@@ -66,20 +106,18 @@ export const householdRouter = createTRPCRouter({
               id: input.householdId,
             },
           });
-          return result
+          return result;
         } catch (e) {
-          console.log("error: ", e)
           throw new TRPCError({
-            code: 'NOT_FOUND',
-            message: `Prisma error: `,
+            code: "NOT_FOUND",
+            message: `Household not found - not deleted `,
           });
         }
       } else {
         throw new TRPCError({
-          code: 'UNAUTHORIZED',
+          code: "UNAUTHORIZED",
           message: `You are not the owner of the household - no permission to delete`,
         });
       }
-      return 
     }),
 });
