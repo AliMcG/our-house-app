@@ -64,6 +64,7 @@ export default function EditHouseHoldForm() {
         autoFocus
         data-cy="confirmModal-edit-input"
       />
+      {errors.name && <p className="text-red-600 p-2">{errors.name.message}</p>}
       <FormItem className="flex justify-end">
         <Button
           type="submit"
