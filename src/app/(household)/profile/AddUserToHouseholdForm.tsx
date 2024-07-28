@@ -17,16 +17,11 @@ export default function AddUserToHouseHoldForm() {
   const router = useRouter();
   const { data: listOfHouseHolds } = api.householdRouter.list.useQuery();
 
-
-  // Using the apiName to determine which api to use dynamically.
-  const { mutate } = api.householdUserRouter.updateHouseholdMembers.useMutation({
-    onSuccess: (response) => {
-      console.log("Edited Household: ", response);
+  const { mutate } = api.householdUserRouter.addNewUserToHousehold.useMutation({
+    onSuccess: () => {
       router.refresh();
     },
     onError: (error) => {
-      console.log("editing error:", error.shape?.message)
-
       setError("userEmail", {
         type: "test",
         message: error.shape?.message
@@ -34,20 +29,18 @@ export default function AddUserToHouseHoldForm() {
     }
   });
 
-  // schema definition for Household input
   const formSchema = z.object({
     userEmail: z.string().email(),
     householdId: z.string()
   });
-  const { handleSubmit, control, register, setError, formState: { errors} } = useForm<z.infer<typeof formSchema>>()
+  const { handleSubmit, control, register, setError, formState: { errors } } = useForm<z.infer<typeof formSchema>>()
 
-  // uses the schema and mutate funnction setup above
   function onSubmit(data: z.infer<typeof formSchema>) {
     mutate(data);
   }
 
   const selectOptions = listOfHouseHolds?.map((household) => {
-    return { value: household.id, label: household.name}
+    return { value: household.id, label: household.name }
   })
 
   return (
@@ -62,11 +55,11 @@ export default function AddUserToHouseHoldForm() {
         />
         {errors.userEmail && <p className="text-red-600 p-2">{errors.userEmail.message}</p>}
       </FormItem>
-      <Controller 
+      <Controller
         control={control}
         name="householdId"
         render={({ field: { onChange, name } }) => (
-          <Select name={name} options={selectOptions} onChange={val => onChange(val?.value)}/>
+          <Select name={name} options={selectOptions} onChange={val => onChange(val?.value)} />
         )}
       />
       <FormItem className="flex justify-end">
