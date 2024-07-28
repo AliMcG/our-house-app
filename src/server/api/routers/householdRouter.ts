@@ -61,12 +61,12 @@ export const householdRouter = createTRPCRouter({
   edit: protectedProcedure
     .input(z.object({ name: z.string().min(1), householdId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const isHouseholeOwner = await checkUserIsOwnerOfHousehold(
+      const isHouseholdOwner = await checkUserIsOwnerOfHousehold(
         input.householdId,
         ctx.session.user.id,
         ctx.db,
       );
-      if (isHouseholeOwner) {
+      if (isHouseholdOwner) {
         try {
           const result = ctx.db.household.update({
             where: {
@@ -94,12 +94,12 @@ export const householdRouter = createTRPCRouter({
   delete: protectedProcedure
     .input(z.object({ householdId: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      const isHouseholeOwner = await checkUserIsOwnerOfHousehold(
+      const isHouseholdOwner = await checkUserIsOwnerOfHousehold(
         input.householdId,
         ctx.session.user.id,
         ctx.db,
       );
-      if (isHouseholeOwner) {
+      if (isHouseholdOwner) {
         try {
           const result = ctx.db.household.delete({
             where: {
