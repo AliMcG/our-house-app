@@ -14,15 +14,13 @@ import { ZodError } from "zod";
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
 import type { Session } from "next-auth";
-import type { PrismaClient } from "@prisma/client";
-import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
 
 /**
  * Defines your inner context shape.
  * Add fields here that the inner context brings.
  */
-interface CreateInnerContextOptions extends Partial<CreateNextContextOptions> {
-  session: Session | null;
+interface CreateInnerContextOptions {
+  session: Session ;
 }
 /**
  * 1. CONTEXT
@@ -55,12 +53,12 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
  *
  * @link https://trpc.io/docs/v11/context#inner-and-outer-context
  */
-export async function createContextInner(opts?: CreateInnerContextOptions) {
-  const session = await getServerAuthSession();
+export async function createContextInner(opts: CreateInnerContextOptions) {
+  
   return {
     headers: new Headers(),
     db,
-    session: session,
+    session: opts.session,
   };
 }
 
