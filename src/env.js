@@ -36,6 +36,7 @@ export const env = createEnv({
     DATABASE_NAME: z.string(),
     DATABASE_COLLECTION: z.string(),
     DATABASE_USER_ID: z.string(),
+    UNIT_TESTER_ID: z.string()
   },
 
   /**
@@ -65,6 +66,7 @@ export const env = createEnv({
     DATABASE_NAME: process.env.DATABASE_NAME,
     DATABASE_COLLECTION: process.env.DATABASE_COLLECTION,
     DATABASE_USER_ID: process.env.DATABASE_USER_ID,
+    UNIT_TESTER_ID: process.env.UNIT_TESTER_ID
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
