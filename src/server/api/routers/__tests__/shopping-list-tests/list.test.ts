@@ -27,6 +27,8 @@ test('List all shoppingLists', async () => {
 
   const shoppingLists = await caller.shoppingList.list()
 
+  console.log(" list", shoppingLists)
+
   expect(Array.isArray(shoppingLists)).toBe(true);
   shoppingLists.forEach(list => {
     expect(typeof list).toBe('object');
