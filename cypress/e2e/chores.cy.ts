@@ -113,8 +113,8 @@ describe('Test suite for the Chores route', () => {
     
     // the chores card name should still be the same
     cy.get('[data-cy="ChoresCard"]')
-      .contains('Test chores')
+      .contains('Updated test chores')
   });
 
-  // it('Able to delete a chores named "Updated test chores', () => {});
+  // it('Able to delete a chores named "Updated test chores', () => {});  
 });
