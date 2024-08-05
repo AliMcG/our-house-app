@@ -54,7 +54,7 @@ export default function ChoresCard({ choresList }: { choresList: Chores }) {
 
   return (
     <>
-      <Card>
+      <Card data-cy="ChoresCard">
         <Link
           href={sanitiseTitleStringForURL(`/chores/${choresList.title}`)}
           className="flex w-full justify-center p-4"
@@ -73,6 +73,7 @@ export default function ChoresCard({ choresList }: { choresList: Chores }) {
             type="button"
             className="h-8 w-8"
             onClick={() => confirmEdit()}
+            data-cy="ChoresCard-editButton"
           >
             <PencilSquareIcon />
           </Button>

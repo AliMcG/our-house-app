@@ -29,11 +29,45 @@ describe('Test suite for the Chores route', () => {
     cy.login();
   });
 
-  after(() => {
-    cy.logout();
+  afterEach(() => {
+    // cy.logout();
   });
 
-  it('Visits the chores page without issue', () => {
-    cy.visit('/');
+  it  ('Visits the chores page without issue', () => {
+    cy.visit('/chores');
+    cy.get('h1').should('contain', 'Chores');
   });
+
+  it('Creates a new chores list named "Test chores"', () => {
+    cy.visit('/chores');
+    cy.get('[data-cy="chores-create-input').type('Test chores');
+    cy.get('[data-cy="chores-create-submit').click();
+    cy.get('[data-cy="ChoresCard"]').contains('Test chores').should('exist');
+  });
+
+  it('Checks that we can cancel an edit action', () => {
+    cy.visit('/chores');
+    // can we click the edit button
+    cy.get('[data-cy="ChoresCard"]')
+      .contains('Test chores')
+      .parents('[data-cy="ChoresCard"]')
+      .find('[data-cy="ChoresCard-editButton"]')
+      .click()
+    // in the edit modal coming up, lets click cancel
+    cy.get('[data-cy="ConfirmModal"]')
+      .find('[data-cy="confirmModal-btn-cancel"]')
+      .click()
+    
+    // assert the modal is no longer visible
+    cy.get('[data-cy="ConfirmModal"]')
+      .should('not.exist')
+    
+    // the chores card name should still be the same
+    cy.get('[data-cy="ChoresCard"]')
+      .contains('Test chores')
+  });
+
+  // it('Changes the chores name to "Updated test chores"', () => {});
+  // it('Checks that we cancel a delete action', () => {});
+  // it('Able to delete a chores named "Updated test chores', () => {});
 });
