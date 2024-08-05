@@ -93,6 +93,28 @@ describe('Test suite for the Chores route', () => {
       .should('exist')
   });
 
-  // it('Checks that we cancel a delete action', () => {});
+  it('Checks that we cancel a delete action', () => {
+    cy.visit('/chores');
+    // can we click the edit button
+    cy.get('[data-cy="ChoresCard"]')
+      .contains('Updated test chores')
+      .parents('[data-cy="ChoresCard"]')
+      .find('[data-cy="ChoresCard-deleteButton"]')
+      .click()
+
+    // shows the delete modal, lets click cancel
+    cy.get('[data-cy="ConfirmModal"]')
+      .find('[data-cy="confirmModal-btn-cancel"]')
+      .click()
+    
+    // assert the modal is no longer visible
+    cy.get('[data-cy="ConfirmModal"]')
+      .should('not.exist')
+    
+    // the chores card name should still be the same
+    cy.get('[data-cy="ChoresCard"]')
+      .contains('Test chores')
+  });
+
   // it('Able to delete a chores named "Updated test chores', () => {});
 });

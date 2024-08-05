@@ -66,6 +66,7 @@ export default function ChoresCard({ choresList }: { choresList: Chores }) {
             type="button"
             className="h-8 w-8"
             onClick={() => confirmDeleteById()}
+            data-cy="ChoresCard-deleteButton"
           >
             <XCircleIcon />
           </Button>
