@@ -100,6 +100,7 @@ export default function ChoresCard({ choresList }: { choresList: Chores }) {
           value={newName}
           onChange={handleNameChange}
           autoFocus
+          data-cy="confirmModal-edit-input"
         />
       </ConfirmModal>
     </>

@@ -67,7 +67,32 @@ describe('Test suite for the Chores route', () => {
       .contains('Test chores')
   });
 
-  // it('Changes the chores name to "Updated test chores"', () => {});
+  it('Changes the chores name to "Updated test chores"', () => {
+    cy.visit('/chores');
+    // click on edit butotn
+    cy.get('[data-cy="ChoresCard"]')
+      .contains('Test chores')
+      .parents('[data-cy="ChoresCard"]')
+      .find('[data-cy="ChoresCard-editButton"]')
+      .click()
+
+    // find the modal input and enter new name "Updated test chores"
+    cy.get('[data-cy="ConfirmModal"]')
+      .find('[data-cy="confirmModal-edit-input"]')
+      .clear()
+      .type("Updated test chores");
+    
+    // confirm name change
+    cy.get('[data-cy="ConfirmModal"]')
+      .find('[data-cy="confirmModal-btn-Edit"]')
+      .click()
+
+    // check the card has updated name
+    cy.get('[data-cy="ChoresCard"]')
+      .contains('Updated test chores')
+      .should('exist')
+  });
+
   // it('Checks that we cancel a delete action', () => {});
   // it('Able to delete a chores named "Updated test chores', () => {});
 });
