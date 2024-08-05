@@ -116,5 +116,26 @@ describe('Test suite for the Chores route', () => {
       .contains('Updated test chores')
   });
 
-  // it('Able to delete a chores named "Updated test chores', () => {});  
+  it('Able to delete a chores named "Updated test chores', () => {
+    cy.visit('/chores');
+    // can we click the edit button
+    cy.get('[data-cy="ChoresCard"]')
+      .contains('Updated test chores')
+      .parents('[data-cy="ChoresCard"]')
+      .find('[data-cy="ChoresCard-deleteButton"]')
+      .click()
+
+    // shows the delete modal, lets click cancel
+    cy.get('[data-cy="ConfirmModal"]')
+      .find('[data-cy="confirmModal-btn-Delete"]')
+      .click()
+    
+    // assert the modal is no longer visible
+    cy.get('[data-cy="ConfirmModal"]')
+      .should('not.exist')
+
+    // assert chores card does not exist
+    cy.get('[data-cy="ChoresCard"]')
+      .contains('Updated test chores').not
+  });  
 });
