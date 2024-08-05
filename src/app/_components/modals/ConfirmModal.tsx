@@ -17,7 +17,7 @@ export default function ConfirmModal({
 
   return (
     <Transition appear show={isConfirmModalOpen}>
-      <Dialog open={isConfirmModalOpen} onClose={() => setIsConfirmModalOpen(false)} className="relative z-50">
+      <Dialog open={isConfirmModalOpen} onClose={() => setIsConfirmModalOpen(false)} className="relative z-50" data-cy="ConfirmModal">
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4">
             <TransitionChild
