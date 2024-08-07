@@ -30,7 +30,7 @@ describe('Test suite for the Chores route', () => {
   });
 
   afterEach(() => {
-    cy.logout();
+    // cy.logout();
   });
 
   it  ('Visits the chores page without issue', () => {
@@ -136,6 +136,6 @@ describe('Test suite for the Chores route', () => {
 
     // assert chores card does not exist
     cy.get('[data-cy="ChoresCard"]')
-      .contains('Updated test chores').not
+      .should('not.exist')
   });  
 });
