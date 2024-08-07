@@ -30,7 +30,7 @@ describe('Test suite for the Chores route', () => {
   });
 
   afterEach(() => {
-    // cy.logout();
+    cy.logout();
   });
 
   it  ('Visits the chores page without issue', () => {
