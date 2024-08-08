@@ -111,7 +111,15 @@ describe('Test suite for the Chores Items route', () => {
       cy.get('[data-cy="ChoresItemCard"]').contains('Test wash the dishes').should('exist');
     });
 
+    it('Deletes the "Test wash the dishes" item', () => {
+      cy.get('[data-cy="ChoresItemCard"]')
+        .contains('Test wash the dishes')
+        .parents('[data-cy="ChoresItemCard"]')
+        .find('[data-cy="ChoresItemCard-btn-delete"]')
+        .click();
+      cy.get('[data-cy="confirmModal-btn-Delete"]').click();
+      cy.get('[data-cy="ChoresItemCard"]').contains('Test wash the dishes').should('not.exist');
+    });
   });
 
-  // it('Deletes the "Test wash the dishes" item', () => {});
 });
