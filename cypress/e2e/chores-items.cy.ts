@@ -5,25 +5,25 @@
  * - Create: a new chores list names: "Test kitchen chores"
  *  - make sure a user can go into the chores list and back out again
  * - Create: add two new chores items
- *  - a chores item named: "Mop the floor"
- *  - a chores item named: "Wash the dishes"
+ *  - a chores item named: "Test mop the floor"
+ *  - a chores item named: "Test wash the dishes"
  * - Active: marks a chores item as completed
- *  - mark "Mop the floor" as completed
+ *  - mark "Test mop the floor" as completed
  *  - check that the text is striked through
- *  - unmark "Mop the floor" as completed
+ *  - unmark "Test mop the floor" as completed
  *  - check that the text is not striked through
  * - Delete: checks that we can cancel a delete action
- *  - try to delete the "Wash the dishes" item but cancel
+ *  - try to delete the "Test wash the dishes" item but cancel
  *  - make sure the item is not deleted
  * - Delete: deletes the item
- *  - delete the "Wash the dishes" item
+ *  - delete the "Test wash the dishes" item
  *  - make sure the item is deleted
  * - Clean up:
  *  - delete the "Test kitchen chores" list
  */
 
 describe('Test suite for the Chores Items route', () => {
-  beforeEach(() => {
+  before(() => {
     cy.login();
     cy.visit('/chores');
   });
@@ -46,8 +46,28 @@ describe('Test suite for the Chores Items route', () => {
     cy.get('h1').should('contain', 'Chores');
   });
 
-  // it('Adds two new chores items: "Mop the floor" and "Wash the dishes"', () => {});
-  // it('Marks "Mop the floor" as completed and then unmarks it', () => {});
-  // it('Tries to delete "Wash the dishes" but cancels the action', () => {});
-  // it('Deletes the "Wash the dishes" item', () => {});
+  describe('Chores Items', () => {
+    beforeEach(() => {
+      cy.login();
+      cy.visit('/chores');
+      cy.get('[data-cy="ChoresCard"]').contains('Test kitchen chores').click();
+    });
+
+    afterEach(() => {
+      // cy.logout();
+    });
+
+    it('Adds two new chores items: "Test mop the floor" and "Test wash the dishes"', () => {
+      cy.get('[data-cy="choresItem-create-input').type('Test mop the floor');
+      cy.get('[data-cy="choresItem-create-submit').click();
+      cy.get('[data-cy="ChoresItemCard"]').contains('Test mop the floor').should('exist');
+      cy.get('[data-cy="choresItem-create-input').type('Test wash the dishes');
+      cy.get('[data-cy="choresItem-create-submit').click();
+      cy.get('[data-cy="ChoresItemCard"]').contains('Test wash the dishes').should('exist');
+    });
+  });
+
+  // it('Marks "Test mop the floor" as completed and then unmarks it', () => {});
+  // it('Tries to delete "Test wash the dishes" but cancels the action', () => {});
+  // it('Deletes the "Test wash the dishes" item', () => {});
 });
