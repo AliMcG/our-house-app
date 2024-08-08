@@ -48,6 +48,7 @@ export default function ItemsListCard({
         type="button"
         className="h-8 w-8"
         onClick={() => deleteItem(id)}
+        data-cy="ChoresItemCard-btn-delete"
       >
         <XCircleIcon />
       </Button>
