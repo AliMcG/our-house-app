@@ -1,4 +1,5 @@
 import { type PrismaClient } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 
 /**
  * Seperate reusable database logic to own functions to avoid creating new context
@@ -67,4 +68,28 @@ export const checkUserIsOwnerOfHousehold = async (
     console.error("Error checking ownership:", error);
     return false;
   }
+};
+
+export const findHouseholdsByUser = async (
+  userId: string,
+  prismaCtx: PrismaClient,
+) => {
+  try {
+    const householdUserRecords = await prismaCtx.householdUser.findMany({
+      where: {
+        userId: userId,
+      },
+      select: {
+        householdId: true,
+      },
+    });
+    const householdIds = householdUserRecords.map((record) => record.householdId);
+    return householdIds;
+  } catch (error) {
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: error as string,
+    });
+  }
+  
 };
