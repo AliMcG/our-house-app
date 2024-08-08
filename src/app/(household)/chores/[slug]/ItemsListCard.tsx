@@ -36,6 +36,7 @@ export default function ItemsListCard({
         type="button"
         className={`h-8 w-8 ${buttonStyles}`}
         onClick={() => updateActive(id, active)}
+        data-cy="ChoresItemCard-btn-active"
         >
         <CheckCircleIcon />
       </Button>

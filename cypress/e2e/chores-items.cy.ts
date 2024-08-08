@@ -65,9 +65,44 @@ describe('Test suite for the Chores Items route', () => {
       cy.get('[data-cy="choresItem-create-submit').click();
       cy.get('[data-cy="ChoresItemCard"]').contains('Test wash the dishes').should('exist');
     });
+    
+    it('Marks "Test mop the floor" as completed and then unmarks it', () => {
+      // mark as completed
+      cy.get('[data-cy="ChoresItemCard"]')
+        .contains('Test mop the floor')
+        .parents('[data-cy="ChoresItemCard"]')
+        .find('[data-cy="ChoresItemCard-btn-active"]')
+        .click();
+      // check the completed button is greyed out
+      cy.get('[data-cy="ChoresItemCard"]')
+        .contains('Test mop the floor')
+        .parents('[data-cy="ChoresItemCard"]')
+        .find('[data-cy="ChoresItemCard-btn-active"]')
+        .should('have.css', 'background-color', 'rgb(156, 163, 175)');
+      // check the text is striked through
+      cy.get('[data-cy="ChoresItemCard"]')
+        .contains('Test mop the floor')
+        .should('have.css', 'text-decoration-line', 'line-through');
+      // unmark as completed
+      cy.get('[data-cy="ChoresItemCard"]')
+      .contains('Test mop the floor')
+      .parents('[data-cy="ChoresItemCard"]')
+      .find('[data-cy="ChoresItemCard-btn-active"]')
+      .click();
+      // check the completed button is not greyed out
+      cy.get('[data-cy="ChoresItemCard"]')
+        .contains('Test mop the floor')
+        .parents('[data-cy="ChoresItemCard"]')
+        .find('[data-cy="ChoresItemCard-btn-active"]')
+        .should('not.have.css', 'text-decoration-line', 'line-through');
+      // check the text is not striked through
+      cy.get('[data-cy="ChoresItemCard"]')
+        .contains('Test mop the floor')
+        .should('not.have.css', 'text-decoration-line', 'line-through');
+    });
+
   });
 
-  // it('Marks "Test mop the floor" as completed and then unmarks it', () => {});
   // it('Tries to delete "Test wash the dishes" but cancels the action', () => {});
   // it('Deletes the "Test wash the dishes" item', () => {});
 });
