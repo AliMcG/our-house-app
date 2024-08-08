@@ -28,8 +28,17 @@ describe('Test suite for the Chores Items route', () => {
     cy.visit('/chores');
   });
 
-  afterEach(() => {
-    // cy.logout();
+  after(() => {
+    cy.log("================================= logging out")
+    // clean up
+    cy.visit('/chores');
+    cy.get('[data-cy="ChoresCard"]')
+      .contains('Test kitchen chores')
+      .parents('[data-cy="ChoresCard"]')
+      .find('[data-cy="ChoresCard-deleteButton"]')
+      .click();
+    cy.get('[data-cy="confirmModal-btn-Delete"]').click();
+    cy.logout();
   });
 
   it('Creates a new chores list named "Test kitchen chores"', () => {
@@ -51,10 +60,6 @@ describe('Test suite for the Chores Items route', () => {
       cy.login();
       cy.visit('/chores');
       cy.get('[data-cy="ChoresCard"]').contains('Test kitchen chores').click();
-    });
-
-    afterEach(() => {
-      // cy.logout();
     });
 
     it('Adds two new chores items: "Test mop the floor" and "Test wash the dishes"', () => {
