@@ -1,27 +1,7 @@
 import { z } from "zod";
-
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import type { PrismaClient } from "@prisma/client";
-
-/**
- * Seperate reusable database logic to own functions to avoid creating new context
- * re docs = https://trpc.io/docs/server/server-side-calls
- */
-const findHouseholdsByUser = async (
-  userId: string,
-  prismaCtx: PrismaClient,
-) => {
-  const householdUserRecords = await prismaCtx.householdUser.findMany({
-    where: {
-      userId: userId,
-    },
-    select: {
-      householdId: true,
-    },
-  });
-  const householdIds = householdUserRecords.map((record) => record.householdId);
-  return householdIds;
-};
+import { findHouseholdsByUser } from "./apiHelperFunctions";
+import { TRPCError } from "@trpc/server";
 
 export const shoppingListRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -29,6 +9,13 @@ export const shoppingListRouter = createTRPCRouter({
       ctx.session.user.id,
       ctx.db,
     );
+    if (!ctx.session.user.id) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User is undefined",
+      });
+    }
+
     return ctx.db.shoppingList.findMany({
       where: {
         OR: [
