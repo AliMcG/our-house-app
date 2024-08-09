@@ -17,7 +17,7 @@ export default function TopNavigationBar(): JSX.Element {
         <h3>{session.data?.user?.name}</h3>
       </div>
       <Link 
-        href={"/"} 
+        href={"/profile"} 
         className="flex relative top-[-9px] w-[50px] h-[50px] bg-slate-800 rounded-full overflow-hidden"
       >
         <Image 

@@ -1,15 +1,12 @@
 import { unstable_noStore as noStore } from "next/cache";
-import { CreatePost } from "@/app/_components/create-post";
 import AutenticationButton from "@/app/_components/AuthenticationButton";
 import { getServerAuthSession } from "@/server/auth";
-import { api } from "@/trpc/server";
 import Image from "next/image";
 import HomePageImage from "@/public/home_logo_final.svg";
 import { redirect } from "next/navigation";
 
 export default async function Home() {
   noStore();
-  const hello = await api.post.hello.query({ text: "from tRPC" });
   const session = await getServerAuthSession();
   if (session) {
    return redirect('/home')

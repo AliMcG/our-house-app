@@ -58,10 +58,11 @@ export default function AddChoresItemForm(params: iAddItemFormProps) {
           fieldName="name"
           placeholder="Enter a chore..."
           className="w-full"
+          data-cy="choresItem-create-input"
         />
       </FormItem>
       <FormItem className="flex justify-end col-span-2">
-        <Button type="submit" className="w-20">
+        <Button type="submit" className="w-20" data-cy="choresItem-create-submit">
           Submit
         </Button>
       </FormItem>

@@ -28,11 +28,15 @@ export default function ItemsListCard({
   const buttonStyles = !active ? "bg-gray-400" : "";
 
   return (
-    <Card className={`grid grid-cols-[32px_1fr_32px] gap-2 w-full px-2 py-4 ${cardStyles}`}>
+    <Card 
+      className={`grid grid-cols-[32px_1fr_32px] gap-2 w-full px-2 py-4 ${cardStyles}`}
+      data-cy="ItemsListCard"
+    >
       <Button
         type="button"
         className={`h-8 w-8 ${buttonStyles}`}
         onClick={() => updateActive(id, active)}
+        data-cy="ItemsListCard-btn-active"
         >
         <CheckCircleIcon />
       </Button>
@@ -41,6 +45,7 @@ export default function ItemsListCard({
         type="button"
         className="h-8 w-8"
         onClick={() => deleteItem(id)}
+        data-cy="ItemsListCard-btn-delete"
       >
         <XCircleIcon />
       </Button>

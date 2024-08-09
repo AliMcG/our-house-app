@@ -17,7 +17,7 @@ export default function ConfirmModal({
 
   return (
     <Transition appear show={isConfirmModalOpen}>
-      <Dialog open={isConfirmModalOpen} onClose={() => setIsConfirmModalOpen(false)} className="relative z-50">
+      <Dialog open={isConfirmModalOpen} onClose={() => setIsConfirmModalOpen(false)} className="relative z-50" data-cy="ConfirmModal">
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4">
             <TransitionChild
@@ -32,8 +32,8 @@ export default function ConfirmModal({
                 <DialogTitle className="font-bold">Are you sure?</DialogTitle>
                 {children}
                 <div className="flex gap-4">
-                  <Button onClick={() => setIsConfirmModalOpen(false)}>Cancel</Button>
-                  <Button onClick={() => confirmFunction()}>{confirmFunctionText}</Button>
+                  <Button onClick={() => setIsConfirmModalOpen(false)} data-cy={`confirmModal-btn-cancel`}>Cancel</Button>
+                  <Button onClick={() => confirmFunction()} data-cy={`confirmModal-btn-${confirmFunctionText}`}>{confirmFunctionText}</Button>
                 </div>
               </DialogPanel>
             </TransitionChild>

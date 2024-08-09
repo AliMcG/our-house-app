@@ -10,11 +10,15 @@
 
 * Users can edit and add to other users entities but only the creator of an entity can delete it.
 
+* The app can be used without creating a household - in which case the username is displayed in the Home page.
+
+* If a household has been created then the household name is displayed in the Home page
+
 ## User Stories
 
 ### *Creating a household*
 
-Carol logs in to the app. She navigates to her profile page. As she has not previoulsy created a household she can the hte create household button. She clicks the create household button. She is presented with a modal dialog which contains the the input fields to create a household.
+Carol logs in to the app. She navigates to her profile page. As she has not previoulsy created a household she can the create household button. She clicks the create household button. She is presented with a modal dialog which contains the the input fields to create a household.
 
 She fills in the name field and uploads an image from her device as the household logo. She enters the email of another user to add to her household.
 She then hits the save button and the modal closes. In the top navigation bar she can now see the name of her newly created household.
