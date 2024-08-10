@@ -30,7 +30,7 @@ export const shoppingListRouter = createTRPCRouter({
     });
   }),
 
-  addToHousehold: protectedProcedure
+  addShoppingListToHousehold: protectedProcedure
     .input(z.object({ id: z.string().min(1), householdId: z.string() }))
     .mutation(({ ctx, input }) => {
       return ctx.db.shoppingList.update({
