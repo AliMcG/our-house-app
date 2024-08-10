@@ -15,7 +15,7 @@ export default function Inputfield({
   ...rest
 }: InputFieldProps) {
   const { register, getFieldState } = useFormContext();
-  const fieldState = getFieldState(fieldName);
+  const filedState = getFieldState(fieldName);
 
   return (
     <>
@@ -28,7 +28,7 @@ export default function Inputfield({
         )}
         {...rest}
       />
-      <p className="text-red-700">{fieldState.error?.message?.toString()}</p>
+      <p className="text-red-700">{filedState.error?.message?.toString()}</p>
     </>
   );
 }

@@ -45,11 +45,10 @@ export default function AddChoresForm() {
           fieldName={"title"}
           placeholder="Enter a chore name..."
           className="w-40"
-          data-cy="chores-create-input"
         />
       </FormItem>
       <FormItem className="flex justify-end">
-        <Button type="submit" className="w-20" data-cy="chores-create-submit">
+        <Button type="submit" className="w-20">
           Submit
         </Button>
       </FormItem>

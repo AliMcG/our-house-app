@@ -45,11 +45,10 @@ export default function AddShoppingListForm() {
           fieldName={"title"}
           placeholder="Enter a name..."
           className="w-40"
-          data-cy="shoppinglist-create-input"
         />
       </FormItem>
       <FormItem className="flex justify-end">
-        <Button type="submit" className="w-20" data-cy="shoppinglist-create-submit">
+        <Button type="submit" className="w-20">
           Submit
         </Button>
       </FormItem>

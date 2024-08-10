@@ -11,17 +11,15 @@ datasource db {
 
 // User modal can be updated as the application grows
 model User {
-  id                String          @id @default(auto()) @map("_id") @db.ObjectId
-  name              String?
-  email             String?         @unique
-  emailVerified     DateTime?
-  image             String?
-  accounts          Account[]
-  sessions          Session[]
-  shoppingLists     ShoppingList[]
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String?        @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  shoppingLists ShoppingList[]
   chores        Chores[]
-  createdHouseholds Household[]     @relation("CreatedHouseholds")
-  householdMembers  HouseholdUser[] // Relation to households through the join table
 }
 
 model ShoppingList {
@@ -30,7 +28,7 @@ model ShoppingList {
   items     ShoppingItem[]
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
-  sharedHouseholds String[]
+
   createdBy   User   @relation(fields: [createdById], references: [id])
   createdById String @db.ObjectId
 
@@ -43,7 +41,7 @@ model ShoppingItem {
   quantity Int
   active   Boolean
 
-  ShoppingList   ShoppingList? @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
+  ShoppingList   ShoppingList? @relation(fields: [shoppingListId], references: [id])
   shoppingListId String?       @db.ObjectId
 }
 
@@ -51,10 +49,10 @@ model ShoppingItem {
 model Chores {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
   title     String
-  items     ChoresItem[] 
+  items     ChoresItem[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  sharedHouseholds String[]
+
   createdBy   User @relation(fields: [createdById], references: [id])
   createdById String @db.ObjectId
 
@@ -67,27 +65,8 @@ model ChoresItem {
   completedBy String?
   active      Boolean
 
-  Chores   Chores? @relation(fields: [choresId], references: [id], onDelete: Cascade)
+  Chores   Chores? @relation(fields: [choresId], references: [id])
   choresId String? @db.ObjectId
-}
-
-model Household {
-  id          String          @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  createdBy   User            @relation(fields: [createdById], references: [id], name: "CreatedHouseholds")
-  createdById String          @db.ObjectId
-  imageUrl    String
-  members     HouseholdUser[] // Relation to users through the join table
-}
-
-model HouseholdUser {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String    @db.ObjectId
-  householdId String    @db.ObjectId
-  user        User      @relation(fields: [userId], references: [id])
-  household   Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, householdId]) // Ensures unique pairs
 }
 
 // The folowing models are required for next-auth to work
