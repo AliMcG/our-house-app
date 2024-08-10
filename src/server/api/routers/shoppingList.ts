@@ -1,62 +1,15 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import type { PrismaClient } from "@prisma/client";
-
-/**
- * Seperate reusable database logic to own functions to avoid creating new context
- * re docs = https://trpc.io/docs/server/server-side-calls
- */
-const findHouseholdsByUser = async (
-  userId: string,
-  prismaCtx: PrismaClient,
-) => {
-  const householdUserRecords = await prismaCtx.householdUser.findMany({
-    where: {
-      userId: userId,
-    },
-    select: {
-      householdId: true,
-    },
-  });
-  const householdIds = householdUserRecords.map((record) => record.householdId);
-  return householdIds;
-};
 
 export const shoppingListRouter = createTRPCRouter({
-  list: protectedProcedure.query(async ({ ctx }) => {
-    const householdIds = await findHouseholdsByUser(
-      ctx.session.user.id,
-      ctx.db,
-    );
+  list: protectedProcedure.query(({ ctx }) => {
     return ctx.db.shoppingList.findMany({
       where: {
-        OR: [
-          {
-            createdBy: { id: ctx.session.user.id },
-          },
-          {
-            sharedHouseholds: { hasSome: householdIds },
-          },
-        ],
+        createdBy: { id: ctx.session.user.id },
       },
     });
   }),
-
-  addToHousehold: protectedProcedure
-    .input(z.object({ id: z.string().min(1), householdId: z.string() }))
-    .mutation(({ ctx, input }) => {
-      return ctx.db.shoppingList.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          sharedHouseholds: {
-            push: input.householdId,
-          },
-        },
-      });
-    }),
 
   create: protectedProcedure
     .input(z.object({ title: z.string().min(1) }))

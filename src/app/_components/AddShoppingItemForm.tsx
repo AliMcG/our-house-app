@@ -28,9 +28,6 @@ export default function AddShoppingItemForm(params: iAddItemFormProps) {
       console.log('CREATED', response);
       router.refresh();
     },
-    onError: (error) => {
-      console.log("error", error)
-    }
   });
 
   // schema definition can be kept here as its the same for shopping list and chores list
@@ -62,7 +59,6 @@ export default function AddShoppingItemForm(params: iAddItemFormProps) {
           fieldName="name"
           placeholder="Enter a name..."
           className="w-full"
-          data-cy="shoppingitem-create-input"
         />
       </FormItem>
       <FormItem className="!my-0">
@@ -74,11 +70,10 @@ export default function AddShoppingItemForm(params: iAddItemFormProps) {
           type="number"
           max="99"
           min="1"
-          data-cy="shoppingitem-create-quantity"
         />
       </FormItem>
       <FormItem className="flex justify-end col-span-2">
-        <Button type="submit" className="w-20" data-cy="shoppingitem-create-submit">
+        <Button type="submit" className="w-20">
           Submit
         </Button>
       </FormItem>

@@ -16,7 +16,6 @@ declare global {
   namespace Cypress {
     interface Chainable {
       loginByGoogleApi(): Chainable<void>;
-      login(): Chainable<void>;
       logout(): Chainable<void>;
     }
   }
@@ -26,6 +25,11 @@ const genRanHex = (length: number) =>
   [...Array(length)]
     .map(() => Math.floor(Math.random() * 16).toString(16))
     .join("");
+
+Cypress.Commands.add("logout", () => {
+  cy.log("Logging out of site");
+  cy.get('[data-cy="auth-button"]').click()
+})
 
 Cypress.Commands.add("loginByGoogleApi", () => {
   cy.log("Logging in to Google");
@@ -94,21 +98,4 @@ Cypress.Commands.add("loginByGoogleApi", () => {
       })
     });
   });
-})
-
-// Custom command to logout of the site
-Cypress.Commands.add("logout", () => {
-  cy.log("Logging out of site");
-  // we need to be more specific with selection here
-  cy.get('[data-cy="auth-button"]').contains("sign out").click();
-})
-
-
-// Custom command to login to the site
-Cypress.Commands.add('login', () => {
-  cy.session([], () => {
-    cy.visit('http://localhost:3000/')
-    cy.loginByGoogleApi()
-    cy.wait(3000)
-  })
 })

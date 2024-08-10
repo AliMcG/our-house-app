@@ -39,6 +39,8 @@ If you are not familiar with the different technologies used in this project, pl
 
 The site is live with Google Auth at https://our-house-app.vercel.app/
 
+![diagram](docs/wireframes/wireframe1.excalidraw.svg)
+
 ## Create T3 App
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
