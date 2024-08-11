@@ -29,7 +29,7 @@ describe('Test suite for the Chores route', () => {
     cy.login();
   });
 
-  afterEach(() => {
+  after(() => {
     cy.logout();
   });
 
