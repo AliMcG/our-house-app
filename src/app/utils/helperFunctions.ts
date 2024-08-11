@@ -6,7 +6,7 @@ export const sanitiseTitleStringForURL = (title: string) => {
   return formattedTitle
 }
 
-export const convertURLtoTitle = (title: string) => {
+export const convertURLtoString = (title: string) => {
   /** Format string to replace any hythen with a whitespace */
   const formattedTitle = title.replace(/-/g, ' ')
   return formattedTitle
