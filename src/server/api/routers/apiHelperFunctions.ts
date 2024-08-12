@@ -88,7 +88,7 @@ export const findHouseholdsByUser = async (
   } catch (error) {
     throw new TRPCError({
       code: "NOT_FOUND",
-      message: error as string,
+      message: "User not found",
     });
   }
   
