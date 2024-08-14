@@ -20,7 +20,8 @@ export default async function Page({ params }: { params: { slug: string } }) {
           <Link 
             href={navbarLinks[1]!.link} 
             className="w-[32px] h-[32px] mr-2 rounded-md hover:bg-gray-200 transition"
-            data-cy="choresLink-back-button">
+            data-cy="choresLink-back-button"
+          >
             <ArrowUturnLeftIcon className="text-[#b372f0]" />
           </Link>
           <h1 className="text-center text-3xl font-extrabold tracking-tight md:text-[2rem] lg:text-[3rem] xl:text-[4rem]">
