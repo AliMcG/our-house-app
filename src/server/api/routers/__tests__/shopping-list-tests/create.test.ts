@@ -1,9 +1,8 @@
 import { test, expect } from "@jest/globals"
 import { createContextInner } from '@/server/api/trpc';
 import { createCaller } from '@/server/api/root';
-import type { Session } from "next-auth";
-import dotenv from 'dotenv';
-dotenv.config()
+import { mockSession } from "../testHelpers";
+
 
 /**
  * These modules required mocking for Jest to work.
@@ -19,11 +18,8 @@ jest.mock("@/env", () => ({
  }))
 
 test('Create a new shoppingList', async () => {
-  const mockSession: Session = {
-    expires: new Date().toISOString(),
-    user: { id: process.env.UNIT_TESTER_ID as string },
-  };
-  const input = { title: "UNIT TEST SHOPPING LIST" }
+
+  const input = { title: "UNIT TEST CREATE NEW LIST" }
 
   const caller = createCaller(await createContextInner({session: mockSession}));
 
