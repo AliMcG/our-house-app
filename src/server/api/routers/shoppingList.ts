@@ -9,73 +9,138 @@ export const shoppingListRouter = createTRPCRouter({
       ctx.session.user.id,
       ctx.db,
     );
+
     if (!ctx.session.user.id) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: "User is undefined",
       });
     }
-
-    return ctx.db.shoppingList.findMany({
-      where: {
-        OR: [
-          {
-            createdBy: { id: ctx.session.user.id },
-          },
-          {
-            sharedHouseholds: { hasSome: householdIds },
-          },
-        ],
-      },
-    });
+    try {
+      return await ctx.db.shoppingList.findMany({
+        where: {
+          OR: [
+            {
+              createdBy: { id: ctx.session.user.id },
+            },
+            {
+              sharedHouseholds: { hasSome: householdIds },
+            },
+          ],
+        },
+      });
+    } catch (error) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to retrieve shopping lists",
+      });
+    }
+ 
   }),
 
   addShoppingListToHousehold: protectedProcedure
     .input(z.object({ id: z.string().min(1), householdId: z.string() }))
-    .mutation(({ ctx, input }) => {
-      return ctx.db.shoppingList.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          sharedHouseholds: {
-            push: input.householdId,
+    .mutation(async ({ ctx, input }) => {
+      try {
+        return await ctx.db.shoppingList.update({
+          where: {
+            id: input.id,
           },
-        },
-      });
+          data: {
+            sharedHouseholds: {
+              push: input.householdId,
+            },
+          },
+        });
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to create shopping list",
+        });
+      }
     }),
 
   create: protectedProcedure
     .input(z.object({ title: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.shoppingList.create({
-        data: {
-          title: input.title,
-          createdBy: { connect: { id: ctx.session.user.id } },
-        },
-      });
+      if (!ctx.session?.user?.id) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "User is not authenticated",
+        });
+      }
+      try {
+        return await ctx.db.shoppingList.create({
+          data: {
+            title: input.title,
+            createdBy: { connect: { id: ctx.session.user.id } },
+          },
+        });
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to create shopping list",
+        });
+      }
+
     }),
 
   edit: protectedProcedure
     .input(z.object({ id: z.string().min(1), title: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.shoppingList.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          title: input.title,
-        },
-      });
+      try {
+        const shoppingList = await ctx.db.shoppingList.findUnique({
+          where: { id: input.id },
+        });
+
+        if (!shoppingList) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Shopping list not found",
+          });
+        }
+
+        return await ctx.db.shoppingList.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            title: input.title,
+          },
+        });
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to update shopping list",
+        });
+      }
     }),
 
   delete: protectedProcedure
     .input(z.object({ id: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.shoppingList.delete({
-        where: {
-          id: input.id,
-        },
-      });
+      try {
+        const shoppingList = await ctx.db.shoppingList.findUnique({
+          where: { id: input.id },
+        });
+
+        if (!shoppingList) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Shopping list not found",
+          });
+        }
+
+        return await ctx.db.shoppingList.delete({
+          where: {
+            id: input.id,
+          },
+        });
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to delete shopping list",
+        });
+      }
     }),
 });
