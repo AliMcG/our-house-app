@@ -35,12 +35,21 @@ export const shoppingListRouter = createTRPCRouter({
         message: "Failed to retrieve shopping lists",
       });
     }
- 
   }),
 
   addShoppingListToHousehold: protectedProcedure
-    .input(z.object({ id: z.string().min(1), householdId: z.string() }))
+    .input(z.object({ id: z.string().min(1), householdId: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
+      const shoppingList = await ctx.db.shoppingList.findUnique({
+        where: { id: input.id },
+        select: { sharedHouseholds: true },
+      });
+      if (shoppingList?.sharedHouseholds.includes(input.householdId)) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Shopping list already added to household",
+        });
+      }
       try {
         return await ctx.db.shoppingList.update({
           where: {
@@ -55,7 +64,45 @@ export const shoppingListRouter = createTRPCRouter({
       } catch (error) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to create shopping list",
+          message: "Failed to add shopping list to household",
+        });
+      }
+    }),
+
+  removeShoppingListFromHousehold: protectedProcedure
+    .input(z.object({ id: z.string().min(1), householdId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const shoppingList = await ctx.db.shoppingList.findUnique({
+          where: { id: input.id },
+          select: { sharedHouseholds: true },
+        });
+
+        if (!shoppingList) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Shopping list not found",
+          });
+        }
+
+        // Remove the householdId from sharedHouseholds array
+        const updatedHouseholds = shoppingList.sharedHouseholds.filter(
+          (household) => household !== input.householdId,
+        );
+
+        // Update the shopping list
+        return await ctx.db.shoppingList.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            sharedHouseholds: updatedHouseholds,
+          },
+        });
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to remove shopping list from household",
         });
       }
     }),
@@ -82,7 +129,6 @@ export const shoppingListRouter = createTRPCRouter({
           message: "Failed to create shopping list",
         });
       }
-
     }),
 
   edit: protectedProcedure
