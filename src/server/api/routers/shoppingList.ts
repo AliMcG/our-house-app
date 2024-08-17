@@ -132,7 +132,7 @@ export const shoppingListRouter = createTRPCRouter({
     }),
 
   edit: protectedProcedure
-    .input(z.object({ id: z.string().min(1), title: z.string() }))
+    .input(z.object({ id: z.string().min(1), title: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
       try {
         const shoppingList = await ctx.db.shoppingList.findUnique({
