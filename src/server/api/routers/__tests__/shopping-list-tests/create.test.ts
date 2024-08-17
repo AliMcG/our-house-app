@@ -1,7 +1,7 @@
 import { test, expect } from "@jest/globals"
 import { createContextInner } from '@/server/api/trpc';
 import { createCaller } from '@/server/api/root';
-import { mockSession } from "../testHelpers";
+import { mockSession } from "../../utils/testHelpers";
 
 
 /**

@@ -5,7 +5,7 @@ import {
   mockErrorSessionNoID,
   mockErrorSessionUnknownID,
   mockSession,
-} from "../testHelpers";
+} from "../../utils/testHelpers";
 import dotenv from "dotenv";
 dotenv.config();
 /**

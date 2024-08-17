@@ -2,7 +2,7 @@ import { expect, describe, it } from "@jest/globals";
 import { createContextInner } from "@/server/api/trpc";
 import { createCaller } from "@/server/api/root";
 import { faker } from "@faker-js/faker";
-import { mockSession } from "../testHelpers";
+import { mockSession } from "../../utils/testHelpers";
 import dotenv from "dotenv";
 dotenv.config();
 /**
