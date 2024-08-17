@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { findHouseholdsByUser } from "./apiHelperFunctions";
 import { TRPCError } from "@trpc/server";
+import { ObjectId } from "bson";
 
 export const shoppingListRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -10,29 +11,30 @@ export const shoppingListRouter = createTRPCRouter({
       ctx.db,
     );
 
-    if (!ctx.session.user.id) {
+    if (ObjectId.isValid(ctx.session.user.id)) {
+      try {
+        return await ctx.db.shoppingList.findMany({
+          where: {
+            OR: [
+              {
+                createdBy: { id: ctx.session.user.id },
+              },
+              {
+                sharedHouseholds: { hasSome: householdIds },
+              },
+            ],
+          },
+        });
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to retrieve shopping lists",
+        });
+      }
+    } else {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: "User is undefined",
-      });
-    }
-    try {
-      return await ctx.db.shoppingList.findMany({
-        where: {
-          OR: [
-            {
-              createdBy: { id: ctx.session.user.id },
-            },
-            {
-              sharedHouseholds: { hasSome: householdIds },
-            },
-          ],
-        },
-      });
-    } catch (error) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to retrieve shopping lists",
       });
     }
   }),
@@ -108,31 +110,32 @@ export const shoppingListRouter = createTRPCRouter({
     }),
 
   create: protectedProcedure
-    .input(z.object({ title: z.string().min(1) }))
+    .input(z.object({ title: z.string().min(1, { message: "Title can not be blank"}) }))
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.session?.user?.id) {
+      if (ObjectId.isValid(ctx.session?.user?.id)) {
+        try {
+          return await ctx.db.shoppingList.create({
+            data: {
+              title: input.title,
+              createdBy: { connect: { id: ctx.session.user.id } },
+            },
+          });
+        } catch (error) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to create shopping list",
+          });
+        }
+      } else {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "User is not authenticated",
-        });
-      }
-      try {
-        return await ctx.db.shoppingList.create({
-          data: {
-            title: input.title,
-            createdBy: { connect: { id: ctx.session.user.id } },
-          },
-        });
-      } catch (error) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to create shopping list",
+          message: "User is undefined",
         });
       }
     }),
 
   edit: protectedProcedure
-    .input(z.object({ id: z.string().min(1), title: z.string().min(1) }))
+    .input(z.object({ id: z.string().min(1), title: z.string().min(1, { message: "Title can not be blank"}) }))
     .mutation(async ({ ctx, input }) => {
       try {
         const shoppingList = await ctx.db.shoppingList.findUnique({
