@@ -1,4 +1,3 @@
-import { postRouter } from "@/server/api/routers/post";
 import { householdRouter } from "@/server/api/routers/householdRouter";
 import { shoppingListRouter } from "@/server/api/routers/shoppingList";
 import { shoppingListItemRouter } from "./routers/shoppingListItem";
@@ -15,7 +14,6 @@ import { createTRPCRouter, createCallerFactory } from "@/server/api/trpc";
 export const appRouter = createTRPCRouter({
   householdRouter: householdRouter,
   householdUserRouter: householdUserRouter,
-  post: postRouter,
   shoppingList: shoppingListRouter,
   shoppingListItem: shoppingListItemRouter,
   chores: choresRouter,

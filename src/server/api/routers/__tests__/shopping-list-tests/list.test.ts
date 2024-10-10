@@ -1,39 +1,59 @@
-import { test, expect } from "@jest/globals"
-import { env } from "@/env";
-import { createContextInner } from '@/server/api/trpc';
-import { createCaller } from '@/server/api/root';
-import type { Session } from "next-auth";
-
+import { expect, describe, it } from "@jest/globals";
+import { createContextInner } from "@/server/api/trpc";
+import { createCaller } from "@/server/api/root";
+import {
+  mockErrorSessionNoID,
+  mockErrorSessionUnknownID,
+  mockSession,
+} from "../../utils/testHelpers";
+import dotenv from "dotenv";
+dotenv.config();
 /**
  * These modules required mocking for Jest to work.
  */
 jest.mock("superjson", () => ({
-  superjson: jest.fn()
-}))
+  superjson: jest.fn(),
+}));
 jest.mock("@/env", () => ({
   env: jest.fn(),
- }))
- jest.mock("next-auth", () => ({
+}));
+jest.mock("next-auth", () => ({
   getServerSession: jest.fn(),
- }))
+}));
 
-test('List all shoppingLists', async () => {
-  const mockSession: Session = {
-    expires: new Date().toISOString(),
-    user: { id: env.UNIT_TESTER_ID },
-  };
+describe("the list route", () => {
+  it("lists all shoppingLists", async () => {
+    const caller = createCaller(
+      await createContextInner({ session: mockSession }),
+    );
+    const shoppingLists = await caller.shoppingList.list();
 
-  const caller = createCaller(await createContextInner({session: mockSession}));
-
-  const shoppingLists = await caller.shoppingList.list()
-
-  expect(Array.isArray(shoppingLists)).toBe(true);
-  shoppingLists.forEach(list => {
-    expect(typeof list).toBe('object');
-    expect(list).toHaveProperty('id');
-    expect(list).toHaveProperty('title');
-    expect(list).toHaveProperty('createdAt');
-    expect(list).toHaveProperty('updatedAt');
+    expect(Array.isArray(shoppingLists)).toBe(true);
+    shoppingLists.forEach((list) => {
+      expect(typeof list).toBe("object");
+      expect(list).toHaveProperty("id");
+      expect(list).toHaveProperty("title");
+      expect(list).toHaveProperty("createdAt");
+      expect(list).toHaveProperty("updatedAt");
+    });
   });
 
+  it("should throw an error if no user ID", async () => {
+    const caller = createCaller(
+      await createContextInner({ session: mockErrorSessionNoID }),
+    );
+    await expect(caller.shoppingList.list()).rejects.toThrow(
+      "User is undefined",
+    );
+  });
+
+  it("should return an empty array if no households for this user.", async () => {
+    const caller = createCaller(
+      await createContextInner({ session: mockErrorSessionUnknownID }),
+    );
+
+    const shoppingLists = await caller.shoppingList.list();
+    expect(Array.isArray(shoppingLists)).toBe(true);
+    expect(shoppingLists).toHaveLength(0);
+  });
 });
