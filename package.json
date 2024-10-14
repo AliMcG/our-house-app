@@ -13,7 +13,7 @@
     "postinstall": "prisma generate",
     "start": "next start",
     "test": "jest",
-    "type-check": "tsc --noemit"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
