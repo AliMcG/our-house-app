@@ -46,6 +46,12 @@ export const shoppingListRouter = createTRPCRouter({
         where: { id: input.id },
         select: { sharedHouseholds: true },
       });
+      if (!shoppingList) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Shopping list does not exist",
+        });
+      }
       if (shoppingList?.sharedHouseholds.includes(input.householdId)) {
         throw new TRPCError({
           code: "CONFLICT",
@@ -79,7 +85,6 @@ export const shoppingListRouter = createTRPCRouter({
           where: { id: input.id },
           select: { sharedHouseholds: true },
         });
-
         if (!shoppingList) {
           throw new TRPCError({
             code: "NOT_FOUND",
