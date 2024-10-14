@@ -73,12 +73,12 @@ export const householdUserRouter = createTRPCRouter({
           message: `User with email findUserByEmail ${input.userEmail} not found`,
         });
       }
-      const isHouseholeOwner = await checkUserIsOwnerOfHousehold(
+      const isHouseholdOwner = await checkUserIsOwnerOfHousehold(
         input.householdId,
         ctx.session.user.id,
         ctx.db,
       );
-      if (isHouseholeOwner) {
+      if (isHouseholdOwner) {
         try {
           const result = ctx.db.householdUser.delete({
             where: {
@@ -90,10 +90,9 @@ export const householdUserRouter = createTRPCRouter({
           });
           return result;
         } catch (e) {
-          console.log("error: ", e);
           throw new TRPCError({
-            code: "NOT_FOUND",
-            message: `Prisma error: `,
+            code: "NOT_IMPLEMENTED",
+            message: 'User not deleted',
           });
         }
       } else {
