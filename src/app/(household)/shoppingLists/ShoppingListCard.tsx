@@ -49,7 +49,7 @@ export default function ShoppingListCard({
       router.refresh();
     },
   });
-  const { mutate: shareMutate } = api.shoppingList.addToHousehold.useMutation({
+  const { mutate: shareMutate } = api.shoppingList.addShoppingListToHousehold.useMutation({
     onSuccess: (response) => {
       console.log("Added shoping list to household", response);
       router.refresh();
