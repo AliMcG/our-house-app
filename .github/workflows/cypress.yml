@@ -21,6 +21,8 @@ env:
   NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET}}
   NEXTAUTH_URL:  ${{ secrets.NEXTAUTH_URL}}
   UNIT_TESTER_ID: ${{ secrets.UNIT_TESTER_ID }}
+  UNIT_TEST_LIST_ID: ${{ secrets.UNIT_TEST_LIST_ID }}
+  UNIT_TEST_HOUSEHOLD_ID: ${{ secrets.UNIT_TEST_HOUSEHOLD_ID }}
 jobs:
   cypress-run:
     runs-on: ubuntu-22.04
