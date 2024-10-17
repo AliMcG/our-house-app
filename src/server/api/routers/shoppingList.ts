@@ -185,6 +185,7 @@ export const shoppingListRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      if (ObjectId.isValid(ctx.session?.user?.id)) {
       const shoppingList = await ctx.db.shoppingList.findUnique({
         where: { id: input.id },
       });
@@ -207,5 +208,11 @@ export const shoppingListRouter = createTRPCRouter({
           message: "Shopping list not found",
         });
       }
-    }),
+    } else {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "User is undefined",
+      });
+    }
+}),
 });
