@@ -1,10 +1,11 @@
 {
-    "testing.openTesting": "neverOpen",
+    "testing.openTesting": "openOnTestStart",
     "jest.outputConfig": {
         "revealOn": "run",
         "revealWithFocus": "none",
         "clearOnRun": "none"
     },
+    "jest.runMode": "on-demand",
     "cSpell.words": [
         "superjson"
     ]
