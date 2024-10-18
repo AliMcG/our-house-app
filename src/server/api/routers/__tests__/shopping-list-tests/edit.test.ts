@@ -1,4 +1,4 @@
-import { describe, it, expect } from "@jest/globals";
+import { describe, expect } from "@jest/globals";
 import { createContextInner } from "@/server/api/trpc";
 import { createCaller } from "@/server/api/root";
 import { mockErrorSessionNoID, mockSession } from "../../utils/testHelpers";
@@ -22,8 +22,7 @@ let inValidCaller: ReturnType<typeof createCaller>;
 let newListId: string;
 const editDate = new Date();
 const input = {
-  id: 'newListId',
-  title: `UNIT TEST LIST EDITED - ${editDate.toLocaleDateString()}`,
+  title: `UNIT TEST SHOPPING LIST: Edit - ${editDate.toLocaleDateString()}`,
 };
 const invalidTitleInput = {
   id: process.env.UNIT_TEST_LIST_ID as string,
@@ -35,10 +34,8 @@ const invalidIdInput = {
 };
 
 beforeAll(async () => {
-  const ctx = await createContextInner({ session: mockSession });
-  caller = createCaller(ctx);
-  const invalidCtx = await createContextInner({ session: mockErrorSessionNoID });
-  inValidCaller = createCaller(invalidCtx)
+  caller = createCaller(await createContextInner({ session: mockSession }));
+  inValidCaller = createCaller(await createContextInner({ session: mockErrorSessionNoID }))
   const shoppingListToDelete = await caller.shoppingList.create(input);
   newListId = shoppingListToDelete.id
 });
@@ -46,14 +43,13 @@ afterAll(async () => {
   await caller.shoppingList.delete({ id: newListId })
 });
 
-
 describe('Feature: Editing a shopping list', () => {
   describe('Scenario: invalid user', () => {
     describe('Given an invalid user is trying to edit a shopping list', () => {
       test('Then a error should be thrown', async () => {
         await expect(inValidCaller.shoppingList.edit({
           id: newListId,
-          title: `UNIT TEST LIST EDITED - ${editDate.toLocaleDateString()}`,
+          title: `UNIT TEST SHOPPING LIST: Edit - ${editDate.toLocaleDateString()}`,
         })).rejects.toThrow(
           "User is undefined",
         );
@@ -63,7 +59,7 @@ describe('Feature: Editing a shopping list', () => {
         try {
           await inValidCaller.shoppingList.edit({
             id: newListId,
-            title: `UNIT TEST LIST EDITED - ${editDate.toLocaleDateString()}`,
+            title: `UNIT TEST SHOPPING LIST: Edit - ${editDate.toLocaleDateString()}`,
           })
         } catch (error) {
           expect(error).toBeInstanceOf(TRPCError)
@@ -124,7 +120,7 @@ describe('Feature: Editing a shopping list', () => {
         test('Then success must be true', async () => {
           const editedShoppingList = await caller.shoppingList.edit({
             id: newListId,
-            title: `UNIT TEST LIST EDITED - ${editDate.toLocaleDateString()}`,
+            title: `UNIT TEST SHOPPING LIST: Edit - ${editDate.toLocaleDateString()}`,
           });
           expect(editedShoppingList).toHaveProperty("title", input.title);
           expect(editedShoppingList).toHaveProperty("id");
@@ -132,8 +128,4 @@ describe('Feature: Editing a shopping list', () => {
       })
     })
   })
-
 })
-
-
-

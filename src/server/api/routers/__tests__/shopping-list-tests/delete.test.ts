@@ -22,20 +22,13 @@ let inValidCaller: ReturnType<typeof createCaller>;
 let newListId: string;
 const input = { title: "UNIT TEST DELETE NEW LIST" };
 beforeAll(async () => {
-  const ctx = await createContextInner({ session: mockSession });
-  caller = createCaller(ctx);
-  const invalidCtx = await createContextInner({ session: mockErrorSessionNoID });
-  inValidCaller = createCaller(invalidCtx)
+  caller = createCaller(await createContextInner({ session: mockSession }));
+  inValidCaller = createCaller(await createContextInner({ session: mockErrorSessionNoID }))
+  const shoppingListToDelete = await caller.shoppingList.create(input);
+  newListId = shoppingListToDelete.id
 });
 describe("Feature: Deleting a shopping list", () => {
   describe('Scenario: invalid user', () => {
-    beforeAll(async () => {
-      const shoppingListToDelete = await caller.shoppingList.create(input);
-      newListId = shoppingListToDelete.id
-    })
-    afterAll(async () => {
-      await caller.shoppingList.delete({ id: newListId });
-    })
     describe('Given an invalid user is trying to create a shopping list', () => {
       test('Then a error should be thrown', async () => {
         await expect(inValidCaller.shoppingList.delete({ id: newListId })).rejects.toThrow(
@@ -56,13 +49,6 @@ describe("Feature: Deleting a shopping list", () => {
     })
   })
   describe('Scenario: invalid input', () => {
-    beforeAll(async () => {
-      const shoppingListToDelete = await caller.shoppingList.create(input);
-      newListId = shoppingListToDelete.id
-    })
-    afterAll(async () => {
-      await caller.shoppingList.delete({ id: newListId });
-    })
     describe('Given an invalid request to delete a shopping list', () => {
       describe('And the "id" is an empty string', () => {
         test('Then a error should be thrown', async () => {
@@ -106,10 +92,6 @@ describe("Feature: Deleting a shopping list", () => {
   describe('Scenario: Successfully deletes shopping list', () => {
     describe('Given that the user and input are valid', () => {
       describe('When the delete method is called', () => {
-        beforeAll(async () => {
-          const shoppingListToDelete = await caller.shoppingList.create(input);
-          newListId = shoppingListToDelete.id
-        })
         test('Then success must be true', async () => {
           const deletedShoppingList = await caller.shoppingList.delete({ id: newListId });
           expect(deletedShoppingList).toHaveProperty("title", input.title);
