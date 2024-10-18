@@ -22,8 +22,7 @@ jest.mock("next-auth", () => ({
 let caller: ReturnType<typeof createCaller>;
 
 beforeAll(async () => {
-  const ctx = await createContextInner({ session: mockSession });
-  caller = createCaller(ctx);
+  caller = createCaller(await createContextInner({ session: mockSession }));
 });
 
 describe("Feature: Managing a Shopping List by Household", () => {
