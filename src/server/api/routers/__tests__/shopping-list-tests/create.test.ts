@@ -31,7 +31,6 @@ const input = { title: "UNIT TEST CREATE NEW LIST" };
 
 
 describe("Feature: Creating a shopping list", () => {
-
   describe('Scenario: invalid user', () => {
     describe('Given an invalid user is trying to create a shopping list', () => {
       test('Then a error should be thrown', async () => {
@@ -48,7 +47,6 @@ describe("Feature: Creating a shopping list", () => {
           if (error instanceof TRPCError) {
             expect(error.code).toStrictEqual("UNAUTHORIZED")
           }
-
         }
       })
     })
@@ -69,10 +67,8 @@ describe("Feature: Creating a shopping list", () => {
           } catch (error) {
             expect(error).toBeInstanceOf(TRPCError)
           }
-
         })
       })
-
     })
   })
   describe('Scenario: Successfully creates shopping list', () => {
