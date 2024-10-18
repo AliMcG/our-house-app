@@ -6,12 +6,11 @@ import { ObjectId } from "bson";
 
 export const shoppingListRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
-    const householdIds = await findHouseholdsByUser(
-      ctx.session.user.id,
-      ctx.db,
-    );
-
     if (ObjectId.isValid(ctx.session.user.id)) {
+      const householdIds = await findHouseholdsByUser(
+        ctx.session.user.id,
+        ctx.db,
+      );
       try {
         return await ctx.db.shoppingList.findMany({
           where: {
@@ -33,7 +32,7 @@ export const shoppingListRouter = createTRPCRouter({
       }
     } else {
       throw new TRPCError({
-        code: "NOT_FOUND",
+        code: "UNAUTHORIZED",
         message: "User is undefined",
       });
     }
