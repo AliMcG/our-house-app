@@ -26,10 +26,8 @@ beforeAll(async () => {
   caller = createCaller(ctx);
   const invalidCtx = await createContextInner({ session: mockErrorSessionNoID });
   inValidCaller = createCaller(invalidCtx)
-
 });
 describe("Feature: Deleting a shopping list", () => {
-  
   describe('Scenario: invalid user', () => {
     beforeAll(async () => {
       const shoppingListToDelete = await caller.shoppingList.create(input);
@@ -85,7 +83,7 @@ describe("Feature: Deleting a shopping list", () => {
   })
   describe('Scenario: Shopping list does not exist', () => {
     describe('Given an id request to delete a shopping list', () => {
-      describe('And the "id" is does not exist', () => {
+      describe('And the "id" does not exist', () => {
         test('Then a error should be thrown', async () => {
           await expect(caller.shoppingList.delete({ id: faker.database.mongodbObjectId() })).rejects.toThrow(
             "Shopping list not found",
