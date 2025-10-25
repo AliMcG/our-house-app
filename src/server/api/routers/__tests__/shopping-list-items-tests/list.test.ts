@@ -26,7 +26,7 @@ let inValidCaller: ReturnType<typeof createCaller>;
 let newListId: string;
 const editDate = new Date();
 const input = {
-  title: `UNIT TEST SHOPPING LIST: List - ${editDate.toLocaleDateString()}`,
+  title: `UNIT TEST SHOPPING LIST ITEM: List - ${editDate.toLocaleDateString()}`,
 };
 
 beforeAll(async () => {
@@ -34,23 +34,24 @@ beforeAll(async () => {
   inValidCaller = createCaller(await createContextInner({ session: mockErrorSessionNoID }))
   const shoppingListToDelete = await caller.shoppingList.create(input);
   newListId = shoppingListToDelete.id
+  
 });
 afterAll(async () => {
   await caller.shoppingList.delete({ id: newListId })
 });
 
-describe('Feature: List shopping lists', () => {
+describe('Feature: List shopping list items', () => {
   describe('Scenario: invalid user', () => {
-    describe('Given an invalid user is trying to list all shopping lists', () => {
+    describe('Given an invalid user is trying to list all the items for a shopping list', () => {
       test('Then a error should be thrown', async () => {
-        await expect(inValidCaller.shoppingList.list()).rejects.toThrow(
+        await expect(inValidCaller.shoppingListItem.list({listId: newListId})).rejects.toThrow(
           "User is undefined",
         );
       })
       test('And the error should be a TRPCError', async () => {
         expect.assertions(2)
         try {
-          await inValidCaller.shoppingList.list()
+          await inValidCaller.shoppingListItem.list({listId: newListId})
         } catch (error) {
           expect(error).toBeInstanceOf(TRPCError)
           if (error instanceof TRPCError) {
@@ -60,35 +61,36 @@ describe('Feature: List shopping lists', () => {
       })
     })
   })
-  describe('Scenario: user has no shopping list', () => {
+  describe('Scenario: shopping list has no items', () => {
     describe('Given a valid user has no shopping lists', () => {
       describe('When the List method is called', () => {
         test("It should return an empty array", async () => {
           const caller = createCaller(
             await createContextInner({ session: mockErrorSessionUnknownID }),
           );
-          const shoppingLists = await caller.shoppingList.list();
+          const shoppingLists = await caller.shoppingListItem.list({listId: newListId});
           expect(Array.isArray(shoppingLists)).toBe(true);
           expect(shoppingLists).toHaveLength(0);
         });
       })
     })
   })
-  describe("Scenario: Successfully lists shopping lists", () => {
-    describe('Given that the user is valid and has access to some lists', () => {
+  describe("Scenario: Successfully lists shopping list items", () => {
+    describe('Given that the user is valid and has access to the list items', () => {
       describe('When the List method is called', () => {
-        test("It lists all shoppingLists", async () => {
+        beforeAll(async () => {
+          await caller.shoppingListItem.create({ name: "TEST ITEM", listID: newListId, quantity: 1})
+        })
+        test("It lists all the items", async () => {
 
-          const shoppingLists = await caller.shoppingList.list();
+          const shoppingLists = await caller.shoppingListItem.list({listId: newListId});
       
           expect(Array.isArray(shoppingLists)).toBe(true);
           expect(shoppingLists.length).toBeGreaterThanOrEqual(1);
           shoppingLists.forEach((list) => {
             expect(typeof list).toBe("object");
             expect(list).toHaveProperty("id");
-            expect(list).toHaveProperty("title");
-            expect(list).toHaveProperty("createdAt");
-            expect(list).toHaveProperty("updatedAt");
+            expect(list).toHaveProperty("name", "TEST ITEM");
           });
         });
       })

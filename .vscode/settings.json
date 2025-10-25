@@ -2,11 +2,13 @@
     "testing.openTesting": "openOnTestStart",
     "jest.outputConfig": {
         "revealOn": "run",
-        "revealWithFocus": "none",
+        "revealWithFocus": "test-results",
         "clearOnRun": "none"
     },
     "jest.runMode": "on-demand",
     "cSpell.words": [
+        "bson",
         "superjson"
-    ]
+    ],
+    "testing.automaticallyOpenTestResults": "openOnTestStart"
 }
