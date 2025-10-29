@@ -11,7 +11,7 @@ import { convertURLtoString } from "@/app/utils/helperFunctions";
 export default async function Page({ params }: { params: { slug: string } }) {
   // lets try fetching shopping list by its name as we expect uniqueness between households
   const shoppingListName = convertURLtoString(params.slug);
-  const shoppingList = await api.shoppingListItem.list.query({ title: shoppingListName });
+  const shoppingList = await api.shoppingListItem.list.query({ listId: shoppingListName });
   
   return (
     <div>
@@ -29,17 +29,18 @@ export default async function Page({ params }: { params: { slug: string } }) {
         </header>
         <div className="mt-5 flex justify-center">
           <Card>
-            <AddShoppingItemForm listID={shoppingList?.listID ?? null} />
+            {/* TODO figure out if this is correct */}
+            <AddShoppingItemForm listID={shoppingList[0]?.id ?? null} />
           </Card>
         </div>
-        <div className="p-4">
+        {/* <div className="p-4">
         {(shoppingList.status !== 'list items found') 
           ? 
             <p className="text-center">No items in this list</p> 
           : 
             <ItemsList list={shoppingList} />
         }
-        </div>
+        </div> */}
       </article>
     </div>
   );

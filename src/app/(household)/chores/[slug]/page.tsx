@@ -17,8 +17,8 @@ export default async function Page({ params }: { params: { slug: string } }) {
     <div>
       <article className="flex min-h-screen flex-col bg-white pt-16 text-slate-800">
         <header className="flex items-center justify-center p-4">
-          <Link 
-            href={navbarLinks[1]!.link} 
+          <Link
+            href={navbarLinks[1]!.link}
             className="w-[32px] h-[32px] mr-2 rounded-md hover:bg-gray-200 transition"
             data-cy="choresLink-back-button"
           >
@@ -30,17 +30,19 @@ export default async function Page({ params }: { params: { slug: string } }) {
         </header>
         <div className="mt-5 flex justify-center">
           <Card>
-            <AddChoresItemForm listID={choresList?.listID ?? null} />
+            {/* TODO figure out if this is correct */}
+            <AddChoresItemForm listID={choresList[0]?.id ?? null} />
           </Card>
         </div>
-        <div className="p-4">
+        {/* TODO figure out what stauts is */}
+        {/* <div className="p-4">
         {(choresList.status !== 'list items found') 
           ? 
             <p className="text-center">No items in this list</p> 
           : 
             <ItemsList list={choresList} />
         }
-        </div>
+        </div> */}
       </article>
     </div>
   );

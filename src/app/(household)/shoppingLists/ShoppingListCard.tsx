@@ -93,7 +93,7 @@ const shareList = () => {
       <Card data-cy="ShoppingListCard">
         <Link
           href={sanitiseTitleStringForURL(
-            `/shoppingLists/${shoppingList.title}`,
+            `/shoppingLists/${shoppingList.id}`,
           )}
           className="flex w-full justify-center p-4"
         >

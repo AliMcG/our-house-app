@@ -9,7 +9,7 @@ export type listItemType = {
 export type ListItemResponseType = {
   items?: listItemType[];
   listID?: string;
-  status: 'list items found' | 'list not found' | 'strange, list id not found' | 'list items not found';
+  // status: 'list items found' | 'list not found' | 'strange, list id not found' | 'list items not found';
 }
 
 // TODO: we can get the type from the prisma schema, do we need this?
@@ -24,5 +24,5 @@ export type ChoresItemType = {
 export type ChoresListItemResponseType = {
   items?: ChoresItemType[];
   listID?: string;
-  status: 'list items found' | 'list not found' | 'strange, list id not found' | 'list items not found';
+  // status: 'list items found' | 'list not found' | 'strange, list id not found' | 'list items not found';
 }
