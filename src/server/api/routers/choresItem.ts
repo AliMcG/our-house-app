@@ -3,7 +3,6 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "@/server/api/trpc";
-import type { ChoresListItemResponseType } from "@/types/index";
 import { TRPCError } from "@trpc/server";
 import { ObjectId } from "bson";
 
