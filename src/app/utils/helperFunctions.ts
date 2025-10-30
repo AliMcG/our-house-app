@@ -1,13 +1,20 @@
-export const sanitiseTitleStringForURL = (title: string) => {
-  /** trim any trailling whitespace from string */
-  const trimmedTitle = title.trim()
-  /** Format string to replace any whitespace with a hythen */
+/**
+ * Formats a string to replace any whitespace with a hythen
+ * @param string 
+ * @returns 
+ */
+export const sanitiseStringForURL = (string: string) => {
+  const trimmedTitle = string.trim()
   const formattedTitle = trimmedTitle.replace(/\s+/g, '-')
   return formattedTitle
 }
 
-export const convertURLtoString = (title: string) => {
-  /** Format string to replace any hythen with a whitespace */
-  const formattedTitle = title.replace(/-/g, ' ')
+/**
+ * Format string to replace any hythen with a whitespace
+ * @param string string to be converted
+ * @returns string
+ */
+export const convertURLtoString = (string: string) => {
+  const formattedTitle = string.replace(/-/g, ' ')
   return formattedTitle
 }
