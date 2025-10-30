@@ -50,7 +50,6 @@ export const checkUserIsOwnerOfHousehold = async (
   prismaCtx: PrismaClient,
 ) => {
   if (!householdId || !userId) {
-    console.log("Invalid householdId or userId");
     return false;
   }
   try {

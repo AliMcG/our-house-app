@@ -9,7 +9,7 @@ import { ObjectId } from "bson";
 
 export const shoppingListItemRouter = createTRPCRouter({
   list: protectedProcedure
-    .input(z.object({ title: z.string().min(1).optional(), listId: z.string().min(1) }))
+    .input(z.object({ listId: z.string().min(1) }))
     .query(async ({ ctx, input }) => {
       if (ObjectId.isValid(ctx.session.user.id)) {
         const listFound = await ctx.db.shoppingList.findUnique({
@@ -43,14 +43,14 @@ export const shoppingListItemRouter = createTRPCRouter({
       }
     }),
   create: protectedProcedure
-    .input(z.object({ name: z.string().min(1), listID: z.string().min(1), quantity: z.number().int().min(1).max(99) }))
+    .input(z.object({ name: z.string().min(1), listId: z.string().min(1), quantity: z.number().int().min(1).max(99) }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.shoppingItem.create({
         data: {
           active: true,
           name: input.name,
           quantity: input.quantity,
-          ShoppingList: { connect: { id: input.listID } },
+          ShoppingList: { connect: { id: input.listId } },
         },
       });
     }),

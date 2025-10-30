@@ -20,13 +20,10 @@ export default function DeleteHouseHoldForm() {
 
   // Using the apiName to determine which api to use dynamically.
   const { mutate } = api.householdRouter.delete.useMutation({
-    onSuccess: (response) => {
-      console.log("Deleted from Household: ", response);
+    onSuccess: () => {
       router.refresh();
     },
     onError: (error) => {
-      console.log("delete error:", error.shape?.message)
-
       setError("householdId", {
         type: "test",
         message: error.shape?.message

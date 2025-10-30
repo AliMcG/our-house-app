@@ -28,6 +28,7 @@ export const shoppingListRouter = createTRPCRouter({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to retrieve shopping lists",
+          cause: error
         });
       }
     } else {
@@ -37,6 +38,29 @@ export const shoppingListRouter = createTRPCRouter({
       });
     }
   }),
+  findById: protectedProcedure.input(z.object({ listId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      if (ObjectId.isValid(ctx.session.user.id)) {
+        try {
+          return await ctx.db.shoppingList.findUnique({
+            where: { id: input.listId },
+          });
+
+        } catch (error) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Failed to retrieve shopping list item",
+            cause: error
+          });
+        }
+
+      } else {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "User is undefined",
+        });
+      }
+    }),
 
   addShoppingListToHousehold: protectedProcedure
     .input(z.object({ id: z.string().min(1), householdId: z.string().min(1) }))

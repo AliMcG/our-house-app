@@ -18,10 +18,8 @@ export default function AddShoppingListForm() {
    */
   const router = useRouter();
 
-  // Using the apiName to determine which api to use dynamically.
   const { mutate } = api.shoppingList.create.useMutation({
-    onSuccess: (response) => {
-      console.log('CREATED: ', response);
+    onSuccess: () => {
       router.refresh();
     },
   });
@@ -33,7 +31,6 @@ export default function AddShoppingListForm() {
 
   // uses the schema and mutate funnction setup above
   function handleSubmit(data: z.infer<typeof formSchema>) {
-    console.log("SUBMITTING ITEM TO ADD: ", data);
     mutate(data);
   }
 

@@ -9,9 +9,10 @@ import { convertURLtoString } from "@/app/utils/helperFunctions";
 
 
 export default async function Page({ params }: { params: { slug: string } }) {
-  // lets try fetching chores by their name as we expect uniqueness between households
-  const choresName = convertURLtoString(params.slug);
-  const choresList = await api.choresItem.list.query({ title: choresName });
+  const choresId = convertURLtoString(params.slug);
+  const choresListName = await api.chores.findById.query({ listId: choresId });
+
+  const choresList = await api.choresItem.list.query({ listId: choresId });
 
   return (
     <div>
@@ -25,24 +26,23 @@ export default async function Page({ params }: { params: { slug: string } }) {
             <ArrowUturnLeftIcon className="text-[#b372f0]" />
           </Link>
           <h1 className="text-center text-3xl font-extrabold tracking-tight md:text-[2rem] lg:text-[3rem] xl:text-[4rem]">
-            {choresName}
+            {choresListName?.title}
           </h1>
         </header>
         <div className="mt-5 flex justify-center">
           <Card>
-            {/* TODO figure out if this is correct */}
-            <AddChoresItemForm listID={choresList[0]?.id ?? null} />
+            <AddChoresItemForm listId={choresListName?.id} />
           </Card>
         </div>
-        {/* TODO figure out what stauts is */}
-        {/* <div className="p-4">
-        {(choresList.status !== 'list items found') 
-          ? 
-            <p className="text-center">No items in this list</p> 
-          : 
+
+        <div className="p-4">
+          {choresList.length
+            ?
             <ItemsList list={choresList} />
-        }
-        </div> */}
+            :
+            <p className="text-center">No items in this list</p>
+          }
+        </div>
       </article>
     </div>
   );

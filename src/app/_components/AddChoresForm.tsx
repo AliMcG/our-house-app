@@ -21,7 +21,6 @@ export default function AddChoresForm() {
   // Using the apiName to determine which api to use dynamically.
   const { mutate } = api.chores.create.useMutation({
     onSuccess: (response) => {
-      console.log('CHORE CREATED: ', response);
       router.refresh();
     },
   });
@@ -33,7 +32,6 @@ export default function AddChoresForm() {
 
   // uses the schema and mutate funnction setup above
   function handleSubmit(data: z.infer<typeof formSchema>) {
-    console.log("SUBMITTING CHORE LIST TO ADD: ", data);
     mutate(data);
   }
 

@@ -41,18 +41,20 @@ export const householdUserRouter = createTRPCRouter({
            * Prisma error codes: https://www.prisma.io/docs/orm/reference/error-reference#error-codes
            */
           if (e.code === "P2002") {
-            console.log(
-              "There is a unique constraint violation, a new user cannot be created with this email",
-            );
             /**
              * TRPC error is caught by the onError hook in the client code
              */
             throw new TRPCError({
               code: "INTERNAL_SERVER_ERROR",
               message: `Email address already in use: ${input.userEmail}`,
+              cause: e
             });
           } else {
-            console.log("e.code", e.code);
+            throw new TRPCError({
+              code: "UNPROCESSABLE_CONTENT",
+              message: e.code,
+              cause: e
+            });
           }
         }
       }

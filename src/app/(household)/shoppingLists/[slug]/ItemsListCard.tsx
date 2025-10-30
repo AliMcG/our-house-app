@@ -38,7 +38,7 @@ export default function ItemsListCard({
         onClick={() => updateActive(id, active)}
         data-cy="ItemsListCard-btn-active"
         >
-        <CheckCircleIcon />
+        <CheckCircleIcon/>
       </Button>
         <p className={textStyles} onClick={() => updateActive(id, active)}>{name} <span className="font-bold">x{quantity}</span></p>
       <Button
