@@ -9,10 +9,10 @@ import { convertURLtoString } from "@/app/utils/helperFunctions";
 
 
 export default async function Page({ params }: { params: { slug: string } }) {
-  const choresId = convertURLtoString(params.slug);
-  const choresListName = await api.chores.findById.query({ listId: choresId });
+  const choreId = convertURLtoString(params.slug);
+  const choreList = await api.chores.findById.query({ listId: choreId });
 
-  const choresList = await api.choresItem.list.query({ listId: choresId });
+  const choreListItems = await api.choresItem.list.query({ listId: choreId });
 
   return (
     <div>
@@ -26,19 +26,19 @@ export default async function Page({ params }: { params: { slug: string } }) {
             <ArrowUturnLeftIcon className="text-[#b372f0]" />
           </Link>
           <h1 className="text-center text-3xl font-extrabold tracking-tight md:text-[2rem] lg:text-[3rem] xl:text-[4rem]">
-            {choresListName?.title}
+            {choreList?.title}
           </h1>
         </header>
         <div className="mt-5 flex justify-center">
           <Card>
-            <AddChoresItemForm listId={choresListName?.id} />
+            <AddChoresItemForm listId={choreList?.id} />
           </Card>
         </div>
 
         <div className="p-4">
-          {choresList.length
+          {choreListItems.length
             ?
-            <ItemsList list={choresList} />
+            <ItemsList list={choreListItems} />
             :
             <p className="text-center">No items in this list</p>
           }

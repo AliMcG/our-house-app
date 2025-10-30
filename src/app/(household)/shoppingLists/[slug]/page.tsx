@@ -11,9 +11,9 @@ import { convertURLtoString } from "@/app/utils/helperFunctions";
 export default async function Page({ params }: { params: { slug: string } }) {
 
   const shoppingListId = convertURLtoString(params.slug);
-  const shoppingListName = await api.shoppingList.findById.query({ listId: shoppingListId });
+  const shoppingList = await api.shoppingList.findById.query({ listId: shoppingListId });
 
-  const shoppingList = await api.shoppingListItem.list.query({ listId: shoppingListId });
+  const shoppingListItems = await api.shoppingListItem.list.query({ listId: shoppingListId });
 
   return (
     <div>
@@ -26,17 +26,17 @@ export default async function Page({ params }: { params: { slug: string } }) {
             <ArrowUturnLeftIcon className="text-[#b372f0]" />
           </Link>
           <h1 className="text-center text-3xl font-extrabold tracking-tight md:text-[2rem] lg:text-[3rem] xl:text-[4rem]">
-            {shoppingListName?.title}
+            {shoppingList?.title}
           </h1>
         </header>
         <div className="mt-5 flex justify-center">
           <Card>
-            <AddShoppingItemForm listId={shoppingListName?.id} />
+            <AddShoppingItemForm listId={shoppingList?.id} />
           </Card>
         </div>
         <div className="p-4">
-          {shoppingList.length
-            ? <ItemsList list={shoppingList} />
+          {shoppingListItems.length
+            ? <ItemsList list={shoppingListItems} />
             :
             <p className="text-center">No items in this list</p>
           }
