@@ -9,7 +9,7 @@ import HomePageImage from "@/public/home_logo_final.svg";
 export default function TopNavigationBar(): JSX.Element {
   const session = useSession();
   // if the user has an image, use it, otherwise use the app logo
-  const imgSrc = session.data?.user?.image ?? (HomePageImage as string);
+  const imgSrc = session.data?.user?.image ?? HomePageImage;
 
   return (
     <aside className="flex justify-end h-8 w-screen mt-4 px-4 bg-fuchsia-500">
