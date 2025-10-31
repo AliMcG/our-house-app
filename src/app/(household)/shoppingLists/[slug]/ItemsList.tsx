@@ -5,14 +5,14 @@ import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
 import ItemsListCard from "./ItemsListCard";
 import ConfirmDeleteModal from "@/app/_components/modals/ConfirmModal";
-import type { ListItemResponseType } from "@/types/index";
+import { ShoppingItem } from "@prisma/client";
 
 
-export default function ItemsList({ list }: { list: ListItemResponseType }) {
+export default function ItemsList({ list }: { list: ShoppingItem[] }) {
   const router = useRouter();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<string>("");
-  
+
   // mutate the item to be deleted
   const { mutate: deleteMutate } = api.shoppingListItem.delete.useMutation({
     onSuccess: () => {
@@ -48,9 +48,12 @@ export default function ItemsList({ list }: { list: ListItemResponseType }) {
 
   return (
     <>
-      {
-        list.items?.map((item, index) => <ItemsListCard key={index} shoppingItem={item} updateActive={handleUpdateActive} deleteItem={openConfirmModal} />)
-      }
+      <div className="w-96 mx-auto space-y-4">
+        {
+          list?.map((item, index) => <ItemsListCard key={index} shoppingItem={item} updateActive={handleUpdateActive} deleteItem={openConfirmModal} />)
+        }
+      </div>
+
       <ConfirmDeleteModal confirmFunction={handleDeleteItem} isConfirmModalOpen={isConfirmModalOpen} setIsConfirmModalOpen={setIsConfirmModalOpen} confirmFunctionText={"Delete"}>
         <p>You are about to delete this item?</p>
       </ConfirmDeleteModal>

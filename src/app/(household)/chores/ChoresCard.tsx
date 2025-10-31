@@ -9,7 +9,7 @@ import Link from "next/link";
 import ConfirmModal from "@/app/_components/modals/ConfirmModal";
 import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
-import { sanitiseTitleStringForURL } from "@/app/utils/helperFunctions";
+import { sanitiseStringForURL } from "@/app/utils/helperFunctions";
 
 export default function ChoresCard({ choresList }: { choresList: Chores }) {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -18,15 +18,13 @@ export default function ChoresCard({ choresList }: { choresList: Chores }) {
 
   const router = useRouter();
   const { mutate } = api.chores.delete.useMutation({
-    onSuccess: (response) => {
-      console.log("DELETED chores list", response);
+    onSuccess: () => {
       setIsConfirmModalOpen(false);
       router.refresh();
     },
   });
   const { mutate: editMutate } = api.chores.edit.useMutation({
     onSuccess: (response) => {
-      console.log("Edited shoping list", response);
       router.refresh();
     },
   });
@@ -56,7 +54,7 @@ export default function ChoresCard({ choresList }: { choresList: Chores }) {
     <>
       <Card data-cy="ChoresCard">
         <Link
-          href={sanitiseTitleStringForURL(`/chores/${choresList.title}`)}
+          href={sanitiseStringForURL(`/chores/${choresList.id}`)}
           className="flex w-full justify-center p-4"
         >
           {choresList.title}

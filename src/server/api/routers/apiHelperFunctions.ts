@@ -50,7 +50,6 @@ export const checkUserIsOwnerOfHousehold = async (
   prismaCtx: PrismaClient,
 ) => {
   if (!householdId || !userId) {
-    console.log("Invalid householdId or userId");
     return false;
   }
   try {
@@ -99,7 +98,7 @@ export const findHouseholdsByUser = async (
     }
   } else {
     throw new TRPCError({
-      code: "BAD_REQUEST",
+      code: "UNAUTHORIZED",
       message: "User is undefined",
     });
   }

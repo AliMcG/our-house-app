@@ -5,18 +5,16 @@ import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
 import ItemsListCard from "./ItemsListCard";
 import ConfirmModal from "@/app/_components/modals/ConfirmModal";
-import type { ChoresListItemResponseType } from "@/types/index";
 import { useSession } from "next-auth/react";
+import { ChoresItem } from "@prisma/client";
 
 
-// TODO: Having issus with the chorsItem prop type, need to fix it
-
-export default function ItemsList({ list }: { list: ChoresListItemResponseType }) {
+export default function ItemsList({ list }: { list: ChoresItem[] }) {
   const router = useRouter();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<string>("");
   const { data: session } = useSession();
-  
+
   // mutate the item to be deleted
   const { mutate: deleteMutate } = api.choresItem.delete.useMutation({
     onSuccess: () => {
@@ -54,9 +52,11 @@ export default function ItemsList({ list }: { list: ChoresListItemResponseType }
 
   return (
     <>
-      {
-        list.items?.map((item, index) => <ItemsListCard key={index} choresItem={item} updateActive={handleUpdateActive} deleteItem={openConfirmModal} />)
-      }
+      <div className="w-96 mx-auto space-y-4">
+        {
+          list?.map((item, index) => <ItemsListCard key={index} choresItem={item} updateActive={handleUpdateActive} deleteItem={openConfirmModal} />)
+        }
+      </div>
       <ConfirmModal confirmFunction={handleDeleteItem} isConfirmModalOpen={isConfirmModalOpen} setIsConfirmModalOpen={setIsConfirmModalOpen} confirmFunctionText={"Delete"}>
         <p>You are about to delete this item?</p>
       </ConfirmModal>

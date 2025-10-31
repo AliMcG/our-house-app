@@ -10,22 +10,20 @@ import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
 interface iAddItemFormProps {
-  listID: string | null;
+  listId: string | null;
 }
 
 
-export default function AddChoresItemForm(params: iAddItemFormProps) {
+export default function AddChoresItemForm({ listId }: { listId: string | undefined }) {
   /** As the api mutation in this Component is interacting with a Page (Server Component)
    * we need to use `router.refresh()` to invaliadate the cached data in the Page (Server Component).
    * If the cache data is in a "use client" component then we can use `api.useUtils()` hook instead.
    * further reading here: https://trpc.io/docs/client/react/useUtils
    */
   const router = useRouter();
-  const { listID } = params;
 
   const { mutate } = api.choresItem.create.useMutation({
-    onSuccess: (response) => {
-      console.log('CREATED CHORE ITEM: ', response);
+    onSuccess: () => {
       router.refresh();
     },
   });
@@ -37,18 +35,15 @@ export default function AddChoresItemForm(params: iAddItemFormProps) {
 
   // uses the schema and mutate funnction setup above
   function handleSubmit(data: z.infer<typeof formSchema>) {
-    if (listID === null) {
-      console.error("List ID is null, cannot add item");
+    if (listId === undefined) {
       return;
     }
-    console.log("SUBMITTING CHORE ITEM TO ADD: ", data);
-    // need to get the user id to store it in the database
-    mutate({ ...data, listID });
+    mutate({ ...data, listId });
   }
 
   return (
-    <GenericForm 
-      formSchema={formSchema} 
+    <GenericForm
+      formSchema={formSchema}
       handleSubmit={handleSubmit}
       className="w-full"
     >

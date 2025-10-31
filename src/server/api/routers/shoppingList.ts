@@ -6,12 +6,11 @@ import { ObjectId } from "bson";
 
 export const shoppingListRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
-    const householdIds = await findHouseholdsByUser(
-      ctx.session.user.id,
-      ctx.db,
-    );
-
     if (ObjectId.isValid(ctx.session.user.id)) {
+      const householdIds = await findHouseholdsByUser(
+        ctx.session.user.id,
+        ctx.db,
+      );
       try {
         return await ctx.db.shoppingList.findMany({
           where: {
@@ -29,15 +28,39 @@ export const shoppingListRouter = createTRPCRouter({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to retrieve shopping lists",
+          cause: error
         });
       }
     } else {
       throw new TRPCError({
-        code: "NOT_FOUND",
+        code: "UNAUTHORIZED",
         message: "User is undefined",
       });
     }
   }),
+  findById: protectedProcedure.input(z.object({ listId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      if (ObjectId.isValid(ctx.session.user.id)) {
+        try {
+          return await ctx.db.shoppingList.findUnique({
+            where: { id: input.listId },
+          });
+
+        } catch (error) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Failed to retrieve shopping list item",
+            cause: error
+          });
+        }
+
+      } else {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "User is undefined",
+        });
+      }
+    }),
 
   addShoppingListToHousehold: protectedProcedure
     .input(z.object({ id: z.string().min(1), householdId: z.string().min(1) }))
@@ -151,29 +174,36 @@ export const shoppingListRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const shoppingList = await ctx.db.shoppingList.findUnique({
-        where: { id: input.id },
-      });
-      if (shoppingList) {
-        try {
-          return await ctx.db.shoppingList.update({
-            where: {
-              id: input.id,
-            },
-            data: {
-              title: input.title,
-            },
-          });
-        } catch (error) {
+      if (ObjectId.isValid(ctx.session?.user?.id)) {
+        const shoppingList = await ctx.db.shoppingList.findUnique({
+          where: { id: input.id },
+        });
+        if (shoppingList) {
+          try {
+            return await ctx.db.shoppingList.update({
+              where: {
+                id: input.id,
+              },
+              data: {
+                title: input.title,
+              },
+            });
+          } catch (error) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Failed to update shopping list",
+            });
+          }
+        } else {
           throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Failed to update shopping list",
+            code: "NOT_FOUND",
+            message: "Shopping list not found",
           });
         }
       } else {
         throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Shopping list not found",
+          code: "UNAUTHORIZED",
+          message: "User is undefined",
         });
       }
     }),
@@ -185,26 +215,33 @@ export const shoppingListRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const shoppingList = await ctx.db.shoppingList.findUnique({
-        where: { id: input.id },
-      });
-      if (shoppingList) {
-        try {
-          return await ctx.db.shoppingList.delete({
-            where: {
-              id: input.id,
-            },
-          });
-        } catch (error) {
+      if (ObjectId.isValid(ctx.session?.user?.id)) {
+        const shoppingList = await ctx.db.shoppingList.findUnique({
+          where: { id: input.id },
+        });
+        if (shoppingList) {
+          try {
+            return await ctx.db.shoppingList.delete({
+              where: {
+                id: input.id,
+              },
+            });
+          } catch (error) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Failed to delete shopping list",
+            });
+          }
+        } else {
           throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Failed to delete shopping list",
+            code: "NOT_FOUND",
+            message: "Shopping list not found",
           });
         }
       } else {
         throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Shopping list not found",
+          code: "UNAUTHORIZED",
+          message: "User is undefined",
         });
       }
     }),

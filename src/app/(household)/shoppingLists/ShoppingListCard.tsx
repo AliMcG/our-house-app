@@ -14,7 +14,7 @@ import {
 } from "@heroicons/react/24/solid";
 import type { ShoppingList } from "@prisma/client";
 import Link from "next/link";
-import { sanitiseTitleStringForURL } from "@/app/utils/helperFunctions";
+import { sanitiseStringForURL } from "@/app/utils/helperFunctions";
 
 /** As the api mutation in this Component is interacting with a Page (Server Component)
  * we need to use `router.refresh()` to invaliadate the cached data in the Page (Server Component).
@@ -37,21 +37,18 @@ export default function ShoppingListCard({
 
   const router = useRouter();
   const { mutate } = api.shoppingList.delete.useMutation({
-    onSuccess: (response) => {
-      console.log("DELETED shoping list", response);
+    onSuccess: () => {
       setIsConfirmModalOpen(false);
       router.refresh();
     },
   });
   const { mutate: editMutate } = api.shoppingList.edit.useMutation({
-    onSuccess: (response) => {
-      console.log("Edited shoping list", response);
+    onSuccess: () => {
       router.refresh();
     },
   });
   const { mutate: shareMutate } = api.shoppingList.addShoppingListToHousehold.useMutation({
-    onSuccess: (response) => {
-      console.log("Added shoping list to household", response);
+    onSuccess: () => {
       router.refresh();
     }
   })
@@ -66,13 +63,13 @@ export default function ShoppingListCard({
     setNewName(e.target.value);
   };
   const handleSelectChange = (e: SingleValue<{ value: string; label: string; }>) => {
- 
+
     sethouseholdId(e?.value as string);
   };
-const shareList = () => {
-  setIsShareModalOpen(false)
-  shareMutate({ id: shoppingList.id, householdId: householdId})
-}
+  const shareList = () => {
+    setIsShareModalOpen(false)
+    shareMutate({ id: shoppingList.id, householdId: householdId })
+  }
   const editList = () => {
     setIsEditModalOpen(false);
     editMutate({ id: shoppingList.id, title: newName });
@@ -85,15 +82,15 @@ const shareList = () => {
     setIsShareModalOpen(true);
   };
   const selectOptions = listOfHouseHolds?.map((household) => {
-    return { value: household.id, label: household.name}
+    return { value: household.id, label: household.name }
   })
 
   return (
     <>
       <Card data-cy="ShoppingListCard">
         <Link
-          href={sanitiseTitleStringForURL(
-            `/shoppingLists/${shoppingList.title}`,
+          href={sanitiseStringForURL(
+            `/shoppingLists/${shoppingList.id}`,
           )}
           className="flex w-full justify-center p-4"
         >
@@ -157,7 +154,7 @@ const shareList = () => {
         setIsConfirmModalOpen={setIsShareModalOpen}
       >
         <label>Select household</label>
-        <Select options={selectOptions} onChange={(e) => handleSelectChange(e)}/>
+        <Select options={selectOptions} onChange={(e) => handleSelectChange(e)} />
       </ConfirmModal>
     </>
   );
