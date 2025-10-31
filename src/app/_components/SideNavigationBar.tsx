@@ -16,7 +16,6 @@ export default function SideNavigationBar(): JSX.Element {
   let xTranslateMenu = 'translate-x-[-80px]';
 
   if (menuOpen) {
-    console.log("menuOpen: ", menuOpen)
     xTranslateMenu = 'translate-x-0';
   }
 

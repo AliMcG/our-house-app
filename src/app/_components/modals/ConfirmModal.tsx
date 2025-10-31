@@ -1,13 +1,13 @@
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
 import Button from '../Button'
 
-export default function ConfirmModal({ 
+export default function ConfirmModal({
   children,
   confirmFunction,
   confirmFunctionText,
   isConfirmModalOpen,
   setIsConfirmModalOpen
-}: { 
+}: {
   children: React.ReactNode;
   confirmFunction: () => void;
   confirmFunctionText: string;
@@ -32,8 +32,8 @@ export default function ConfirmModal({
                 <DialogTitle className="font-bold">Are you sure?</DialogTitle>
                 {children}
                 <div className="flex gap-4">
-                  <Button onClick={() => setIsConfirmModalOpen(false)} data-cy={`confirmModal-btn-cancel`}>Cancel</Button>
                   <Button onClick={() => confirmFunction()} data-cy={`confirmModal-btn-${confirmFunctionText}`}>{confirmFunctionText}</Button>
+                  <Button onClick={() => setIsConfirmModalOpen(false)} data-cy={`confirmModal-btn-cancel`}>Cancel</Button>
                 </div>
               </DialogPanel>
             </TransitionChild>
