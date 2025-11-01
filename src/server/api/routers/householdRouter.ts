@@ -27,6 +27,14 @@ export const householdRouter = createTRPCRouter({
           },
         ],
       },
+      include: {
+        createdBy: true, // This will include the related User object for the creator
+        members: {
+          include: {
+            user: true, // Assuming your HouseholdUser model has a 'user' relation to the User model
+          },
+        },
+      },
     });
   }),
 
@@ -47,7 +55,7 @@ export const householdRouter = createTRPCRouter({
         data: {
           name: input.name,
           createdBy: { connect: { id: ctx.session.user.id } },
-          imageUrl: "",
+          imageUrl: ctx.session.user.image || ''
         },
       });
       const addUser = await addSingleUserToHousehold(
