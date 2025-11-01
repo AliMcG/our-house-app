@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { Button } from '@/app/_components/ui/button'
 import { Input } from '@/app/_components/ui/input'
 import { Label } from '@/app/_components/ui/label'
-import { Textarea } from '@/app/_components/ui/textarea'
 import {
   Dialog,
   DialogContent,
@@ -14,47 +13,37 @@ import {
   DialogTrigger,
 } from '@/app/_components/ui/dialog'
 import { Plus, Loader2 } from 'lucide-react'
+import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
+import * as z from "zod";
+import FormItem from '../form/FormItem'
+import FormLabel from '../form/FormLabel'
+import GenericForm from '../form/GenericForm'
+import Inputfield from '../form/InputField'
 
-interface CreateHouseholdDialogProps {
-  onHouseholdCreated: (household: any) => void
-  userId: string | undefined
-}
 
-export function CreateHouseholdDialog({ onHouseholdCreated, userId }: CreateHouseholdDialogProps) {
+export function CreateHouseholdDialog() {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
+  const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
+  // Using the apiName to determine which api to use dynamically.
+  const { mutate } = api.householdRouter.create.useMutation({
+    onSuccess: () => {
+      router.refresh();
+      setLoading(false);
+      setOpen(false);
+    },
+  });
 
-    // try {
-    //   const response = await fetch('/api/households', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'x-user-id': userId,
-    //     },
-    //     body: JSON.stringify({ name, description }),
-    //   })
+  // schema definition for Household input
+  const formSchema = z.object({
+    name: z.string().min(1, { message: "Name is required" }),
+  });
 
-    //   const data = await response.json()
-
-    //   if (response.ok) {
-    //     onHouseholdCreated(data.household)
-    //     setOpen(false)
-    //     setName('')
-    //     setDescription('')
-    //   } else {
-    //     console.error('Create household failed:', data.error)
-    //   }
-    // } catch (error) {
-    //   console.error('Create household error:', error)
-    // } finally {
-    //   setLoading(false)
-    // }
+  // uses the schema and mutate funnction setup above
+  function handleSubmit(data: z.infer<typeof formSchema>) {
+    mutate(data);
   }
 
   return (
@@ -65,39 +54,30 @@ export function CreateHouseholdDialog({ onHouseholdCreated, userId }: CreateHous
           Create Household
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] gap-2">
         <DialogHeader>
           <DialogTitle>Create New Household</DialogTitle>
           <DialogDescription>
             Create a new household to share lists, tasks, and events with family members.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Household Name</Label>
-            <Input
-              id="name"
+        <GenericForm formSchema={formSchema} handleSubmit={handleSubmit} className="space-y-4">
+          <FormItem>
+            <FormLabel fieldName={"name"}>Household Name</FormLabel>
+            <Inputfield
+              fieldName={"name"}
               placeholder="e.g., Smith Family, Apartment 4B"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
+              data-cy="household-create-input"
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="description">Description (Optional)</Label>
-            <Textarea
-              id="description"
-              placeholder="Brief description of your household"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-            />
-          </div>
-          <div className="flex justify-end space-x-2">
+          </FormItem>
+          <FormItem className="flex justify-end space-x-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button
+              type="submit"
+              data-cy="household-create-submit"
+            >
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -107,8 +87,8 @@ export function CreateHouseholdDialog({ onHouseholdCreated, userId }: CreateHous
                 'Create Household'
               )}
             </Button>
-          </div>
-        </form>
+          </FormItem>
+        </GenericForm>
       </DialogContent>
     </Dialog>
   )
