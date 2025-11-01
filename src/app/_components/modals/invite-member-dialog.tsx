@@ -16,11 +16,9 @@ import { UserPlus, Loader2, Mail } from 'lucide-react'
 
 interface InviteMemberDialogProps {
   householdId: string
-  userId: string | undefined
-  onMemberInvited: () => void
 }
 
-export function InviteMemberDialog({ householdId, userId, onMemberInvited }: InviteMemberDialogProps) {
+export function InviteMemberDialog({ householdId }: InviteMemberDialogProps) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
@@ -29,32 +27,8 @@ export function InviteMemberDialog({ householdId, userId, onMemberInvited }: Inv
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    console.log(householdId, email, name);
 
-    // try {
-    //   const response = await fetch(`/api/households/${householdId}/invite`, {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'x-user-id': userId,
-    //     },
-    //     body: JSON.stringify({ email, name }),
-    //   })
-
-    //   const data = await response.json()
-
-    //   if (response.ok) {
-    //     onMemberInvited()
-    //     setOpen(false)
-    //     setEmail('')
-    //     setName('')
-    //   } else {
-    //     console.error('Invite member failed:', data.error)
-    //   }
-    // } catch (error) {
-    //   console.error('Invite member error:', error)
-    // } finally {
-    //   setLoading(false)
-    // }
   }
 
   return (
