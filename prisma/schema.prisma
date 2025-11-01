@@ -19,20 +19,20 @@ model User {
   accounts          Account[]
   sessions          Session[]
   shoppingLists     ShoppingList[]
-  chores        Chores[]
+  chores            Chores[]
   createdHouseholds Household[]     @relation("CreatedHouseholds")
   householdMembers  HouseholdUser[] // Relation to households through the join table
 }
 
 model ShoppingList {
-  id        String         @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  items     ShoppingItem[]
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  title            String
+  items            ShoppingItem[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
   sharedHouseholds String[]
-  createdBy   User   @relation(fields: [createdById], references: [id])
-  createdById String @db.ObjectId
+  createdBy        User           @relation(fields: [createdById], references: [id])
+  createdById      String         @db.ObjectId
 
   @@index([title])
 }
@@ -49,20 +49,20 @@ model ShoppingItem {
 
 // Chores model can be updated as the application grows
 model Chores {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  items     ChoresItem[] 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String       @id @default(auto()) @map("_id") @db.ObjectId
+  title            String
+  items            ChoresItem[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
   sharedHouseholds String[]
-  createdBy   User @relation(fields: [createdById], references: [id])
-  createdById String @db.ObjectId
+  createdBy        User         @relation(fields: [createdById], references: [id])
+  createdById      String       @db.ObjectId
 
   @@index([title])
 }
 
 model ChoresItem {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   completedBy String?
   active      Boolean
