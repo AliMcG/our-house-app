@@ -8,6 +8,7 @@ import {
 } from "../../utils/testHelpers";
 import dotenv from "dotenv";
 import { TRPCError } from "@trpc/server";
+import { faker } from "@faker-js/faker";
 dotenv.config();
 /**
  * These modules required mocking for Jest to work.
@@ -27,7 +28,7 @@ let newListId: string;
 const editDate = new Date();
 const input = {
   title: `UNIT TEST SHOPPING LIST: List - ${editDate.toLocaleDateString()}`,
-  householdId: 'household-1',
+  householdId: faker.database.mongodbObjectId(),
 };
 
 beforeAll(async () => {

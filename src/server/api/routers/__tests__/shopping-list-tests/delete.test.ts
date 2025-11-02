@@ -20,7 +20,8 @@ jest.mock("next-auth", () => ({
 let caller: ReturnType<typeof createCaller>;
 let inValidCaller: ReturnType<typeof createCaller>;
 let newListId: string;
-const input = { title: "UNIT TEST DELETE NEW LIST", householdId: 'household-1', };
+const input = { title: "UNIT TEST DELETE NEW LIST", householdId: faker.database.mongodbObjectId() };
+
 beforeAll(async () => {
   caller = createCaller(await createContextInner({ session: mockSession }));
   inValidCaller = createCaller(await createContextInner({ session: mockErrorSessionNoID }))

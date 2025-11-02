@@ -23,17 +23,17 @@ let newListId: string;
 const editDate = new Date();
 const input = {
   title: `UNIT TEST SHOPPING LIST: Edit - ${editDate.toLocaleDateString()}`,
-  householdId: 'household-1',
+  householdId: faker.database.mongodbObjectId(),
 };
 const invalidTitleInput = {
   id: process.env.UNIT_TEST_LIST_ID as string,
   title: "",
-  householdId: 'household-1',
+  householdId: faker.database.mongodbObjectId(),
 };
 const invalidIdInput = {
   id: faker.database.mongodbObjectId(),
   title: "Invalid ID",
-  householdId: 'household-1',
+  householdId: faker.database.mongodbObjectId(),
 };
 
 beforeAll(async () => {

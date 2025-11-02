@@ -3,6 +3,7 @@ import { createContextInner } from "@/server/api/trpc";
 import { createCaller } from "@/server/api/root";
 import { mockErrorSessionNoID, mockSession } from "../../utils/testHelpers";
 import { TRPCError } from "@trpc/server";
+import { faker } from "@faker-js/faker";
 
 /**
  * These modules required mocking for Jest to work.
@@ -27,7 +28,7 @@ beforeAll(async () => {
   inValidCaller = createCaller(invalidCtx)
   newListId = ""
 });
-const input = { title: "UNIT TEST CREATE NEW LIST", householdId: 'household-1', };
+const input = { title: "UNIT TEST CREATE NEW LIST", householdId: faker.database.mongodbObjectId(), };
 
 
 describe("Feature: Creating a shopping list", () => {
@@ -54,7 +55,7 @@ describe("Feature: Creating a shopping list", () => {
   describe('Scenario: invalid input', () => {
     describe('Given an invalid request to create a shopping list', () => {
       describe('And the "title" is an empty string', () => {
-        const invalidInput = { title: "", householdId: 'household-1', };
+        const invalidInput = { title: "", householdId: faker.database.mongodbObjectId(), };
         test('Then a error should be thrown', async () => {
           await expect(caller.shoppingList.create(invalidInput)).rejects.toThrow(
             "Title can not be blank",
