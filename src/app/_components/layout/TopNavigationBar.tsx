@@ -21,7 +21,7 @@ export default function TopNavigationBar(): JSX.Element {
         className="flex relative top-[-9px] w-[50px] h-[50px] bg-slate-800 rounded-full overflow-hidden"
       >
         <Image 
-          src={imgSrc as string} 
+          src={imgSrc} 
           alt="logo" 
           width={40} 
           height={40} 

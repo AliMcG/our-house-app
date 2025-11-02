@@ -62,7 +62,7 @@ export function Sidebar() {
             <div className="flex items-center space-x-2">
               <div className="flex h-8 w-8 items-center justify-center">
                  <Image
-                  src={HomePageImage}
+                  src={HomePageImage as string}
                   alt="logo"
                   width={40}
                   height={40}
@@ -79,7 +79,7 @@ export function Sidebar() {
               {/* <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100"> */}
               <div className="flex h-8 w-8 items-center justify-center rounded-full overflow-hidden">
                 <Image
-                  src={user.image ? user.image : HomePageImage}
+                  src={user.image ? user.image : HomePageImage as string}
                   alt="logo"
                   width={40}
                   height={40}
