@@ -20,12 +20,12 @@ jest.mock("next-auth", () => ({
 let caller: ReturnType<typeof createCaller>;
 let inValidCaller: ReturnType<typeof createCaller>;
 let newListId: string;
-const input = { title: "UNIT TEST DELETE NEW LIST" };
+const input = { title: "UNIT TEST DELETE NEW LIST", householdId: 'household-1', };
 beforeAll(async () => {
   caller = createCaller(await createContextInner({ session: mockSession }));
   inValidCaller = createCaller(await createContextInner({ session: mockErrorSessionNoID }))
   const shoppingListToDelete = await caller.shoppingList.create(input);
-  newListId = shoppingListToDelete.id
+  newListId = shoppingListToDelete.shoppingListId
 });
 describe("Feature: Deleting a shopping list", () => {
   describe('Scenario: invalid user', () => {

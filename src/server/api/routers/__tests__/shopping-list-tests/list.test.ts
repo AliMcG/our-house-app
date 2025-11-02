@@ -27,13 +27,14 @@ let newListId: string;
 const editDate = new Date();
 const input = {
   title: `UNIT TEST SHOPPING LIST: List - ${editDate.toLocaleDateString()}`,
+  householdId: 'household-1',
 };
 
 beforeAll(async () => {
   caller = createCaller(await createContextInner({ session: mockSession }));
   inValidCaller = createCaller(await createContextInner({ session: mockErrorSessionNoID }))
   const shoppingListToDelete = await caller.shoppingList.create(input);
-  newListId = shoppingListToDelete.id
+  newListId = shoppingListToDelete.shoppingListId
 });
 afterAll(async () => {
   await caller.shoppingList.delete({ id: newListId })
@@ -80,7 +81,7 @@ describe('Feature: List shopping lists', () => {
         test("It lists all shoppingLists", async () => {
 
           const shoppingLists = await caller.shoppingList.list();
-      
+
           expect(Array.isArray(shoppingLists)).toBe(true);
           expect(shoppingLists.length).toBeGreaterThanOrEqual(1);
           shoppingLists.forEach((list) => {

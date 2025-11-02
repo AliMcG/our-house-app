@@ -27,7 +27,7 @@ beforeAll(async () => {
   inValidCaller = createCaller(invalidCtx)
   newListId = ""
 });
-const input = { title: "UNIT TEST CREATE NEW LIST" };
+const input = { title: "UNIT TEST CREATE NEW LIST", householdId: 'household-1', };
 
 
 describe("Feature: Creating a shopping list", () => {
@@ -54,7 +54,7 @@ describe("Feature: Creating a shopping list", () => {
   describe('Scenario: invalid input', () => {
     describe('Given an invalid request to create a shopping list', () => {
       describe('And the "title" is an empty string', () => {
-        const invalidInput = { title: "" };
+        const invalidInput = { title: "", householdId: 'household-1', };
         test('Then a error should be thrown', async () => {
           await expect(caller.shoppingList.create(invalidInput)).rejects.toThrow(
             "Title can not be blank",
@@ -79,7 +79,7 @@ describe("Feature: Creating a shopping list", () => {
         })
         test('Then success must be true', async () => {
           const newShoppingList = await caller.shoppingList.create(input);
-          newListId = newShoppingList.id
+          newListId = newShoppingList.shoppingListId
           expect(newShoppingList).toHaveProperty("title", input.title);
           expect(newShoppingList).toHaveProperty("id");
           expect(newShoppingList).toHaveProperty("createdById", mockSession.user.id);
