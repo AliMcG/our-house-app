@@ -6,7 +6,7 @@ import { api } from "@/trpc/react";
 import ItemsListCard from "./ItemsListCard";
 import ConfirmModal from "@/app/_components/modals/ConfirmModal";
 import { useSession } from "next-auth/react";
-import { ChoresItem } from "@prisma/client";
+import type { ChoresItem } from "@prisma/client";
 
 
 export default function ItemsList({ list }: { list: ChoresItem[] }) {

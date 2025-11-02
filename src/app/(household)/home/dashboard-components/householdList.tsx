@@ -1,7 +1,7 @@
 'use client';
 
 import { CreateHouseholdDialog } from "@/app/_components/modals/create-household-dialog";
-import { HouseholdWithRelations } from "../page";
+import type { HouseholdWithRelations } from "../page";
 import Link from "next/link";
 import { Edit2Icon } from "lucide-react";
 

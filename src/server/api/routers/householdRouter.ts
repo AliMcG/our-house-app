@@ -55,7 +55,7 @@ export const householdRouter = createTRPCRouter({
         data: {
           name: input.name,
           createdBy: { connect: { id: ctx.session.user.id } },
-          imageUrl: ctx.session.user.image || ''
+          imageUrl: ctx.session.user.image ?? "",
         },
       });
       const addUser = await addSingleUserToHousehold(

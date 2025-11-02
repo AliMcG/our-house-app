@@ -1,4 +1,4 @@
-import { NavItemType } from "./navbarLinks"
+import type { NavItemType } from "./navbarLinks"
 
 /**
  * Formats a string to replace any whitespace with a hythen

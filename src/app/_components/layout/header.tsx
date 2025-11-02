@@ -1,12 +1,12 @@
 'use client'
 
-import { useSession } from "next-auth/react";
-import { CreateHouseholdDialog } from "../modals/create-household-dialog";
-import { InviteMemberDialog } from "../modals/invite-member-dialog";
+// import { useSession } from "next-auth/react";
+// import { CreateHouseholdDialog } from "../modals/create-household-dialog";
+// import { InviteMemberDialog } from "../modals/invite-member-dialog";
 import { usePathname } from "next/navigation";
 import { navigation } from "@/app/utils/navbarLinks";
 import { getRouteName } from "@/app/utils/helperFunctions";
-import { api } from "@/trpc/react";
+// import { api } from "@/trpc/react";
 
 export default function Header(): JSX.Element {
     /**

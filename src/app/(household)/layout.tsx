@@ -1,5 +1,3 @@
-import TopNavigationBar from "../_components/layout/TopNavigationBar";
-import SideNavigationBar from "../_components/layout/SideNavigationBar";
 import { getServerAuthSession } from "@/server/auth";
 import { redirect } from "next/navigation";
 import { Sidebar } from "../_components/layout/sidebar";

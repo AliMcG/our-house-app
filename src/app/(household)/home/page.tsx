@@ -3,9 +3,8 @@ import { InviteMemberDialog } from "@/app/_components/modals/invite-member-dialo
 import { Badge } from "@/app/_components/ui/badge";
 import { Button } from "@/app/_components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/_components/ui/card";
-import HomePageImage from "@/public/home_logo_final.svg";
 import { api } from "@/trpc/server";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { Calendar, CheckSquare, Edit2Icon, Plus, ShoppingCart, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -188,7 +187,7 @@ export default async function Home() {
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
                           <div className="flex h-8 w-8 items-center justify-center rounded-full overflow-hidden">
                             <Image
-                              src={member.user.image ? member.user.image : HomePageImage}
+                              src={member.user.image ? member.user.image : ''}
                               alt="logo"
                               width={40}
                               height={40}
