@@ -1,29 +1,68 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { findHouseholdsByUser } from "./apiHelperFunctions";
 import { TRPCError } from "@trpc/server";
 import { ObjectId } from "bson";
 
 export const shoppingListRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
     if (ObjectId.isValid(ctx.session.user.id)) {
-      const householdIds = await findHouseholdsByUser(
-        ctx.session.user.id,
-        ctx.db,
-      );
+      // const householdIds = await findHouseholdsByUser(
+      //   ctx.session.user.id,
+      //   ctx.db,
+      // );
+      const userId = ctx.session.user.id;
+
+      // 1. Find households the current user belongs to
+      const userHouseholds = await ctx.db.household.findMany({
+        where: {
+          members: {
+            some: {
+              userId: userId,
+            },
+          },
+        },
+        select: {
+          id: true, // We only need the household IDs
+        },
+      });
+
+      const householdIds = userHouseholds.map((household) => household.id);
+
       try {
         return await ctx.db.shoppingList.findMany({
           where: {
             OR: [
+              // Case 1: Shopping lists created by the current user
               {
-                createdBy: { id: ctx.session.user.id },
+                createdById: userId,
               },
+              // Case 2: Shopping lists shared with the user's households
               {
-                sharedHouseholds: { hasSome: householdIds },
+                householdEntries: {
+                  some: {
+                    householdId: {
+                      in: householdIds, // Check if any of the user's householdIds are in the join table
+                    },
+                  },
+                },
               },
             ],
           },
-        });
+          // You might want to include related data here, e.g., the items
+          include: {
+            items: true, // Include shopping items
+            _count: true
+            // You might also want to include the 'createdBy' user,
+            // but be mindful of data size and potential circular references.
+            // createdBy: {
+            //   select: {
+            //     id: true,
+            //     name: true,
+            //     image: true,
+            //   }
+            // }
+          }
+        })
       } catch (error) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
@@ -65,31 +104,11 @@ export const shoppingListRouter = createTRPCRouter({
   addShoppingListToHousehold: protectedProcedure
     .input(z.object({ id: z.string().min(1), householdId: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      const shoppingList = await ctx.db.shoppingList.findUnique({
-        where: { id: input.id },
-        select: { sharedHouseholds: true },
-      });
-      if (!shoppingList) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Shopping list does not exist",
-        });
-      }
-      if (shoppingList?.sharedHouseholds.includes(input.householdId)) {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "Shopping list already added to household",
-        });
-      }
       try {
-        return await ctx.db.shoppingList.update({
-          where: {
-            id: input.id,
-          },
+        return await ctx.db.householdShoppingList.create({
           data: {
-            sharedHouseholds: {
-              push: input.householdId,
-            },
+            householdId: input.householdId,
+            shoppingListId: input.id,
           },
         });
       } catch (error) {
@@ -100,58 +119,31 @@ export const shoppingListRouter = createTRPCRouter({
       }
     }),
 
-  removeShoppingListFromHousehold: protectedProcedure
-    .input(z.object({ id: z.string().min(1), householdId: z.string().min(1) }))
-    .mutation(async ({ ctx, input }) => {
-      try {
-        const shoppingList = await ctx.db.shoppingList.findUnique({
-          where: { id: input.id },
-          select: { sharedHouseholds: true },
-        });
-        if (!shoppingList) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Shopping list not found",
-          });
-        }
-
-        // Remove the householdId from sharedHouseholds array
-        const updatedHouseholds = shoppingList.sharedHouseholds.filter(
-          (household) => household !== input.householdId,
-        );
-
-        // Update the shopping list
-        return await ctx.db.shoppingList.update({
-          where: {
-            id: input.id,
-          },
-          data: {
-            sharedHouseholds: updatedHouseholds,
-          },
-        });
-      } catch (error) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to remove shopping list from household",
-        });
-      }
-    }),
-
   create: protectedProcedure
     .input(
       z.object({
         title: z.string().min(1, { message: "Title can not be blank" }),
+        householdId: z.string().min(1)
       }),
     )
     .mutation(async ({ ctx, input }) => {
       if (ObjectId.isValid(ctx.session?.user?.id)) {
         try {
-          return await ctx.db.shoppingList.create({
+          const newShoppingList = await ctx.db.shoppingList.create({
             data: {
               title: input.title,
-              createdBy: { connect: { id: ctx.session.user.id } },
+              createdBy: { connect: { id: ctx.session.user.id } }
+
             },
           });
+          const updatedHouseholds = await ctx.db.householdShoppingList.create({
+            data: {
+              householdId: input.householdId,
+              shoppingListId: newShoppingList.id,
+            },
+          });
+
+          return { success: !updatedHouseholds, shoppingListId: newShoppingList.id };
         } catch (error) {
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
@@ -221,11 +213,22 @@ export const shoppingListRouter = createTRPCRouter({
         });
         if (shoppingList) {
           try {
-            return await ctx.db.shoppingList.delete({
+            // 1. Delete the corresponding entries in the HouseholdShoppingList join table
+            // We need to delete each entry where shoppingListId matches the input.id
+            await ctx.db.householdShoppingList.deleteMany({
+              where: {
+                shoppingListId: input.id,
+              },
+            });
+
+            // 2. Delete the ShoppingList itself
+            const deletedShoppingList = await ctx.db.shoppingList.delete({
               where: {
                 id: input.id,
               },
             });
+
+            return deletedShoppingList;
           } catch (error) {
             throw new TRPCError({
               code: "INTERNAL_SERVER_ERROR",

@@ -34,8 +34,18 @@ export const householdRouter = createTRPCRouter({
             user: true, // Assuming your HouseholdUser model has a 'user' relation to the User model
           },
         },
-      },
-    });
+        chores: true,
+        shoppingLists: {
+          include: {
+            shoppingList: {
+              include: {
+                _count: true
+              }
+            }
+          }
+        },
+      }
+    })
   }),
 
   locate: protectedProcedure
