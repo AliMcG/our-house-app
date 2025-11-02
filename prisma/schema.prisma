@@ -95,7 +95,7 @@ model Household {
   // Relation to other models through join tables
   members       HouseholdUser[]
   shoppingLists HouseholdShoppingList[] @relation("HouseholdShoppingList_Household")
-  choress       HouseholdChores[]       @relation("HouseholdChores_Household")
+  chores       HouseholdChores[]       @relation("HouseholdChores_Household")
 }
 
 model ChoresItem {
