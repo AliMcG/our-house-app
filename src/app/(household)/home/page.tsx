@@ -1,4 +1,5 @@
 import { CreateHouseholdDialog } from "@/app/_components/modals/create-household-dialog";
+import { CreateShoppingListDialog } from "@/app/_components/modals/create-shoppinglist-dialog";
 import { InviteMemberDialog } from "@/app/_components/modals/invite-member-dialog";
 import { Badge } from "@/app/_components/ui/badge";
 import { Button } from "@/app/_components/ui/button";
@@ -21,7 +22,9 @@ export type HouseholdWithRelations = Prisma.HouseholdGetPayload<{
       include: {
         user: true
       }
-    }
+    },
+    chores: true,
+    shoppingLists: true
   }
 }>[]
 
@@ -32,6 +35,7 @@ export default async function Home() {
   // TODO : determine current household logic how can we tell which household is current?
   // for now we will just take the first household in the list
   const currentHousehold = householdList[0]
+  console.log("Current Household:", currentHousehold);
 
   /**
    * // TODO
@@ -39,10 +43,7 @@ export default async function Home() {
     * to ensure that each household has its own set of shopping lists, tasks, calendar events, and members.
     * The current schema does not fully support this structure.
     * 
-   * - Shopping Lists - not currently supported by the household relations
-   * - Tasks/Chores - not currently supported by the household relations
    * - Calendar - not currently supported by the household relations
-   * - Members  - supported by the household members relation
    *
    * The quick action button on each section to create a new item in that section.
    * Clicking on the section should take the user to that section within the current household.
@@ -100,8 +101,7 @@ export default async function Home() {
                 <Link href={`/shopping-lists`}>
                   <CardContent>
                     <div className="text-2xl font-bold">
-                      shopping list count?
-                      {/* {currentHousehold._count?.shoppingLists || 0} */}
+                      {currentHousehold.shoppingLists.length || 0}
                     </div>
                     <p className="text-xs text-muted-foreground">
                       Active lists
@@ -223,10 +223,7 @@ export default async function Home() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Button variant="outline" className="justify-start">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create Shopping List
-                  </Button>
+                 <CreateShoppingListDialog householdId={currentHousehold.id} />
                   <Button variant="outline" className="justify-start">
                     <Plus className="mr-2 h-4 w-4" />
                     Add Task
