@@ -10,7 +10,7 @@ import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
 
-export default function AddShoppingListForm() {
+export default function AddShoppingListForm({ householdId }: { householdId: string }) {
   /** As the api mutation in this Component is interacting with a Page (Server Component)
    * we need to use `router.refresh()` to invaliadate the cached data in the Page (Server Component).
    * If the cache data is in a "use client" component then we can use `api.useUtils()` hook instead.
@@ -31,7 +31,11 @@ export default function AddShoppingListForm() {
 
   // uses the schema and mutate funnction setup above
   function handleSubmit(data: z.infer<typeof formSchema>) {
-    mutate(data);
+    const mutationData = {
+      ...data,
+      householdId: householdId,
+    };
+    mutate(mutationData);
   }
 
   return (
