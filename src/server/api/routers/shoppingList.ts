@@ -6,10 +6,6 @@ import { ObjectId } from "bson";
 export const shoppingListRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
     if (ObjectId.isValid(ctx.session.user.id)) {
-      // const householdIds = await findHouseholdsByUser(
-      //   ctx.session.user.id,
-      //   ctx.db,
-      // );
       const userId = ctx.session.user.id;
 
       // 1. Find households the current user belongs to
@@ -22,7 +18,7 @@ export const shoppingListRouter = createTRPCRouter({
           },
         },
         select: {
-          id: true, // We only need the household IDs
+          id: true,
         },
       });
 
@@ -41,26 +37,19 @@ export const shoppingListRouter = createTRPCRouter({
                 householdEntries: {
                   some: {
                     householdId: {
-                      in: householdIds, // Check if any of the user's householdIds are in the join table
+                      in: householdIds,
                     },
                   },
                 },
               },
             ],
           },
-          // You might want to include related data here, e.g., the items
+          // The include key word allows us to fetch related data in a single query
+          // TODO review which relations are actually needed here to optimize performance
+          // It might be that we need to create separate endpoints for different use cases
           include: {
-            items: true, // Include shopping items
+            items: true,
             _count: true
-            // You might also want to include the 'createdBy' user,
-            // but be mindful of data size and potential circular references.
-            // createdBy: {
-            //   select: {
-            //     id: true,
-            //     name: true,
-            //     image: true,
-            //   }
-            // }
           }
         })
       } catch (error) {

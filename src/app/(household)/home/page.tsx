@@ -39,7 +39,7 @@ export default async function Home() {
 
   /**
    * // TODO
-    * Need to update the relatrionship between household and main sections in the Prisma schema
+    * Need to update the relationship between household and main sections in the Prisma schema
     * to ensure that each household has its own set of shopping lists, tasks, calendar events, and members.
     * The current schema does not fully support this structure.
     * 
@@ -205,7 +205,7 @@ export default async function Home() {
                         </div>
                       </div>
                       <Badge variant={member.userId === currentHousehold.createdById ? 'default' : 'secondary'}>
-                        {member.userId === currentHousehold.createdById ? 'Owner' : 'memeber'}
+                        {member.userId === currentHousehold.createdById ? 'Owner' : 'member'}
                       </Badge>
                     </div>
                   ))}

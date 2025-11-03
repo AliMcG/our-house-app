@@ -14,6 +14,11 @@ export default async function ShoppingLists() {
 
   const householdList: HouseholdWithRelations = await api.householdRouter.list.query();
 
+  /**
+   * This is a temporary fix to get the current household.
+   * The updated logic in the AddShoppingListForm component requires the household ID to create a new shopping list.
+   * // TODO: Implement proper household selection logic to allow users to select and switch between households.
+   */
   const currentHousehold = householdList[0]
   if (!currentHousehold) {
     throw new Error("No household found for the current user");

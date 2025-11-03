@@ -7,19 +7,23 @@
 - run the command `npm run db:push` to generate the prisma client
 - run the command `npm run dev` to check everything is working.
 
-## Working with type-script
+## Working with type-script and eslint
 
 To help catch type errors in this repo the helper script has been added to the `package.json`
 - `npm run type-check`
 
 This script will check and print out in the terminal any type errors in the code base.
+- `npm run lint`
 
-Please do this beofre pushing to production as the build will fail if there are any uncaught type errors in the code.
+This script will check and print out in the terminal any lint errors in the code base.
+
+
+Please do this before pushing to production as the build will fail if there are any uncaught type or lint errors in the code.
 
 
 ## Resources
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+If you are not familiar with the different technologies used in this project, please refer to the respective docs. 
 
 - [Next.js](https://nextjs.org)
 - [NextAuth.js](https://next-auth.js.org)
@@ -31,9 +35,11 @@ If you are not familiar with the different technologies used in this project, pl
 
 - [Prisma and MongoDB](https://www.prisma.io/docs/orm/overview/databases/mongodb)
 
-## Learn More
-
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorial
+### Vscode extensions
+- Jest - makes running Jest unit tests in vscode easy.
+- Prisma - Adds syntax highlighting to schema files
+- Todo Tree - Adds highlight to all // TODO comments and create a tree for tree traversal in the side menu of vscode
+- Code Spell Checker - checks the code and comments for spelling mistakes
 
 ## Deployed on Vercal
 

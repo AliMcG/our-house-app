@@ -14,21 +14,21 @@ import {
 } from '@/app/_components/ui/dialog'
 import { UserPlus, Loader2, Mail } from 'lucide-react'
 
-interface InviteMemberDialogProps {
-  householdId: string
-}
 
-export function InviteMemberDialog({ householdId }: InviteMemberDialogProps) {
+export function InviteMemberDialog({ householdId }: {householdId: string}) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
 
+  /**
+   * Currently there is no logic to handle inviting a member.
+   * This is a placeholder for future implementation.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     console.log(householdId, email, name);
-
   }
 
   return (

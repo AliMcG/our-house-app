@@ -5,6 +5,13 @@ import type { HouseholdWithRelations } from "../page";
 import Link from "next/link";
 import { Edit2Icon } from "lucide-react";
 
+/**
+ * Component to display a list of households with options to edit and create new households.
+ * @param householdList - An array of household objects with their relations.
+ * // TODO : Add functionality to edit household details.
+ * // TODO : And logic to allow user to select a household to view its details.  
+ */
+
 export const HouseholdList = ({ householdList }: { householdList: HouseholdWithRelations }) => {
     return <header className="flex ml-24 pl-6 p-4 mt-2 space-evenly items-center">
         {householdList.map((household, index) => {

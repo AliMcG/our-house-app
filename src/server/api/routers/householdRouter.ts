@@ -27,11 +27,14 @@ export const householdRouter = createTRPCRouter({
           },
         ],
       },
+      // The include key word allows us to fetch related data in a single query
+      // TODO review which relations are actually needed here to optimize performance
+      // It might be that we need to create separate endpoints for different use cases
       include: {
-        createdBy: true, // This will include the related User object for the creator
+        createdBy: true, 
         members: {
           include: {
-            user: true, // Assuming your HouseholdUser model has a 'user' relation to the User model
+            user: true,
           },
         },
         chores: true,

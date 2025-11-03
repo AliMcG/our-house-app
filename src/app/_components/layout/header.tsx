@@ -8,15 +8,17 @@ import { navigation } from "@/app/utils/navbarLinks";
 import { getRouteName } from "@/app/utils/helperFunctions";
 // import { api } from "@/trpc/react";
 
+/**
+ * // TODO this component is a Work In Progress
+ * The header should show the name of the page and also hold a quick create button
+ * depending on the page you are on.
+ * on the dashboard it should be to create a new household
+ * on the shopping-lists page it should be to create a new shopping list
+ * on the tasks page it should be to create a new task
+ * 
+ * But not clear how to implement this yet.
+ */
 export default function Header(): JSX.Element {
-    /**
-     * // TODO
-     * The header should show the name of the page and also hold a quick create button
-     * depending on the page you are on.
-     * on the dashboard it should be to create a new household
-     * on the shopping-lists page it should be to create a new shopping list
-     * on the tasks page it should be to create a new task
-     */
     // const householdList = api.householdRouter.list.useQuery();
     const pathname = usePathname()
     const currentRouteName = getRouteName(pathname, navigation);
@@ -40,13 +42,10 @@ export default function Header(): JSX.Element {
                     {currentHousehold && (
                         <InviteMemberDialog
                             householdId={currentHousehold.id}
-                            userId={userId}
-                            onMemberInvited={handleMemberInvited}
                         />
                     )}
                     <CreateHouseholdDialog
-                        onHouseholdCreated={handleHouseholdCreated}
-                        userId={userId}                    />
+                        householdId={currentHousehold.id}                   />
                 </div> */}
             </div>
         </header>
