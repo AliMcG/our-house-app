@@ -1,5 +1,11 @@
+https://dbdiagram.io/d/669ac6f48b4bb5230ed6c967 used to model prisma database schema written in DBML syntax:
+
+The following tables are in DBML syntax which can be modaled and downloaded via https://dbdiagram.io
+
+```tsx
+
 table User {
-  id                String   [pk, default: auto(), id, note: "Mapped to _id"]
+  id                String   [pk, note: "Mapped to _id"]
   name              String
   email             String  [unique]
   emailVerified     DateTime
@@ -14,23 +20,23 @@ table User {
 }
 
 table ShoppingItem {
-  id             String       [pk, default: auto(), id, note: "Mapped to _id"]
+  id             String       [pk,  note: "Mapped to _id"]
   name           String
   quantity       Int
   active         Boolean
 
-  ShoppingList   ShoppingList? [fk, delete: cascade] // Relation to ShoppingList, onDelete: Cascade
-  shoppingListId String      [note: "ObjectId"]
+  ShoppingList   ShoppingList 
+  shoppingListId String     [ref: > ShoppingList.id]
 }
 
 table ShoppingList {
-  id          String   [pk, default: auto(), id, note: "Mapped to _id"]
+  id          String   [pk, note: "Mapped to _id"]
   title       String
   items       ShoppingItem[] [ref: < ShoppingItem.shoppingListId, note: "Relation defined on ShoppingItem model"]
-  createdAt   DateTime [default: now()]
-  updatedAt   DateTime [updatedAt]
+  createdAt   DateTime [default: `now()`]
+  updatedAt   DateTime [default: `updatedAt`]
 
-  createdBy     User     [fk] // Relation to User
+  createdBy     User     [pk] // Relation to User
   createdById String   [not null, ref: > User.id]
 
   // Relation to households through the join table
@@ -43,33 +49,31 @@ table ShoppingList {
 
 // Join table for many-to-many relationship between Household and ShoppingList
 table HouseholdShoppingList {
-  id             String   [pk, default: auto(), id, note: "Mapped to _id"]
+  id             String   [pk, note: "Mapped to _id"]
   householdId    String   [not null, note: "ObjectId"]
   shoppingListId String   [not null, note: "ObjectId"]
 
-  household    Household    [fk, onDelete: cascade, ref: < Household.id] // Relation to Household
-  shoppingList ShoppingList [fk, onDelete: cascade, ref: < ShoppingList.id] // Relation to ShoppingList
+  household    Household    [pk, ref: < Household.id] 
+  shoppingList ShoppingList [pk, ref: < ShoppingList.id] 
 
-  indexes {
-    householdId
-    shoppingListId
+
+     Indexes {
+    (shoppingListId, householdId) [unique]
   }
-
-  unique [householdId, shoppingListId] // Ensures unique pairings
 }
 
 // Chores model can be updated as the application grows
 table Chores {
-  id          String       [pk, default: auto(), id, note: "Mapped to _id"]
+  id          String       [pk, note: "Mapped to _id"]
   title       String
   items       ChoresItem[] [ref: < ChoresItem.choresId, note: "Relation defined on ChoresItem model"]
-  createdAt   DateTime     [default: now()]
-  updatedAt   DateTime     [updatedAt]
+createdAt DateTime [default: `now()`]
+  updatedAt DateTime [default: `updatedAt`]
 
-  createdBy     User         [fk] // Relation to User
+  createdBy     User         [pk] 
   createdById String       [not null, ref: > User.id]
 
-  // Relation to households through the join table
+ 
   householdEntries HouseholdChores[] [ref: < HouseholdChores.choresId, note: "Relation defined on HouseholdChores model"]
 
   indexes {
@@ -79,55 +83,51 @@ table Chores {
 
 // Join table for many-to-many relationship between Household and Chores
 table HouseholdChores {
-  id          String   [pk, default: auto(), id, note: "Mapped to _id"]
+  id          String   [pk, note: "Mapped to _id"]
   householdId String   [not null, note: "ObjectId"]
   choresId    String   [not null, note: "ObjectId"]
 
-  household Household [fk, onDelete: cascade, ref: < Household.id] // Relation to Household
-  chores    Chores    [fk, onDelete: cascade, ref: < Chores.id] // Relation to Chores
+  household Household [pk, ref: < Household.id] // Relation to Household
+  chores    Chores    [pk, ref: < Chores.id] // Relation to Chores
 
-  indexes {
-    householdId
-    choresId
+    Indexes {
+    (choresId, householdId) [unique]
   }
-
-  unique [householdId, choresId] // Ensures unique pairings
 }
 
 table Household {
-  id            String                  [pk, default: auto(), id, note: "Mapped to _id"]
+  id            String                  [pk, note: "Mapped to _id"]
   name          String
   createdById   String                  [not null, note: "ObjectId"]
   imageUrl      String
 
-  createdBy     User                    [fk, note: "Defined by relation 'CreatedHouseholds' on User model"] // Relation to User
+  createdBy     User                    [pk, note: "Defined by relation 'CreatedHouseholds' on User model"] // Relation to User
   members       HouseholdUser[]         [ref: < HouseholdUser.householdId, note: "Relation defined on HouseholdUser model"]
   shoppingLists HouseholdShoppingList[] [ref: < HouseholdShoppingList.householdId, note: "Relation defined on HouseholdShoppingList model"]
   chores        HouseholdChores[]       [ref: < HouseholdChores.householdId, note: "Relation defined on HouseholdChores model"]
 }
 
 table ChoresItem {
-  id          String  [pk, default: auto(), id, note: "Mapped to _id"]
+  id          String  [pk, note: "Mapped to _id"]
   name        String
   completedBy String // Nullable based on schema
   active      Boolean
 
-  Chores      Chores [fk, onDelete: cascade] // Relation to Chores
+  Chores      Chores [pk] // Relation to Chores
   choresId    String [note: "ObjectId"]
 }
 
 table HouseholdUser {
-  id          String   [pk, default: auto(), id, note: "Mapped to _id"]
+  id          String   [pk, note: "Mapped to _id"]
   userId      String   [not null, note: "ObjectId"]
   householdId String   [not null, note: "ObjectId"]
 
-  user      User      [fk, ref: < User.id] // Relation to User
-  household Household [fk, onDelete: cascade, ref: < Household.id] // Relation to Household
+  user      User      [pk, ref: < User.id] // Relation to User
+  household Household [pk, ref: < Household.id] // Relation to Household
 
-  indexes {
-    userId
-    householdId
+   Indexes {
+    (userId, householdId) [unique]
   }
-
-  unique [userId, householdId] // Ensures unique pairs
 }
+
+```

@@ -4,7 +4,7 @@ https://dbdiagram.io/d/669ac6f48b4bb5230ed6c967 used to model prisma database sc
 
 # Entity relationship diagrams
 
-![model designs](wireframes/database_models/user_house_shop_and_chors.svg)
+![model designs](wireframes/database_models/schema_modal.svg)
 
 ```tsx
 
