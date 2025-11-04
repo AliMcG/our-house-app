@@ -20,7 +20,7 @@ export default function AddChoresForm() {
 
   // Using the apiName to determine which api to use dynamically.
   const { mutate } = api.chores.create.useMutation({
-    onSuccess: (response) => {
+    onSuccess: () => {
       router.refresh();
     },
   });

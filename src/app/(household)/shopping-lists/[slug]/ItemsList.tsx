@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
 import ItemsListCard from "./ItemsListCard";
 import ConfirmDeleteModal from "@/app/_components/modals/ConfirmModal";
-import { ShoppingItem } from "@prisma/client";
+import type { ShoppingItem } from "@prisma/client";
 
 
 export default function ItemsList({ list }: { list: ShoppingItem[] }) {

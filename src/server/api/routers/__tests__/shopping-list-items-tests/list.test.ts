@@ -8,6 +8,7 @@ import {
 } from "../../utils/testHelpers";
 import dotenv from "dotenv";
 import { TRPCError } from "@trpc/server";
+import { faker } from "@faker-js/faker";
 dotenv.config();
 /**
  * These modules required mocking for Jest to work.
@@ -27,13 +28,14 @@ let newListId: string;
 const editDate = new Date();
 const input = {
   title: `UNIT TEST SHOPPING LIST ITEM: List - ${editDate.toLocaleDateString()}`,
+  householdId: faker.database.mongodbObjectId(),
 };
 
 beforeAll(async () => {
   caller = createCaller(await createContextInner({ session: mockSession }));
   inValidCaller = createCaller(await createContextInner({ session: mockErrorSessionNoID }))
   const shoppingListToDelete = await caller.shoppingList.create(input);
-  newListId = shoppingListToDelete.id
+  newListId = shoppingListToDelete.shoppingListId
 
 });
 afterAll(async () => {

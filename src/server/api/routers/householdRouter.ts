@@ -27,7 +27,28 @@ export const householdRouter = createTRPCRouter({
           },
         ],
       },
-    });
+      // The include key word allows us to fetch related data in a single query
+      // TODO review which relations are actually needed here to optimize performance
+      // It might be that we need to create separate endpoints for different use cases
+      include: {
+        createdBy: true, 
+        members: {
+          include: {
+            user: true,
+          },
+        },
+        chores: true,
+        shoppingLists: {
+          include: {
+            shoppingList: {
+              include: {
+                _count: true
+              }
+            }
+          }
+        },
+      }
+    })
   }),
 
   locate: protectedProcedure
@@ -47,7 +68,7 @@ export const householdRouter = createTRPCRouter({
         data: {
           name: input.name,
           createdBy: { connect: { id: ctx.session.user.id } },
-          imageUrl: "",
+          imageUrl: ctx.session.user.image ?? "",
         },
       });
       const addUser = await addSingleUserToHousehold(

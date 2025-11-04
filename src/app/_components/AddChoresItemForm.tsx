@@ -9,11 +9,6 @@ import FormLabel from "@/app/_components/form/FormLabel";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
-interface iAddItemFormProps {
-  listId: string | null;
-}
-
-
 export default function AddChoresItemForm({ listId }: { listId: string | undefined }) {
   /** As the api mutation in this Component is interacting with a Page (Server Component)
    * we need to use `router.refresh()` to invaliadate the cached data in the Page (Server Component).

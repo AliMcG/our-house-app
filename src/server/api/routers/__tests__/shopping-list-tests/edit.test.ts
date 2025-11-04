@@ -23,21 +23,24 @@ let newListId: string;
 const editDate = new Date();
 const input = {
   title: `UNIT TEST SHOPPING LIST: Edit - ${editDate.toLocaleDateString()}`,
+  householdId: faker.database.mongodbObjectId(),
 };
 const invalidTitleInput = {
   id: process.env.UNIT_TEST_LIST_ID as string,
   title: "",
+  householdId: faker.database.mongodbObjectId(),
 };
 const invalidIdInput = {
   id: faker.database.mongodbObjectId(),
   title: "Invalid ID",
+  householdId: faker.database.mongodbObjectId(),
 };
 
 beforeAll(async () => {
   caller = createCaller(await createContextInner({ session: mockSession }));
   inValidCaller = createCaller(await createContextInner({ session: mockErrorSessionNoID }))
   const shoppingListToDelete = await caller.shoppingList.create(input);
-  newListId = shoppingListToDelete.id
+  newListId = shoppingListToDelete.shoppingListId
 });
 afterAll(async () => {
   await caller.shoppingList.delete({ id: newListId })
