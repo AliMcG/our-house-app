@@ -19,65 +19,92 @@ model User {
   accounts          Account[]
   sessions          Session[]
   shoppingLists     ShoppingList[]
-  chores        Chores[]
+  chores            Chores[]
   createdHouseholds Household[]     @relation("CreatedHouseholds")
   householdMembers  HouseholdUser[] // Relation to households through the join table
 }
 
-model ShoppingList {
-  id        String         @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  items     ShoppingItem[]
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-  sharedHouseholds String[]
-  createdBy   User   @relation(fields: [createdById], references: [id])
-  createdById String @db.ObjectId
-
-  @@index([title])
-}
-
 model ShoppingItem {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  quantity Int
-  active   Boolean
-
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  quantity       Int
+  active         Boolean
   ShoppingList   ShoppingList? @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
   shoppingListId String?       @db.ObjectId
 }
 
-// Chores model can be updated as the application grows
-model Chores {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  items     ChoresItem[] 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  sharedHouseholds String[]
-  createdBy   User @relation(fields: [createdById], references: [id])
-  createdById String @db.ObjectId
+model ShoppingList {
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  items       ShoppingItem[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  createdBy   User           @relation(fields: [createdById], references: [id])
+  createdById String         @db.ObjectId
+
+  // Relation to households through the join table
+  householdEntries HouseholdShoppingList[] @relation("HouseholdShoppingList_ShoppingList")
 
   @@index([title])
 }
 
-model ChoresItem {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  completedBy String?
-  active      Boolean
+model HouseholdShoppingList {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  householdId    String @db.ObjectId
+  shoppingListId String @db.ObjectId
 
-  Chores   Chores? @relation(fields: [choresId], references: [id], onDelete: Cascade)
-  choresId String? @db.ObjectId
+  household    Household    @relation("HouseholdShoppingList_Household", fields: [householdId], references: [id], onDelete: Cascade)
+  shoppingList ShoppingList @relation("HouseholdShoppingList_ShoppingList", fields: [shoppingListId], references: [id], onDelete: Cascade)
+
+  @@unique([householdId, shoppingListId]) // Ensures unique pairings
+}
+
+// Chores model can be updated as the application grows
+model Chores {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  items       ChoresItem[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  createdBy   User         @relation(fields: [createdById], references: [id])
+  createdById String       @db.ObjectId
+
+  // Relation to households through the join table
+  householdEntries HouseholdChores[] @relation("HouseholdChores_Chores")
+
+  @@index([title])
+}
+
+model HouseholdChores {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  householdId String @db.ObjectId
+  choresId    String @db.ObjectId
+
+  household Household @relation("HouseholdChores_Household", fields: [householdId], references: [id], onDelete: Cascade)
+  chores    Chores    @relation("HouseholdChores_Chores", fields: [choresId], references: [id], onDelete: Cascade)
+
+  @@unique([householdId, choresId]) // Ensures unique pairings
 }
 
 model Household {
-  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  id            String                  @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  createdById   String                  @db.ObjectId
+  imageUrl      String
+  createdBy     User                    @relation(fields: [createdById], references: [id], name: "CreatedHouseholds")
+  // Relation to other models through join tables
+  members       HouseholdUser[]
+  shoppingLists HouseholdShoppingList[] @relation("HouseholdShoppingList_Household")
+  chores       HouseholdChores[]       @relation("HouseholdChores_Household")
+}
+
+model ChoresItem {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
   name        String
-  createdBy   User            @relation(fields: [createdById], references: [id], name: "CreatedHouseholds")
-  createdById String          @db.ObjectId
-  imageUrl    String
-  members     HouseholdUser[] // Relation to users through the join table
+  completedBy String?
+  active      Boolean
+  Chores      Chores? @relation(fields: [choresId], references: [id], onDelete: Cascade)
+  choresId    String? @db.ObjectId
 }
 
 model HouseholdUser {

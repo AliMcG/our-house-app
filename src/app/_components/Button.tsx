@@ -21,8 +21,8 @@ const buttonStyles = cva(
       intent: {
         primary: "text-white hover:bg-[#cdacec] bg-[#b372f0]",
         secondary: "text-slate-800 bg-white hover:bg-slate-200",
-        singin: "text-white hover:bg-[#cdacec] bg-[#b372f0]",
-        singout: "text-black bg-[#b372f0] hover:bg-[#cdacec] shadow-sm active:shadow-inner"
+        signin: "text-white hover:bg-[#cdacec] bg-[#b372f0]",
+        signout: "text-black bg-[#b372f0] hover:bg-[#cdacec] shadow-sm active:shadow-inner"
       },
       size: {
         small: "px-1 py-0.1",
@@ -32,7 +32,7 @@ const buttonStyles = cva(
     },
     compoundVariants: [
       {
-        intent: "singout",
+        intent: "signout",
         size: "small",
         class: "w-full px-1 py-3 text-xs",
       },
@@ -45,7 +45,7 @@ const buttonStyles = cva(
 );
 export interface CombinedButtonProps
   extends ButtonProps,
-    VariantProps<typeof buttonStyles> {}
+  VariantProps<typeof buttonStyles> { }
 
 const Button = ({ children, className, intent, size, ...rest }: CombinedButtonProps) => {
   return (

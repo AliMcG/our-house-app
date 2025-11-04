@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import AuthButton from "./AuthenticationButton";
+import AuthButton from "../AuthenticationButton";
 import HomePageImage from "@/public/home_logo_final.svg";
-import Button from "./Button";
-import { navbarLinks } from "../utils/navbarLinks";
+import Button from "../Button";
+import { navbarLinks } from "../../utils/navbarLinks";
 
 
 export default function SideNavigationBar(): JSX.Element {
@@ -37,32 +37,32 @@ export default function SideNavigationBar(): JSX.Element {
     <aside className={`flex flex-col justify-between h-screen w-[80px] px-1 py-2 ${xTranslateMenu} md:translate-x-0 transition transform ease-in-out duration-300 bg-fuchsia-500 z-[999]`}>
       <Link href={"/home"} className="flex self-center relative w-9/12">
         <Image
-          src={HomePageImage as string} 
-          alt="logo" 
-          width={60} 
-          height={60} 
+          src={HomePageImage as string}
+          alt="logo"
+          width={60}
+          height={60}
           className="w-full h-auto"
         />
       </Link>
       <nav>
         <ul onClick={() => setMenuOpen(prevState => !prevState)}>
-        {
-          navbarLinks.map((item, index) => {
-            return (
-              <li key={index}>
-                <Link href={item.link}>
-                  <Image
-                    src={item.icon} 
-                    alt={item.name} 
-                    width={60} 
-                    height={60} 
-                    className="w-full h-auto"
-                  />
-                </Link>
-              </li>
-            )
-          })
-        }
+          {
+            navbarLinks.map((item, index) => {
+              return (
+                <li key={index}>
+                  <Link href={item.href}>
+                    <Image
+                      src={item.icon as string}
+                      alt={item.name}
+                      width={60}
+                      height={60}
+                      className="w-full h-auto"
+                    />
+                  </Link>
+                </li>
+              )
+            })
+          }
         </ul>
       </nav>
       <AuthButton size="small" />

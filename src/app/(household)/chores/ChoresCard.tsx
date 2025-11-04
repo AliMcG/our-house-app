@@ -24,7 +24,7 @@ export default function ChoresCard({ choresList }: { choresList: Chores }) {
     },
   });
   const { mutate: editMutate } = api.chores.edit.useMutation({
-    onSuccess: (response) => {
+    onSuccess: () => {
       router.refresh();
     },
   });

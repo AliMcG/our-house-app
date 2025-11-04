@@ -2,6 +2,7 @@ import Card from "@/app/_components/Card";
 import AddShoppingListForm from "../../_components/AddShoppingListForm";
 import ShoppingListCard from "./ShoppingListCard";
 import { api } from "@/trpc/server";
+import type { HouseholdWithRelations } from "../home/page";
 
 
 export default async function ShoppingLists() {
@@ -10,7 +11,19 @@ export default async function ShoppingLists() {
    * Which should result in faster load times for the data.
    */
   const shoppingList = await api.shoppingList.list.query();
- 
+
+  const householdList: HouseholdWithRelations = await api.householdRouter.list.query();
+
+  /**
+   * This is a temporary fix to get the current household.
+   * The updated logic in the AddShoppingListForm component requires the household ID to create a new shopping list.
+   * // TODO: Implement proper household selection logic to allow users to select and switch between households.
+   */
+  const currentHousehold = householdList[0]
+  if (!currentHousehold) {
+    throw new Error("No household found for the current user");
+  }
+
   return (
     <article className="flex min-h-screen flex-col bg-white pt-16 text-slate-800">
       <header className="flex items-center justify-center p-4">
@@ -20,7 +33,7 @@ export default async function ShoppingLists() {
       </header>
       <div className="mt-5 flex justify-center">
         <Card>
-          <AddShoppingListForm />
+          <AddShoppingListForm householdId={currentHousehold?.id} />
         </Card>
       </div>
       {shoppingList?.map((listItem, index) => {

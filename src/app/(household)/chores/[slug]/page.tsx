@@ -19,7 +19,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
       <article className="flex min-h-screen flex-col bg-white pt-16 text-slate-800">
         <header className="flex items-center justify-center p-4">
           <Link
-            href={navbarLinks[1]!.link}
+            href={navbarLinks[1]!.href}
             className="w-[32px] h-[32px] mr-2 rounded-md hover:bg-gray-200 transition"
             data-cy="choresLink-back-button"
           >
