@@ -13,7 +13,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
   const shoppingListId = convertURLtoString(params.slug);
   const shoppingList = await api.shoppingList.findById.query({ listId: shoppingListId });
 
-  const shoppingListItems = await api.shoppingListItem.list.query({ listId: shoppingListId });
+  const shoppingListItems = await api.shoppingListItem.list.query({ shoppingListId: shoppingListId });
 
   return (
     <div>
