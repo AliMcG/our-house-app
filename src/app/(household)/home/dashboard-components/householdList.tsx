@@ -12,7 +12,7 @@ import { Edit2Icon } from "lucide-react";
  * // TODO : And logic to allow user to select a household to view its details.  
  */
 
-export const HouseholdList = ({ householdList }: { householdList: HouseholdWithRelations }) => {
+export const HouseholdList = ({ householdList }: { householdList: HouseholdWithRelations[] }) => {
     return <header className="flex ml-24 pl-6 p-4 mt-2 space-evenly items-center">
         {householdList.map((household, index) => {
             return (
