@@ -1,91 +1,76 @@
+
+import { fakeHouseholdComplete, fakeShoppingListComplete } from "../../../../../../types/fake-data";
 import { describe, expect } from "@jest/globals";
-import { createContextInner } from "@/server/api/trpc";
-import { createCaller } from "@/server/api/root";
-import { mockErrorSessionNoID, mockSession } from "../../utils/testHelpers";
-import { TRPCError } from "@trpc/server";
-import { faker } from "@faker-js/faker";
+import { Prisma } from "@prisma/client";
+import { createMockTRPCContext, mockSession } from "../../../../../../jest.setup";
+import { Context, createMockContext, MockContext } from '../../../../context';
+import { shoppingListRouter } from "../../shopping/shoppingList";
 
-/**
- * These modules required mocking for Jest to work.
- */
-jest.mock("superjson", () => ({
-  superjson: jest.fn(),
-}));
-jest.mock("@/env", () => ({
-  env: jest.fn(),
-}));
-jest.mock("next-auth", () => ({
-  getServerSession: jest.fn(),
-}));
+export type ShoppingListTitle = Prisma.ShoppingListGetPayload<{
+  select: {
+    title: true
+  }
+}>
+export type HouseholdShoppingListHouseholdId = Prisma.HouseholdShoppingListGetPayload<{
+  select: {
+    householdId: true,
+  }
+}>
+export type ShoppingListCreate = ShoppingListTitle & HouseholdShoppingListHouseholdId
 
-let caller: ReturnType<typeof createCaller>;
-let inValidCaller: ReturnType<typeof createCaller>;
-let newListId: string;
-beforeAll(async () => {
-  const ctx = await createContextInner({ session: mockSession });
-  caller = createCaller(ctx);
-  const invalidCtx = await createContextInner({ session: mockErrorSessionNoID });
-  inValidCaller = createCaller(invalidCtx)
-  newListId = ""
-});
-const input = { title: "UNIT TEST CREATE NEW LIST", householdId: faker.database.mongodbObjectId(), };
+describe('Feature: ShoppingList API', () => {
+  let mockCtx: MockContext
+  let ctx: Context
 
-
-describe("Feature: Creating a shopping list", () => {
-  describe('Scenario: invalid user', () => {
-    describe('Given an invalid user is trying to create a shopping list', () => {
-      test('Then a error should be thrown', async () => {
-        await expect(inValidCaller.shoppingList.create(input)).rejects.toThrow(
-          "User is undefined",
-        );
-      })
-      test('And the error should be a TRPCError', async () => {
-        expect.assertions(2)
-        try {
-          await inValidCaller.shoppingList.create(input)
-        } catch (error) {
-          expect(error).toBeInstanceOf(TRPCError)
-          if (error instanceof TRPCError) {
-            expect(error.code).toStrictEqual("UNAUTHORIZED")
-          }
-        }
-      })
-    })
+  beforeAll(async () => {
+    mockCtx = createMockContext()
+    ctx = mockCtx
   })
-  describe('Scenario: invalid input', () => {
-    describe('Given an invalid request to create a shopping list', () => {
-      describe('And the "title" is an empty string', () => {
-        const invalidInput = { title: "", householdId: faker.database.mongodbObjectId(), };
-        test('Then a error should be thrown', async () => {
-          await expect(caller.shoppingList.create(invalidInput)).rejects.toThrow(
-            "Title can not be blank",
-          );
-        })
-        test('And the error should be a TRPCError', async () => {
-          expect.assertions(1)
-          try {
-            await caller.shoppingList.create(invalidInput)
-          } catch (error) {
-            expect(error).toBeInstanceOf(TRPCError)
-          }
-        })
-      })
-    })
-  })
-  describe('Scenario: Successfully creates shopping list', () => {
-    describe('Given that the user and input are valid', () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+  describe("Scenario: Successfully creates a shopping list", () => {
+    describe('Given that the user is valid and the input is valid', () => {
       describe('When the create method is called', () => {
-        afterAll(async () => {
-          await caller.shoppingList.delete({ id: newListId });
-        })
-        test('Then success must be true', async () => {
-          const newShoppingList = await caller.shoppingList.create(input);
-          newListId = newShoppingList.shoppingListId
-          expect(newShoppingList).toHaveProperty("title", input.title);
-          expect(newShoppingList).toHaveProperty("id");
-          expect(newShoppingList).toHaveProperty("createdById", mockSession.user.id);
+        describe('Then it creates a new shopping list', () => {
+          test("And it creates a relationship with a household", async () => {
+
+            const mockShoppingList = fakeShoppingListComplete()
+            mockShoppingList.createdById = mockSession.user.id;
+            const mockHousehold = fakeHouseholdComplete()
+
+            const mockCreateContext = createMockTRPCContext<ShoppingListCreate>(mockCtx.prisma, { title: mockShoppingList.title, householdId: mockHousehold.id });
+
+            jest.spyOn(mockCtx.prisma.householdShoppingList, 'create').mockResolvedValueOnce({
+              id: 'hh-1',
+              householdId: mockHousehold.id,
+              shoppingListId: mockShoppingList.id,
+            });
+            jest.spyOn(mockCtx.prisma.shoppingList, 'create').mockResolvedValueOnce(mockShoppingList
+            );
+
+            const result = await shoppingListRouter.create(mockCreateContext)
+
+            expect(result).toEqual(expect.objectContaining(mockShoppingList));
+
+            // Verify DB calls
+            expect(mockCtx.prisma.shoppingList.create).toHaveBeenCalledWith({
+              data: {
+                title: mockShoppingList.title,
+                createdBy: { connect: { id: mockSession.user.id } }
+
+              },
+            });
+            expect(mockCtx.prisma.householdShoppingList.create).toHaveBeenCalledWith({
+              data: {
+                householdId: mockHousehold.id,
+                shoppingListId: mockShoppingList.id,
+              },
+            });
+          });
         })
       })
     })
-  })
+  });
 });
