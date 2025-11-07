@@ -4,6 +4,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator custom_generator {
+  provider = "prisma-generator-fake-data"
+  output   = "../types/fake-data.ts"
+}
+
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
@@ -95,7 +100,7 @@ model Household {
   // Relation to other models through join tables
   members       HouseholdUser[]
   shoppingLists HouseholdShoppingList[] @relation("HouseholdShoppingList_Household")
-  chores       HouseholdChores[]       @relation("HouseholdChores_Household")
+  chores        HouseholdChores[]       @relation("HouseholdChores_Household")
 }
 
 model ChoresItem {
@@ -117,7 +122,7 @@ model HouseholdUser {
   @@unique([userId, householdId]) // Ensures unique pairs
 }
 
-// The folowing models are required for next-auth to work
+// The following models are required for next-auth to work
 // Do Not Change.
 // Necessary for Next auth
 model VerificationToken {
