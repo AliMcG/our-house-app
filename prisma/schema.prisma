@@ -17,10 +17,10 @@ datasource db {
 // User modal can be updated as the application grows
 model User {
   id                String          @id @default(auto()) @map("_id") @db.ObjectId
-  name              String?
-  email             String?         @unique
-  emailVerified     DateTime?
-  image             String?
+  name              String
+  email             String       @unique
+  emailVerified     DateTime
+  image             String
   accounts          Account[]
   sessions          Session[]
   shoppingLists     ShoppingList[]
@@ -35,7 +35,7 @@ model ShoppingItem {
   quantity       Int
   active         Boolean
   ShoppingList   ShoppingList? @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
-  shoppingListId String?       @db.ObjectId
+  shoppingListId String     @db.ObjectId
 }
 
 model ShoppingList {
@@ -109,7 +109,7 @@ model ChoresItem {
   completedBy String?
   active      Boolean
   Chores      Chores? @relation(fields: [choresId], references: [id], onDelete: Cascade)
-  choresId    String? @db.ObjectId
+  choresId    String @db.ObjectId
 }
 
 model HouseholdUser {
