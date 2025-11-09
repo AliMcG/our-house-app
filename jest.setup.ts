@@ -34,11 +34,18 @@ jest.mock("next-auth", () => ({
  * @param {MockedInputType} [input] - Optional input - used if the router method has an input value.
  * @example
  * ```ts
- * interface ShoppingList {
+ * let mockCtx: MockContext
+ * let ctx: Context
+ * 
+ * beforeAll(async () => {
+ *      mockCtx = createMockContext()
+ *      ctx = mockCtx
+ * })
+ * type ShoppingListCreate = {
  *      title: string;
  *      householdId: string;
  * };
- * const mockCreateContext = createMockTRPCContext<ShoppingList>({ title: 'New List', householdId: 'household-1' });
+ * const mockCreateContext = createMockTRPCContext<ShoppingListCreate>(mockCtx.prisma, { title: 'New List', householdId: 'household-1' });
  * const result = await shoppingListRouter.create(mockCreateContext)
  * ```
  */
