@@ -26,11 +26,11 @@ export type HouseholdWithRelations = Prisma.HouseholdGetPayload<{
     chores: true,
     shoppingLists: true
   }
-}>[]
+}>
 
 export default async function Home() {
 
-  const householdList: HouseholdWithRelations = await api.householdRouter.list.query();
+  const householdList: HouseholdWithRelations[] = await api.householdRouter.list.query();
 
   // TODO : determine current household logic how can we tell which household is current?
   // for now we will just take the first household in the list

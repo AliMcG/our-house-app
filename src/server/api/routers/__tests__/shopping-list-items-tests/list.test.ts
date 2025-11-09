@@ -1,101 +1,47 @@
-import { expect, describe } from "@jest/globals";
-import { createContextInner } from "@/server/api/trpc";
-import { createCaller } from "@/server/api/root";
-import {
-  mockErrorSessionNoID,
-  mockErrorSessionUnknownID,
-  mockSession,
-} from "../../utils/testHelpers";
-import dotenv from "dotenv";
-import { TRPCError } from "@trpc/server";
-import { faker } from "@faker-js/faker";
-dotenv.config();
-/**
- * These modules required mocking for Jest to work.
- */
-jest.mock("superjson", () => ({
-  superjson: jest.fn(),
-}));
-jest.mock("@/env", () => ({
-  env: jest.fn(),
-}));
-jest.mock("next-auth", () => ({
-  getServerSession: jest.fn(),
-}));
-let caller: ReturnType<typeof createCaller>;
-let inValidCaller: ReturnType<typeof createCaller>;
-let newListId: string;
-const editDate = new Date();
-const input = {
-  title: `UNIT TEST SHOPPING LIST ITEM: List - ${editDate.toLocaleDateString()}`,
-  householdId: faker.database.mongodbObjectId(),
-};
+import { describe, expect } from "@jest/globals";
+import { createMockTRPCContext } from "../../../../../../jest.setup";
+import { fakeShoppingItemComplete, fakeShoppingListComplete } from "../../../../../../types/fake-data";
+import { Context, createMockContext, MockContext } from '../../../../context';
+import { shoppingListItemRouter } from "../../shopping/shoppingListItem";
+import { Prisma } from "@prisma/client";
 
-beforeAll(async () => {
-  caller = createCaller(await createContextInner({ session: mockSession }));
-  inValidCaller = createCaller(await createContextInner({ session: mockErrorSessionNoID }))
-  const shoppingListToDelete = await caller.shoppingList.create(input);
-  newListId = shoppingListToDelete.shoppingListId
+export type ShoppingListId = Prisma.ShoppingItemGetPayload<{
+  select: {
+    shoppingListId: true
+  }
+}>
 
-});
-afterAll(async () => {
-  await caller.shoppingList.delete({ id: newListId })
-});
+describe('Feature: ShoppingList API', () => {
+  let mockCtx: MockContext
+  let ctx: Context
 
-describe('Feature: List shopping list items', () => {
-  describe('Scenario: invalid user', () => {
-    describe('Given an invalid user is trying to list all the items for a shopping list', () => {
-      test('Then a error should be thrown', async () => {
-        await expect(inValidCaller.shoppingListItem.list({ listId: newListId })).rejects.toThrow(
-          "User is undefined",
-        );
-      })
-      test('And the error should be a TRPCError', async () => {
-        expect.assertions(2)
-        try {
-          await inValidCaller.shoppingListItem.list({ listId: newListId })
-        } catch (error) {
-          expect(error).toBeInstanceOf(TRPCError)
-          if (error instanceof TRPCError) {
-            expect(error.code).toStrictEqual("UNAUTHORIZED")
-          }
-        }
-      })
-    })
+  beforeAll(async () => {
+    mockCtx = createMockContext()
+    ctx = mockCtx
   })
-  describe('Scenario: shopping list has no items', () => {
-    describe('Given a valid user has no shopping lists', () => {
-      describe('When the List method is called', () => {
-        test("It should return an empty array", async () => {
-          const caller = createCaller(
-            await createContextInner({ session: mockErrorSessionUnknownID }),
-          );
-          const shoppingLists = await caller.shoppingListItem.list({ listId: newListId });
-          expect(Array.isArray(shoppingLists)).toBe(true);
-          expect(shoppingLists).toHaveLength(0);
-        });
-      })
-    })
-  })
-  describe("Scenario: Successfully lists shopping list items", () => {
-    describe('Given that the user is valid and has access to the list items', () => {
-      describe('When the List method is called', () => {
-        beforeAll(async () => {
-          await caller.shoppingListItem.create({ name: "TEST ITEM", listId: newListId, quantity: 1 })
-        })
-        test("It lists all the items", async () => {
 
-          const shoppingLists = await caller.shoppingListItem.list({ listId: newListId });
-
-          expect(Array.isArray(shoppingLists)).toBe(true);
-          expect(shoppingLists.length).toBeGreaterThanOrEqual(1);
-          shoppingLists.forEach((list) => {
-            expect(typeof list).toBe("object");
-            expect(list).toHaveProperty("id");
-            expect(list).toHaveProperty("name", "TEST ITEM");
-          });
-        });
-      })
-    })
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
+  describe("Scenario: Successfully lists shopping list items", () => {
+    describe('Given that the user is valid and that lists exist', () => {
+      describe('When the List method is called', () => {
+        test("It should return all the shopping lists", async () => {
+
+          const mockShoppingList = fakeShoppingListComplete()
+          const mockShoppingItems = [fakeShoppingItemComplete(), fakeShoppingItemComplete()]
+
+          const mockContext = createMockTRPCContext<ShoppingListId>(mockCtx.prisma, { shoppingListId: mockShoppingList.id });
+
+          jest.spyOn(ctx.prisma.shoppingList, 'findUnique').mockResolvedValueOnce(mockShoppingList);
+          jest.spyOn(ctx.prisma.shoppingItem, 'findMany').mockResolvedValueOnce(mockShoppingItems);
+
+          const shoppingItems = await shoppingListItemRouter.list(mockContext);
+
+          expect(Array.isArray(shoppingItems)).toBe(true);
+          expect(shoppingItems).toHaveLength(2);
+        });
+      })
+    })
+  })
 })

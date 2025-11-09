@@ -4,41 +4,33 @@ import {
   protectedProcedure,
 } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
-import { ObjectId } from "bson";
 
 
 export const shoppingListItemRouter = createTRPCRouter({
   list: protectedProcedure
-    .input(z.object({ listId: z.string().min(1) }))
+    .input(z.object({ shoppingListId: z.string().min(1) }))
     .query(async ({ ctx, input }) => {
-      if (ObjectId.isValid(ctx.session.user.id)) {
-        const listFound = await ctx.db.shoppingList.findUnique({
-          where: { id: input.listId },
-        });
-        if (listFound) {
-          try {
-            return await ctx.db.shoppingItem.findMany({
-              where: {
-                shoppingListId: listFound.id
-              }
-            });
-          } catch (err) {
-            throw new TRPCError({
-              code: "INTERNAL_SERVER_ERROR",
-              message: "Failed to retrieve shopping list item",
-            });
-          }
-        } else {
+
+      const listFound = await ctx.db.shoppingList.findUnique({
+        where: { id: input.shoppingListId },
+      });
+      if (listFound) {
+        try {
+          return await ctx.db.shoppingItem.findMany({
+            where: {
+              shoppingListId: listFound.id
+            }
+          });
+        } catch (err) {
           throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "strange, list id not found",
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to retrieve shopping list item",
           });
         }
-
       } else {
         throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "User is undefined",
+          code: "NOT_FOUND",
+          message: "strange, list id not found",
         });
       }
     }),

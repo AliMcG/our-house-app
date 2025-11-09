@@ -12,7 +12,7 @@ export default async function ShoppingLists() {
    */
   const shoppingList = await api.shoppingList.list.query();
 
-  const householdList: HouseholdWithRelations = await api.householdRouter.list.query();
+  const householdList: HouseholdWithRelations[] = await api.householdRouter.list.query();
 
   /**
    * This is a temporary fix to get the current household.

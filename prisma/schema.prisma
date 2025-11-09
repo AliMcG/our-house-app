@@ -4,6 +4,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Use either the command `npx prisma generate` or `npm i` to re-generate the mock data after any schema changes. 
+generator custom_generator {
+  provider = "prisma-generator-fake-data"
+  output   = "../types/fake-data.ts"
+}
+
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
@@ -12,10 +18,10 @@ datasource db {
 // User modal can be updated as the application grows
 model User {
   id                String          @id @default(auto()) @map("_id") @db.ObjectId
-  name              String?
-  email             String?         @unique
+  name              String
+  email             String       @unique
   emailVerified     DateTime?
-  image             String?
+  image             String
   accounts          Account[]
   sessions          Session[]
   shoppingLists     ShoppingList[]
@@ -30,7 +36,7 @@ model ShoppingItem {
   quantity       Int
   active         Boolean
   ShoppingList   ShoppingList? @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
-  shoppingListId String?       @db.ObjectId
+  shoppingListId String     @db.ObjectId
 }
 
 model ShoppingList {
@@ -95,7 +101,7 @@ model Household {
   // Relation to other models through join tables
   members       HouseholdUser[]
   shoppingLists HouseholdShoppingList[] @relation("HouseholdShoppingList_Household")
-  chores       HouseholdChores[]       @relation("HouseholdChores_Household")
+  chores        HouseholdChores[]       @relation("HouseholdChores_Household")
 }
 
 model ChoresItem {
@@ -104,7 +110,7 @@ model ChoresItem {
   completedBy String?
   active      Boolean
   Chores      Chores? @relation(fields: [choresId], references: [id], onDelete: Cascade)
-  choresId    String? @db.ObjectId
+  choresId    String @db.ObjectId
 }
 
 model HouseholdUser {
@@ -117,7 +123,7 @@ model HouseholdUser {
   @@unique([userId, householdId]) // Ensures unique pairs
 }
 
-// The folowing models are required for next-auth to work
+// The following models are required for next-auth to work
 // Do Not Change.
 // Necessary for Next auth
 model VerificationToken {

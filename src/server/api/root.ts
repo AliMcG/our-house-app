@@ -1,6 +1,6 @@
 import { householdRouter } from "@/server/api/routers/householdRouter";
-import { shoppingListRouter } from "@/server/api/routers/shoppingList";
-import { shoppingListItemRouter } from "./routers/shoppingListItem";
+import { shoppingListRouter } from "@/server/api/routers/shopping/shoppingList";
+import { shoppingListItemRouter } from "./routers/shopping/shoppingListItem";
 import { choresRouter } from "./routers/chores";
 import { choresItemRouter } from "./routers/choresItem";
 import { householdUserRouter } from "./routers/householdUserRouter"

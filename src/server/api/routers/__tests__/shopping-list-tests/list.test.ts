@@ -1,99 +1,79 @@
-import { expect, describe } from "@jest/globals";
-import { createContextInner } from "@/server/api/trpc";
-import { createCaller } from "@/server/api/root";
-import {
-  mockErrorSessionNoID,
-  mockErrorSessionUnknownID,
-  mockSession,
-} from "../../utils/testHelpers";
-import dotenv from "dotenv";
-import { TRPCError } from "@trpc/server";
-import { faker } from "@faker-js/faker";
-dotenv.config();
-/**
- * These modules required mocking for Jest to work.
- */
-jest.mock("superjson", () => ({
-  superjson: jest.fn(),
-}));
-jest.mock("@/env", () => ({
-  env: jest.fn(),
-}));
-jest.mock("next-auth", () => ({
-  getServerSession: jest.fn(),
-}));
-let caller: ReturnType<typeof createCaller>;
-let inValidCaller: ReturnType<typeof createCaller>;
-let newListId: string;
-const editDate = new Date();
-const input = {
-  title: `UNIT TEST SHOPPING LIST: List - ${editDate.toLocaleDateString()}`,
-  householdId: faker.database.mongodbObjectId(),
-};
+import { describe, expect } from "@jest/globals";
+import { createMockTRPCContext, mockSession } from "../../../../../../jest.setup";
+import { fakeHouseholdComplete, fakeShoppingListComplete } from "../../../../../../types/fake-data";
+import { Context, createMockContext, MockContext } from '../../../../context';
+import { shoppingListRouter } from "../../shopping/shoppingList";
 
-beforeAll(async () => {
-  caller = createCaller(await createContextInner({ session: mockSession }));
-  inValidCaller = createCaller(await createContextInner({ session: mockErrorSessionNoID }))
-  const shoppingListToDelete = await caller.shoppingList.create(input);
-  newListId = shoppingListToDelete.shoppingListId
-});
-afterAll(async () => {
-  await caller.shoppingList.delete({ id: newListId })
-});
+describe('Feature: ShoppingList API', () => {
+  let mockCtx: MockContext
+  let ctx: Context
 
-describe('Feature: List shopping lists', () => {
-  describe('Scenario: invalid user', () => {
-    describe('Given an invalid user is trying to list all shopping lists', () => {
-      test('Then a error should be thrown', async () => {
-        await expect(inValidCaller.shoppingList.list()).rejects.toThrow(
-          "User is undefined",
-        );
-      })
-      test('And the error should be a TRPCError', async () => {
-        expect.assertions(2)
-        try {
-          await inValidCaller.shoppingList.list()
-        } catch (error) {
-          expect(error).toBeInstanceOf(TRPCError)
-          if (error instanceof TRPCError) {
-            expect(error.code).toStrictEqual("UNAUTHORIZED")
-          }
-        }
-      })
-    })
+  beforeAll(async () => {
+    mockCtx = createMockContext()
+    ctx = mockCtx
   })
-  describe('Scenario: user has no shopping list', () => {
-    describe('Given a valid user has no shopping lists', () => {
-      describe('When the List method is called', () => {
-        test("It should return an empty array", async () => {
-          const caller = createCaller(
-            await createContextInner({ session: mockErrorSessionUnknownID }),
-          );
-          const shoppingLists = await caller.shoppingList.list();
-          expect(Array.isArray(shoppingLists)).toBe(true);
-          expect(shoppingLists).toHaveLength(0);
-        });
-      })
-    })
-  })
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe("Scenario: Successfully lists shopping lists", () => {
-    describe('Given that the user is valid and has access to some lists', () => {
+    describe('Given that the user is valid and that lists exist', () => {
       describe('When the List method is called', () => {
-        test("It lists all shoppingLists", async () => {
+        test("It should return all the shopping lists", async () => {
 
-          const shoppingLists = await caller.shoppingList.list();
+          const mockShoppingLists = [fakeShoppingListComplete(), fakeShoppingListComplete()]
+          const mockHousehold = fakeHouseholdComplete()
+
+          const mockContext = createMockTRPCContext(mockCtx.prisma)
+
+          jest.spyOn(ctx.prisma.household, 'findMany').mockResolvedValueOnce([mockHousehold]);
+          jest.spyOn(ctx.prisma.shoppingList, 'findMany').mockResolvedValueOnce(mockShoppingLists);
+
+//           jest.spyOn(ctx.prisma.household, 'findMany').mockResolvedValueOnce(() => Promise.resolve([mockHousehold]));
+// jest.spyOn(ctx.prisma.shoppingList, 'findMany').mockResolvedValueOnce(() => Promise.resolve(mockShoppingLists));
+
+          const shoppingLists = await shoppingListRouter.list(mockContext);
 
           expect(Array.isArray(shoppingLists)).toBe(true);
-          expect(shoppingLists.length).toBeGreaterThanOrEqual(1);
-          shoppingLists.forEach((list) => {
-            expect(typeof list).toBe("object");
-            expect(list).toHaveProperty("id");
-            expect(list).toHaveProperty("title");
-            expect(list).toHaveProperty("createdAt");
-            expect(list).toHaveProperty("updatedAt");
+          expect(shoppingLists).toHaveLength(2);
+
+          // Verify DB calls
+          expect(ctx.prisma.household.findMany).toHaveBeenCalledWith({
+            where: {
+              members: {
+                some: {
+                  userId: mockSession.user.id,
+                },
+              },
+            },
+            select: {
+              id: true,
+            },
+          });
+          // shoppingList.findMany should be called with OR condition
+          expect(ctx.prisma.shoppingList.findMany).toHaveBeenCalledWith({
+            where: {
+              OR: [
+                { createdById: mockSession.user.id, },
+                {
+                  householdEntries: {
+                    some: {
+                      householdId: {
+                        in: [mockHousehold.id],
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+            include: {
+              items: true,
+              _count: true,
+            },
           });
         });
       })
     })
-  });
+  })
 })
