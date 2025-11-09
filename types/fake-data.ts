@@ -8,7 +8,7 @@ export function fakeUser() {
   return {
     name: faker.person.fullName(),
     email: faker.internet.email(),
-    emailVerified: faker.date.anytime(),
+    emailVerified: undefined,
     image: faker.image.avatar(),
   };
 }
@@ -17,7 +17,7 @@ export function fakeUserComplete() {
     id: faker.string.uuid(),
     name: faker.person.fullName(),
     email: faker.internet.email(),
-    emailVerified: faker.date.anytime(),
+    emailVerified: undefined,
     image: faker.image.avatar(),
   };
 }
