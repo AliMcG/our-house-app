@@ -6,19 +6,19 @@ import Decimal from 'decimal.js';
 
 export function fakeUser() {
   return {
-    name: undefined,
-    email: undefined,
-    emailVerified: undefined,
-    image: undefined,
+    name: faker.person.fullName(),
+    email: faker.internet.email(),
+    emailVerified: faker.date.anytime(),
+    image: faker.image.avatar(),
   };
 }
 export function fakeUserComplete() {
   return {
     id: faker.string.uuid(),
-    name: undefined,
-    email: undefined,
-    emailVerified: undefined,
-    image: undefined,
+    name: faker.person.fullName(),
+    email: faker.internet.email(),
+    emailVerified: faker.date.anytime(),
+    image: faker.image.avatar(),
   };
 }
 export function fakeShoppingItem() {
@@ -34,7 +34,7 @@ export function fakeShoppingItemComplete() {
     name: faker.person.fullName(),
     quantity: faker.number.int(),
     active: faker.datatype.boolean(),
-    shoppingListId: undefined,
+    shoppingListId: faker.string.uuid(),
   };
 }
 export function fakeShoppingList() {
@@ -108,7 +108,7 @@ export function fakeChoresItemComplete() {
     name: faker.person.fullName(),
     completedBy: undefined,
     active: faker.datatype.boolean(),
-    choresId: undefined,
+    choresId: faker.string.uuid(),
   };
 }
 export function fakeHouseholdUserComplete() {

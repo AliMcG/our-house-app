@@ -27,8 +27,11 @@ describe('Feature: ShoppingList API', () => {
 
           const mockContext = createMockTRPCContext(mockCtx.prisma)
 
-          jest.spyOn(mockCtx.prisma.household, 'findMany').mockResolvedValueOnce([mockHousehold]);
-          jest.spyOn(mockCtx.prisma.shoppingList, 'findMany').mockResolvedValueOnce(mockShoppingLists);
+          jest.spyOn(ctx.prisma.household, 'findMany').mockResolvedValueOnce([mockHousehold]);
+          jest.spyOn(ctx.prisma.shoppingList, 'findMany').mockResolvedValueOnce(mockShoppingLists);
+
+//           jest.spyOn(ctx.prisma.household, 'findMany').mockResolvedValueOnce(() => Promise.resolve([mockHousehold]));
+// jest.spyOn(ctx.prisma.shoppingList, 'findMany').mockResolvedValueOnce(() => Promise.resolve(mockShoppingLists));
 
           const shoppingLists = await shoppingListRouter.list(mockContext);
 
@@ -36,7 +39,7 @@ describe('Feature: ShoppingList API', () => {
           expect(shoppingLists).toHaveLength(2);
 
           // Verify DB calls
-          expect(mockCtx.prisma.household.findMany).toHaveBeenCalledWith({
+          expect(ctx.prisma.household.findMany).toHaveBeenCalledWith({
             where: {
               members: {
                 some: {
@@ -49,7 +52,7 @@ describe('Feature: ShoppingList API', () => {
             },
           });
           // shoppingList.findMany should be called with OR condition
-          expect(mockCtx.prisma.shoppingList.findMany).toHaveBeenCalledWith({
+          expect(ctx.prisma.shoppingList.findMany).toHaveBeenCalledWith({
             where: {
               OR: [
                 { createdById: mockSession.user.id, },

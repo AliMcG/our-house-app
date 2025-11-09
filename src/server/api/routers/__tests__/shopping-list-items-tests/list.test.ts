@@ -33,8 +33,8 @@ describe('Feature: ShoppingList API', () => {
 
           const mockContext = createMockTRPCContext<ShoppingListId>(mockCtx.prisma, { shoppingListId: mockShoppingList.id });
 
-          jest.spyOn(mockCtx.prisma.shoppingList, 'findUnique').mockResolvedValueOnce(mockShoppingList);
-          jest.spyOn(mockCtx.prisma.shoppingItem, 'findMany').mockResolvedValueOnce(mockShoppingItems);
+          jest.spyOn(ctx.prisma.shoppingList, 'findUnique').mockResolvedValueOnce(mockShoppingList);
+          jest.spyOn(ctx.prisma.shoppingItem, 'findMany').mockResolvedValueOnce(mockShoppingItems);
 
           const shoppingItems = await shoppingListItemRouter.list(mockContext);
 

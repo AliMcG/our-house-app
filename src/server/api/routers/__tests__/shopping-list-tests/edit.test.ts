@@ -33,9 +33,9 @@ describe('Feature: ShoppingList API', () => {
 
           const mockEditContext = createMockTRPCContext<ShoppingListEdit>(mockCtx.prisma, { id: mockShoppingList.id, title: mockShoppingList.title });
 
-          jest.spyOn(mockCtx.prisma.shoppingList, 'findUnique').mockResolvedValueOnce(mockShoppingList
+          jest.spyOn(ctx.prisma.shoppingList, 'findUnique').mockResolvedValueOnce(mockShoppingList
           );
-          jest.spyOn(mockCtx.prisma.shoppingList, 'update').mockResolvedValueOnce(mockShoppingList
+          jest.spyOn(ctx.prisma.shoppingList, 'update').mockResolvedValueOnce(mockShoppingList
           );
 
           const result = await shoppingListRouter.edit(mockEditContext)

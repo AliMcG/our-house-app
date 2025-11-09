@@ -32,10 +32,10 @@ describe('Feature: ShoppingList API', () => {
 
           const mockDeleteContext = createMockTRPCContext<ShoppingListId>(mockCtx.prisma, { id: mockShoppingList.id });
 
-          const deleteSpy = jest.spyOn(mockCtx.prisma.householdShoppingList, 'deleteMany');
-          jest.spyOn(mockCtx.prisma.shoppingList, 'findUnique').mockResolvedValueOnce(mockShoppingList
+          const deleteSpy = jest.spyOn(ctx.prisma.householdShoppingList, 'deleteMany');
+          jest.spyOn(ctx.prisma.shoppingList, 'findUnique').mockResolvedValueOnce(mockShoppingList
           );
-          jest.spyOn(mockCtx.prisma.shoppingList, 'delete').mockResolvedValueOnce(mockShoppingList
+          jest.spyOn(ctx.prisma.shoppingList, 'delete').mockResolvedValueOnce(mockShoppingList
           );
 
           const result = await shoppingListRouter.delete(mockDeleteContext)

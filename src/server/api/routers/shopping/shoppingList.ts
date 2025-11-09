@@ -86,7 +86,7 @@ export const shoppingListRouter = createTRPCRouter({
 
           },
         });
-        const updatedHouseholds = await ctx.db.householdShoppingList.create({
+        await ctx.db.householdShoppingList.create({
           data: {
             householdId: input.householdId,
             shoppingListId: newShoppingList.id,

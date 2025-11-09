@@ -1,5 +1,5 @@
 
-import { fakeHouseholdComplete, fakeShoppingListComplete } from "../../../../../../types/fake-data";
+import { fakeHouseholdComplete, fakeHouseholdShoppingListComplete, fakeShoppingListComplete } from "../../../../../../types/fake-data";
 import { describe, expect } from "@jest/globals";
 import { Prisma } from "@prisma/client";
 import { createMockTRPCContext, mockSession } from "../../../../../../jest.setup";
@@ -39,15 +39,12 @@ describe('Feature: ShoppingList API', () => {
             const mockShoppingList = fakeShoppingListComplete()
             mockShoppingList.createdById = mockSession.user.id;
             const mockHousehold = fakeHouseholdComplete()
+            const mockHouseholdShoppingList = fakeHouseholdShoppingListComplete()
 
             const mockCreateContext = createMockTRPCContext<ShoppingListCreate>(mockCtx.prisma, { title: mockShoppingList.title, householdId: mockHousehold.id });
 
-            jest.spyOn(mockCtx.prisma.householdShoppingList, 'create').mockResolvedValueOnce({
-              id: 'hh-1',
-              householdId: mockHousehold.id,
-              shoppingListId: mockShoppingList.id,
-            });
-            jest.spyOn(mockCtx.prisma.shoppingList, 'create').mockResolvedValueOnce(mockShoppingList
+            jest.spyOn(ctx.prisma.householdShoppingList, 'create').mockResolvedValueOnce(mockHouseholdShoppingList);
+            jest.spyOn(ctx.prisma.shoppingList, 'create').mockResolvedValueOnce(mockShoppingList
             );
 
             const result = await shoppingListRouter.create(mockCreateContext)
@@ -55,14 +52,14 @@ describe('Feature: ShoppingList API', () => {
             expect(result).toEqual(expect.objectContaining(mockShoppingList));
 
             // Verify DB calls
-            expect(mockCtx.prisma.shoppingList.create).toHaveBeenCalledWith({
+            expect(ctx.prisma.shoppingList.create).toHaveBeenCalledWith({
               data: {
                 title: mockShoppingList.title,
                 createdBy: { connect: { id: mockSession.user.id } }
 
               },
             });
-            expect(mockCtx.prisma.householdShoppingList.create).toHaveBeenCalledWith({
+            expect(ctx.prisma.householdShoppingList.create).toHaveBeenCalledWith({
               data: {
                 householdId: mockHousehold.id,
                 shoppingListId: mockShoppingList.id,
