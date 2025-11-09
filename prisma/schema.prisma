@@ -4,6 +4,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Use either the command `npx prisma generate` or `npm i` to re-generate the mock data after any schema changes. 
 generator custom_generator {
   provider = "prisma-generator-fake-data"
   output   = "../types/fake-data.ts"
