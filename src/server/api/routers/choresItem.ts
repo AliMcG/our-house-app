@@ -38,7 +38,6 @@ export const choresItemRouter = createTRPCRouter({
         data: {
           active: true,
           name: input.name,
-          completedBy: null,
           Chores: { connect: { id: input.listId } },
         },
       });
