@@ -1,4 +1,4 @@
-import { fakeShoppingListComplete } from "../../../../../../types/fake-data";
+import { fakeHouseholdComplete, fakeHouseholdShoppingListComplete, fakeShoppingListComplete } from "../../../../../../types/fake-data";
 import { describe, expect } from "@jest/globals";
 import { Prisma } from "@prisma/client";
 import { createMockTRPCContext, mockSession } from "../../../../../../jest.setup";
@@ -30,11 +30,15 @@ describe('Feature: ShoppingList API', () => {
         test('Then success must be true', async () => {
           const mockShoppingList = fakeShoppingListComplete()
           mockShoppingList.createdById = mockSession.user.id;
+          const mockHousehold = fakeHouseholdComplete()
+          const mockHouseholdShoppingList = fakeHouseholdShoppingListComplete()
 
           const mockEditContext = createMockTRPCContext<ShoppingListEdit>(mockCtx.prisma, { id: mockShoppingList.id, title: mockShoppingList.title });
 
           jest.spyOn(ctx.prisma.shoppingList, 'findUnique').mockResolvedValueOnce(mockShoppingList
           );
+          jest.spyOn(ctx.prisma.household, 'findMany').mockResolvedValueOnce([mockHousehold]);
+          jest.spyOn(ctx.prisma.householdShoppingList, 'findFirst').mockResolvedValueOnce(mockHouseholdShoppingList);
           jest.spyOn(ctx.prisma.shoppingList, 'update').mockResolvedValueOnce(mockShoppingList
           );
 

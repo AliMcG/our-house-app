@@ -30,9 +30,6 @@ describe('Feature: ShoppingList API', () => {
           jest.spyOn(ctx.prisma.household, 'findMany').mockResolvedValueOnce([mockHousehold]);
           jest.spyOn(ctx.prisma.shoppingList, 'findMany').mockResolvedValueOnce(mockShoppingLists);
 
-//           jest.spyOn(ctx.prisma.household, 'findMany').mockResolvedValueOnce(() => Promise.resolve([mockHousehold]));
-// jest.spyOn(ctx.prisma.shoppingList, 'findMany').mockResolvedValueOnce(() => Promise.resolve(mockShoppingLists));
-
           const shoppingLists = await shoppingListRouter.list(mockContext);
 
           expect(Array.isArray(shoppingLists)).toBe(true);
