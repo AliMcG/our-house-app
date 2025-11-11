@@ -1,0 +1,24 @@
+name: Restrict Direct Commits to Main and Dev
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prevent direct commits to main or dev
+        run: |
+          echo "Checking for direct commits to main or dev..."
+          # This check is specifically for direct pushes
+          if [ "${{ github.event_name }}" == "push" ]; then
+            echo "Direct push detected to ${{ github.ref_name }} branch."
+            if [[ "${{ github.ref_name }}" == "main" || "${{ github.ref_name }}" == "dev" ]]; then
+              echo "Direct commits to main and dev branches are not allowed. Please use pull requests."
+              exit 1
+            fi
+          fi
+          echo "Branch checks passed."
