@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
-import { findShoppingListsByUserIdAndHouseholds, getUserHouseholdIds, linkShoppingListToHousehold } from "./shoppingListService";
+import { getUserHouseholdIds, linkShoppingListToHousehold } from "./shoppingListService";
 
 export const shoppingListRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -12,11 +12,31 @@ export const shoppingListRouter = createTRPCRouter({
       const householdIds = await getUserHouseholdIds(db, userId);
 
       // 2. Find shopping lists based on user and households
-      const shoppingLists = await findShoppingListsByUserIdAndHouseholds(
-        db,
-        userId,
-        householdIds
-      );
+      const shoppingLists = db.shoppingList.findMany({
+        where: {
+          OR: [
+            // Case 1: Shopping lists created by the current user
+            { createdById: userId },
+            // Case 2: Shopping lists shared with the user's households
+            {
+              householdEntries: {
+                some: {
+                  householdId: {
+                    in: householdIds,
+                  },
+                },
+              },
+            },
+          ],
+        },
+        // The include key word allows us to fetch related data in a single query
+        // TODO review which relations are actually needed here to optimize performance
+        // It might be that we need to create separate endpoints for different use cases
+        include: {
+          items: true,
+          _count: true,
+        },
+      });
       return shoppingLists;
     } catch (error) {
       throw new TRPCError({
@@ -26,11 +46,11 @@ export const shoppingListRouter = createTRPCRouter({
       });
     }
   }),
-  findById: protectedProcedure.input(z.object({ listId: z.string().min(1) }))
+  findById: protectedProcedure.input(z.object({ id: z.string().min(1) }))
     .query(async ({ ctx, input }) => {
       try {
         return await ctx.db.shoppingList.findUnique({
-          where: { id: input.listId },
+          where: { id: input.id },
         });
 
       } catch (error) {
@@ -106,16 +126,16 @@ export const shoppingListRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
-      try {
-        const listFound = await ctx.db.shoppingList.findUnique({
-          where: { id: input.id },
+      const listFound = await ctx.db.shoppingList.findUnique({
+        where: { id: input.id },
+      });
+      if (!listFound) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Shopping list not found.",
         });
-        if (!listFound) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Shopping list not found.",
-          });
-        }
+      }
+      try {
         // Authorization Check: Ensure the user has access to this list
         const householdIds = await getUserHouseholdIds(ctx.db, userId);
         // Check the join table
@@ -155,16 +175,16 @@ export const shoppingListRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      try {
-        const listFound = await ctx.db.shoppingList.findUnique({
-          where: { id: input.id },
+      const listFound = await ctx.db.shoppingList.findUnique({
+        where: { id: input.id },
+      });
+      if (!listFound) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Shopping list not found.",
         });
-        if (!listFound) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Shopping list not found.",
-          });
-        }
+      }
+      try {
         // 1. Delete the corresponding entries in the HouseholdShoppingList join table
         // We need to delete each entry where shoppingListId matches the input.id
         await ctx.db.householdShoppingList.deleteMany({

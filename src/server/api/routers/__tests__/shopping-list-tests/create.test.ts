@@ -30,42 +30,45 @@ describe('Feature: ShoppingList API', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  describe("Scenario: Successfully creates a shopping list", () => {
-    describe('Given that the user is valid and the input is valid', () => {
-      describe('When the create method is called', () => {
-        describe('Then it creates a new shopping list', () => {
-          test("And it creates a relationship with a household", async () => {
+  describe("Scenario: Successfully create a new shopping list for a household", () => {
+    describe('Given the user is authenticated', () => {
+      describe('And a household with a known Id exists', () => {
+        describe('When the "create" mutation is executed with a new list title and the household Id', () => {
+          describe('Then a new shopping list should be created with the provided title', () => {
+            describe('And the new shopping list should be associated with the specified household', () => {
+              test("And the response should contain the details of the newly created shopping list", async () => {
 
-            const mockShoppingList = fakeShoppingListComplete()
-            mockShoppingList.createdById = mockSession.user.id;
-            const mockHousehold = fakeHouseholdComplete()
-            const mockHouseholdShoppingList = fakeHouseholdShoppingListComplete()
+                const mockShoppingList = fakeShoppingListComplete()
+                const mockHousehold = fakeHouseholdComplete()
+                const mockHouseholdShoppingList = fakeHouseholdShoppingListComplete()
 
-            const mockCreateContext = createMockTRPCContext<ShoppingListCreate>(mockCtx.prisma, { title: mockShoppingList.title, householdId: mockHousehold.id });
+                const mockCreateContext = createMockTRPCContext<ShoppingListCreate>(mockCtx.prisma, { title: mockShoppingList.title, householdId: mockHousehold.id });
 
-            jest.spyOn(ctx.prisma.householdShoppingList, 'create').mockResolvedValueOnce(mockHouseholdShoppingList);
-            jest.spyOn(ctx.prisma.shoppingList, 'create').mockResolvedValueOnce(mockShoppingList
-            );
+                const createHouseholdShoppingListSpy = jest.spyOn(ctx.prisma.householdShoppingList, 'create').mockResolvedValueOnce(mockHouseholdShoppingList);
+                const createShoppingListSpy = jest.spyOn(ctx.prisma.shoppingList, 'create').mockResolvedValueOnce(mockShoppingList
+                );
 
-            const result = await shoppingListRouter.create(mockCreateContext)
+                const result = await shoppingListRouter.create(mockCreateContext)
 
-            expect(result).toEqual(expect.objectContaining(mockShoppingList));
+                expect(result).toEqual(expect.objectContaining(mockShoppingList));
 
-            // Verify DB calls
-            expect(ctx.prisma.shoppingList.create).toHaveBeenCalledWith({
-              data: {
-                title: mockShoppingList.title,
-                createdBy: { connect: { id: mockSession.user.id } }
+                // Verify DB calls
+                expect(createShoppingListSpy).toHaveBeenCalledWith({
+                  data: {
+                    title: mockShoppingList.title,
+                    createdBy: { connect: { id: mockSession.user.id } }
 
-              },
-            });
-            expect(ctx.prisma.householdShoppingList.create).toHaveBeenCalledWith({
-              data: {
-                householdId: mockHousehold.id,
-                shoppingListId: mockShoppingList.id,
-              },
-            });
-          });
+                  },
+                });
+                expect(createHouseholdShoppingListSpy).toHaveBeenCalledWith({
+                  data: {
+                    householdId: mockHousehold.id,
+                    shoppingListId: mockShoppingList.id,
+                  },
+                });
+              });
+            })
+          })
         })
       })
     })

@@ -25,9 +25,9 @@ describe('Feature: Shopping Item API', () => {
   });
   describe("Scenario: Successfully retrieve all items for a specific shopping list", () => {
     describe('Given that the user is authenticated', () => {
-      describe('And a shopping list with a known ID exists', () => {
+      describe('And a shopping list with a known Id exists', () => {
         describe('And shopping items exist within that shopping list', () => {
-          describe('When the "list" query is executed with the shopping list`s ID', () => {
+          describe('When the "list" query is executed with the shopping list`s Id', () => {
             test("Then the response should contain all shopping items associated with the specified shopping list", async () => {
 
               const mockShoppingList = fakeShoppingListComplete()
@@ -54,9 +54,9 @@ describe('Feature: Shopping Item API', () => {
   })
   describe("Scenario: Attempt to retrieve items for a specific shopping list", () => {
     describe('Given that the user is authenticated', () => {
-      describe('And a shopping list with a known ID exists', () => {
+      describe('And a shopping list with a known Id exists', () => {
         describe('And there are no shopping items exist within that shopping list', () => {
-          describe('When the "list" query is executed with with the shopping list`s ID', () => {
+          describe('When the "list" query is executed with with the shopping list`s Id', () => {
             test("TThen the response should be an empty array", async () => {
 
               const mockShoppingList = fakeShoppingListComplete()
@@ -83,9 +83,9 @@ describe('Feature: Shopping Item API', () => {
   })
   describe("Scenario: Attempt to retrieve items for a non-existent shopping list", () => {
     describe('Given that the user is authenticated', () => {
-      describe('And a non-existent shopping list ID is provided', () => {
+      describe('And a non-existent shopping list Id is provided', () => {
         describe('And shopping items exist within that shopping list', () => {
-          describe('When the "list" query is executed with the non-existent shopping list ID', () => {
+          describe('When the "list" query is executed with the non-existent shopping list Id', () => {
             test("Then an error should be returned indicating that the shopping list was not found", async () => {
 
               const mockShoppingList = fakeShoppingListComplete()

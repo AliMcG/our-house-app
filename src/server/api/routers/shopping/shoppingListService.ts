@@ -14,49 +14,14 @@ export type ShoppingListWithItems = Prisma.ShoppingListGetPayload<{
 
 export type ShoppingList = Prisma.ShoppingListGetPayload<undefined>
 
-
-
-export const findShoppingListsByUserIdAndHouseholds = async (
-    db: PrismaClient,
-    userId: string,
-    householdIds: string[]
-): Promise<ShoppingListWithItems[]> => {
-    return db.shoppingList.findMany({
-        where: {
-            OR: [
-                // Case 1: Shopping lists created by the current user
-                { createdById: userId },
-                // Case 2: Shopping lists shared with the user's households
-                {
-                    householdEntries: {
-                        some: {
-                            householdId: {
-                                in: householdIds,
-                            },
-                        },
-                    },
-                },
-            ],
-        },
-        // The include key word allows us to fetch related data in a single query
-        // TODO review which relations are actually needed here to optimize performance
-        // It might be that we need to create separate endpoints for different use cases
-        include: {
-            items: true,
-            _count: true,
-        },
-    });
-};
-
-
 /**
- * Retrieves the IDs of all households that a specific user is a member of.
+ * Retrieves the Ids of all households that a specific user is a member of.
  *
  * This function queries the database to find all households where the given
- * `userId` is listed as a member and returns only their IDs.
+ * `userId` is listed as a member and returns only their Ids.
  *
  * @param {PrismaClient} db - The Prisma Client instance for database interactions.
- * @param {string} userId - The ID of the user for whom to retrieve households.
+ * @param {string} userId - The Id of the user for whom to retrieve households.
  * @returns An array of household ids.
  * Returns an empty array if the user is not a member of any households or if no households are found.
  *
@@ -66,11 +31,11 @@ export const findShoppingListsByUserIdAndHouseholds = async (
  * const userId = 'user-123';
  * try {
  *   const householdIds = await getUserHouseholdIds(prisma, userId);
- *   console.log('User belongs to household IDs:', householdIds);
+ *   console.log('User belongs to household Ids:', householdIds);
  *   // Example output:
- *   // User belongs to household IDs: [ 'household-abc', 'household-def' ]
+ *   // User belongs to household Ids: [ 'household-abc', 'household-def' ]
  * } catch (error) {
- *   console.error('Failed to get user household IDs:', error);
+ *   console.error('Failed to get user household Ids:', error);
  * }
  * ```
  */
@@ -88,7 +53,7 @@ export const getUserHouseholdIds = async (db: PrismaClient, userId: string): Pro
         },
     });
 
-    // Map the result to an array of just the IDs
+    // Map the result to an array of just the Ids
     return households.map((household) => household.id);
 };
 
@@ -101,8 +66,8 @@ export const getUserHouseholdIds = async (db: PrismaClient, userId: string): Pro
  * of this association.
  *
  * @param {PrismaClient} db - The Prisma Client instance for database interactions.
- * @param {string} householdId - The ID of the household to associate the shopping list with.
- * @param {string} shoppingListId - The ID of the shopping list to associate with the household.
+ * @param {string} householdId - The Id of the household to associate the shopping list with.
+ * @param {string} shoppingListId - The Id of the shopping list to associate with the household.
  * @returns {Promise<boolean>} A promise that resolves to true if the association was created successfully.
  * Returns false if any error occurs during the process.
  *

@@ -12,16 +12,16 @@ export const shoppingListItemRouter = createTRPCRouter({
     .input(z.object({ shoppingListId: z.string().min(1) }))
     .query(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
-      try {
-        const listFound = await ctx.db.shoppingList.findUnique({
-          where: { id: input.shoppingListId },
+      const listFound = await ctx.db.shoppingList.findUnique({
+        where: { id: input.shoppingListId },
+      });
+      if (!listFound) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Shopping list not found.",
         });
-        if (!listFound) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Shopping list not found.",
-          });
-        }
+      }
+      try {
         // Authorization Check: Ensure the user has access to this list
         const householdIds = await getUserHouseholdIds(ctx.db, userId);
         // Check the join table

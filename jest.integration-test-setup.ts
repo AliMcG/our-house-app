@@ -13,7 +13,7 @@ import { mockSession } from "jest.setup";
 import { Session } from "next-auth";
 
 
-export const mockSessionUnknownID: Session = {
+export const mockSessionUnknownId: Session = {
     expires: new Date().toISOString(),
     user: { id: faker.database.mongodbObjectId() },
 };
@@ -37,10 +37,10 @@ export const createAuthenticatedCaller = async (): Promise<AppRouterCaller> => {
 };
 
 /**
- * Creates a tRPC caller with an invalid session (missing user ID).
+ * Creates a tRPC caller with an invalid session (missing user Id).
  * @returns A promise resolving to the tRPC caller instance.
  */
 export const createUnknownUserCaller = async (): Promise<AppRouterCaller> => {
-    const context = await createContextInner({ session: mockSessionUnknownID });
+    const context = await createContextInner({ session: mockSessionUnknownId });
     return createCaller(context);
 };

@@ -11,7 +11,7 @@ import { convertURLtoString } from "@/app/utils/helperFunctions";
 export default async function Page({ params }: { params: { slug: string } }) {
 
   const shoppingListId = convertURLtoString(params.slug);
-  const shoppingList = await api.shoppingList.findById.query({ listId: shoppingListId });
+  const shoppingList = await api.shoppingList.findById.query({ id: shoppingListId });
 
   const shoppingListItems = await api.shoppingListItem.list.query({ shoppingListId: shoppingListId });
 
