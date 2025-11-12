@@ -18,7 +18,7 @@ export type HouseholdShoppingListHouseholdId = Prisma.HouseholdShoppingListGetPa
 }>
 export type ShoppingListCreate = ShoppingListTitle & HouseholdShoppingListHouseholdId
 
-describe('Feature: ShoppingList API', () => {
+describe('Feature: ShoppingList API - Create', () => {
   let mockCtx: MockContext
   let ctx: Context
 

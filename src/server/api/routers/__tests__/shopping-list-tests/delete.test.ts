@@ -11,7 +11,7 @@ export type ShoppingListId = Prisma.ShoppingListGetPayload<{
   }
 }>
 
-describe('Feature: ShoppingList API', () => {
+describe('Feature: ShoppingList API - Delete', () => {
   let mockCtx: MockContext
   let ctx: Context
 

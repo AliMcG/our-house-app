@@ -64,7 +64,7 @@ export const shoppingListRouter = createTRPCRouter({
 
   /**
    * This method is required if a user wants to share a shopping list with additional households.
-   * Regular shopping list creation will add the shopping list to current household
+   * Regular shopping list creation will add the shopping list to the current household
    */
   addShoppingListToHousehold: protectedProcedure
     .input(z.object({ id: z.string().min(1), householdId: z.string().min(1) }))

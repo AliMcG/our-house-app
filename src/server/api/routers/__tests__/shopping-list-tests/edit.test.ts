@@ -12,7 +12,7 @@ export type ShoppingListEdit = Prisma.ShoppingListGetPayload<{
   }
 }>
 
-describe('Feature: ShoppingList API', () => {
+describe('Feature: ShoppingList API - Edit', () => {
   let mockCtx: MockContext
   let ctx: Context
 

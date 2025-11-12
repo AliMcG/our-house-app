@@ -11,7 +11,7 @@ export type ShoppingListId = Prisma.ShoppingItemGetPayload<{
   }
 }>
 
-describe('Feature: Shopping Item API', () => {
+describe('Feature: Shopping Item API - List', () => {
   let mockCtx: MockContext
   let ctx: Context
 
