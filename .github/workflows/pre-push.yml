@@ -1,0 +1,42 @@
+name: Restrict Direct Commits to Main and Dev
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate push to protected branches
+        run: |
+          echo "🔍 Checking push to ${{ github.ref_name }}..."
+
+          # Get the latest commit message
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Commit message: $COMMIT_MSG"
+
+          # Check if it's a merge commit from a PR
+          if [[ "$COMMIT_MSG" == *"Merge pull request"* ]]; then
+            echo "✅ Merge via pull request detected."
+
+            # Extract source branch from commit message
+            SOURCE_BRANCH=$(echo "$COMMIT_MSG" | grep -oE 'from [^ ]+' | cut -d' ' -f2)
+            echo "Source branch: $SOURCE_BRANCH"
+
+            # Enforce that PRs into main must come from dev
+            if [[ "${{ github.ref_name }}" == "main" && "$SOURCE_BRANCH" != "dev" ]]; then
+              echo "❌ Pull requests into 'main' must come from 'dev'."
+              exit 1
+            fi
+
+            echo "✅ Pull request source is valid."
+            exit 0
+          fi
+
+          # Block direct commits
+          echo "❌ Direct commit detected to ${{ github.ref_name }}."
+          echo "Direct commits to 'main' and 'dev' are not allowed. Please use pull requests."
+          exit 1
