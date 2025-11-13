@@ -51,7 +51,7 @@ export const choresItemRouter = createTRPCRouter({
         }
       });
     }),
-  // TODO: THIS NEEDS TO REMOVE USER ID WHEN ACTIVE AND ADD ID WHEN NOT ACTIVE
+  // TODO: THIS NEEDS TO REMOVE USER Id WHEN ACTIVE AND ADD Id WHEN NOT ACTIVE
   updateActive: protectedProcedure
     .input(z.object({ id: z.string().min(1), active: z.boolean(), completedBy: z.nullable(z.string().min(1)) }))
     .mutation(async ({ ctx, input }) => {
