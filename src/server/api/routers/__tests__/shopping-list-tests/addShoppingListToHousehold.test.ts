@@ -1,8 +1,8 @@
 
-import { fakeHouseholdComplete, fakeHouseholdShoppingListComplete, fakeShoppingListComplete } from "../../../../../../types/fake-data";
 import { describe, expect } from "@jest/globals";
 import { Prisma } from "@prisma/client";
-import { createMockTRPCContext, mockSession } from "../../../../../../jest.setup";
+import { createMockTRPCContext } from "../../../../../../jest.setup";
+import { fakeHouseholdComplete, fakeHouseholdShoppingListComplete, fakeShoppingListComplete } from "../../../../../../types/fake-data";
 import { Context, createMockContext, MockContext } from '../../../../context';
 import { shoppingListRouter } from "../../shopping/shoppingList";
 
