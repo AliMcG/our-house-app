@@ -1,5 +1,5 @@
 import { unstable_noStore as noStore } from "next/cache";
-import AutenticationButton from "@/app/_components/AuthenticationButton";
+import AuthenticationButton from "@/app/_components/AuthenticationButton";
 import { getServerAuthSession } from "@/server/auth";
 import Image from "next/image";
 import HomePageImage from "@/public/home_logo_final.svg";
@@ -9,7 +9,7 @@ export default async function Home() {
   noStore();
   const session = await getServerAuthSession();
   if (session) {
-   return redirect('/home')
+    return redirect('/home')
   }
 
   return (
@@ -22,14 +22,15 @@ export default async function Home() {
             </h1>
             <div className="mt-4 flex flex-col items-center justify-center text-lg">
               <p>Your one stop shop</p>
-              <p>to organise your home</p>
+              <p>to organize your home</p>
               <div className="mt-4 flex w-full justify-center">
-                <AutenticationButton size={"large"} />
+                <AuthenticationButton size={"large"} />
               </div>
             </div>
           </div>
           <div className="mt-8 flex items-center  justify-center">
             <Image
+              priority
               src={HomePageImage as string}
               alt={"Home page image"}
               className=" w-5/6"
