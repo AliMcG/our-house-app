@@ -28,7 +28,7 @@ describe('Test suite for shoppinglists-route', () => {
   
   it('visit Shopping list page, creates new list, edits the name and deletes it', () => {
     // visit page
-    cy.visit('http://localhost:3000/shoppingLists')
+    cy.visit('http://localhost:3000/shopping-lists')
 
     // CREATE: create new list
     cy.get('[data-cy="shoppinglist-create-input"]').type('FUNCTIONAL TEST LIST')

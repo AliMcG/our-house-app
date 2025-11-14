@@ -90,7 +90,7 @@ export default function ShoppingListCard({
       <Card data-cy="ShoppingListCard">
         <Link
           href={sanitiseStringForURL(
-            `/shoppingLists/${shoppingList.id}`,
+            `/shopping-lists/${shoppingList.id}`,
           )}
           className="flex w-full justify-center p-4"
         >
