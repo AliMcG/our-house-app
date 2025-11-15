@@ -1,11 +1,11 @@
-import Card from "@/app/_components/Card";
 import AddChoresItemForm from "@/app/_components/AddChoresItemForm";
-import { api } from "@/trpc/server";
-import ItemsList from "./ItemsList";
-import Link from "next/link";
-import { navbarLinks } from "@/app/utils/navbarLinks";
-import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
+import Card from "@/app/_components/Card";
 import { convertURLtoString } from "@/app/utils/helperFunctions";
+import { navigation } from "@/app/utils/navigation-links";
+import { api } from "@/trpc/server";
+import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
+import Link from "next/link";
+import ItemsList from "./ItemsList";
 
 
 export default async function Page({ params }: { params: { slug: string } }) {
@@ -19,7 +19,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
       <article className="flex min-h-screen flex-col bg-white pt-16 text-slate-800">
         <header className="flex items-center justify-center p-4">
           <Link
-            href={navbarLinks[1]!.href}
+            href={navigation[2]!.href}
             className="w-[32px] h-[32px] mr-2 rounded-md hover:bg-gray-200 transition"
             data-cy="choresLink-back-button"
           >

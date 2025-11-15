@@ -1,4 +1,4 @@
-import type { NavItemType } from "./navbarLinks"
+import type { NavItemType } from "./navigation-links"
 
 /**
  * Formats a string to replace any whitespace with a hythen
@@ -29,7 +29,7 @@ export const convertURLtoString = (string: string) => {
  */
 export function getRouteName(pathname: string, navItems: NavItemType[]) {
   if (!pathname) {
-    return ''; 
+    return '';
   }
 
   const foundItem = navItems.find(item => item.href === pathname);
@@ -37,5 +37,5 @@ export function getRouteName(pathname: string, navItems: NavItemType[]) {
     return foundItem.name;
   }
 
-  return 'Unknown Route'; 
+  return 'Unknown Route';
 }

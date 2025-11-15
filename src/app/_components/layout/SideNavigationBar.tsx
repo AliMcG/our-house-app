@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import AuthButton from "../AuthenticationButton";
 import HomePageImage from "@/public/home_logo_final.svg";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { navigation } from "../../utils/navigation-links";
+import AuthButton from "../AuthenticationButton";
 import Button from "../Button";
-import { navbarLinks } from "../../utils/navbarLinks";
 
 
 export default function SideNavigationBar(): JSX.Element {
@@ -47,7 +47,7 @@ export default function SideNavigationBar(): JSX.Element {
       <nav>
         <ul onClick={() => setMenuOpen(prevState => !prevState)}>
           {
-            navbarLinks.map((item, index) => {
+            navigation.map((item, index) => {
               return (
                 <li key={index}>
                   <Link href={item.href}>

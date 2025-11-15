@@ -9,7 +9,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/app/utils/cn'
 import { Button } from '../ui/button'
-import { navigation } from '@/app/utils/navbarLinks'
+import { navigation } from '@/app/utils/navigation-links'
 import AuthButton from '../AuthenticationButton'
 import { useSession } from 'next-auth/react'
 import Image from "next/image";
@@ -50,7 +50,7 @@ export function Sidebar() {
           <div className="flex h-20 items-center border-b border-gray-200 px-4">
             <div className="flex items-center space-x-2">
               <div className="flex h-8 w-8 items-center justify-center">
-                 <Image
+                <Image
                   src={HomePageImage as string}
                   alt="logo"
                   width={40}

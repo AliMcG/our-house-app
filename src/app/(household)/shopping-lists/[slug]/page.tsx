@@ -1,7 +1,7 @@
 import AddShoppingItemForm from "@/app/_components/AddShoppingItemForm";
 import Card from "@/app/_components/Card";
 import { convertURLtoString } from "@/app/utils/helperFunctions";
-import { navigation } from "@/app/utils/navbarLinks";
+import { navigation } from "@/app/utils/navigation-links";
 import { api } from "@/trpc/server";
 import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
