@@ -52,7 +52,7 @@ Cypress.Commands.add("loginByGoogleApi", () => {
       headers: { Authorization: `Bearer ${access_token}` },
     }).then(({ body }) => {
       const user = body;
-  
+
       /** Intercepts the auth api call to return the session user.
        * https://www.youtube.com/watch?v=SzhulGxprCw
        */
@@ -67,29 +67,13 @@ Cypress.Commands.add("loginByGoogleApi", () => {
       /** Generates random values for session */
       const sessionCookie = genRanHex(24)
       const sessionId = genRanHex(24)
-      /** Post a new session to the database to be authenticated by nextAuth in the browser. */
-      cy.request({
-        method: "POST",
-        url: Cypress.env("databaseApiUrl"),
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Request-Headers": "*",
-          "api-key":
-          Cypress.env("databaseApiKey"),
-        },
-        body: {
-          dataSource:  Cypress.env("databaseSource"),
-          database: Cypress.env("databaseName"),
-          collection: Cypress.env("databaseCollection"),
-          document: {
-            _id: { $oid: sessionId },
-            sessionToken: sessionCookie,
-            userId: { $oid: Cypress.env("databaseUserId"), },
-            expires: { $date: new Date(Date.now() + 1 * (60 * 60 * 1000) ) },
-          },
-        },
+      /** Post a new session to the database to be authenticated by nextAuth in the browser this. */
+      cy.task('db:insert', {
+        _id: sessionId,
+        sessionToken: sessionCookie,
+        userId: Cypress.env("databaseUserId"),
       }).then(() => {
-        /** OnSuccessfully updating the databse with new session, sets the cookie with the new session. */
+        /** OnSuccessfully updating the database with new session, sets the cookie with the new session. */
         cy.setCookie("next-auth.session-token", sessionCookie);
       })
     });
@@ -100,7 +84,7 @@ Cypress.Commands.add("loginByGoogleApi", () => {
 Cypress.Commands.add("logout", () => {
   cy.log("Logging out of site");
   // we need to be more specific with selection here
-  cy.get('[data-cy="auth-button"]').contains("sign out").click();
+  cy.get('[data-cy="auth-button"]').contains("Sign out").click();
 })
 
 

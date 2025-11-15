@@ -11,7 +11,7 @@
  *  - click on the "Cancel" button
  *  - make sure the chores name is not edited, should say "Test chores"
  * - Edit: lets change the chores name
- *  - click on the edit butotn
+ *  - click on the edit button
  *  - select the text input and type in "Updated test chores"
  *  - click on the "Edit" button
  *  - check that the list name has been changed to "Updated test chores"
@@ -69,7 +69,7 @@ describe('Test suite for the Chores route', () => {
 
   it('Changes the chores name to "Updated test chores"', () => {
     cy.visit('/chores');
-    // click on edit butotn
+    // click on edit button
     cy.get('[data-cy="ChoresCard"]')
       .contains('Test chores')
       .parents('[data-cy="ChoresCard"]')
