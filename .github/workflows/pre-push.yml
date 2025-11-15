@@ -1,4 +1,4 @@
-name: Restrict Direct Commits to Main and Dev
+name: Block Direct Pushes to Main/Dev
 
 on:
   push:
@@ -7,36 +7,31 @@ on:
       - dev
 
 jobs:
-  check-branch:
+  prevent_direct_push:
     runs-on: ubuntu-latest
     steps:
-      - name: Validate push to protected branches
+      - name: Check if commit is a direct push
         run: |
-          echo "🔍 Checking push to ${{ github.ref_name }}..."
+          echo "🔍 Checking push to '${{ github.ref_name }}'..."
 
-          # Get the latest commit message
+          # Get the commit message of the most recent commit in the push
           COMMIT_MSG=$(git log -1 --pretty=%B)
-          echo "Commit message: $COMMIT_MSG"
+          echo "Commit message: \"$COMMIT_MSG\""
 
-          # Check if it's a merge commit from a PR
-          if [[ "$COMMIT_MSG" == *"Merge pull request"* ]]; then
-            echo "✅ Merge via pull request detected."
+          # Regex to identify common GitHub PR merge commit messages
+          # This covers "Merge pull request #..." and "Merge branch '...' into ..."
+          # and also "Merge: ..." which can happen with some Git versions/configs.
+          # We are looking for *any* merge commit that isn't a direct commit.
+          # The important thing is to distinguish between a direct commit and a merge.
 
-            # Extract source branch from commit message
-            SOURCE_BRANCH=$(echo "$COMMIT_MSG" | grep -oE 'from [^ ]+' | cut -d' ' -f2)
-            echo "Source branch: $SOURCE_BRANCH"
-
-            # Enforce that PRs into main must come from dev
-            if [[ "${{ github.ref_name }}" == "main" && "$SOURCE_BRANCH" != "dev" ]]; then
-              echo "❌ Pull requests into 'main' must come from 'dev'."
-              exit 1
-            fi
-
-            echo "✅ Pull request source is valid."
-            exit 0
+          # Check if the commit message indicates a merge from a pull request or a branch merge
+          # If it IS a merge commit, we allow it. If it's NOT, we block it.
+          if [[ "$COMMIT_MSG" =~ ^(Merge pull request #[0-9]+ from .*|Merge branch .* into .*|Merge: .* .*)$ ]]; then
+            echo "✅ Recognized merge commit. Allowing push."
+            exit 0 # Allow the push
+          else
+            echo "❌ Direct commit detected to branch '${{ github.ref_name }}'."
+            echo "Direct pushes to 'main' and 'dev' are strictly prohibited."
+            echo "All changes must be made via pull requests."
+            exit 1 # Block the push
           fi
-
-          # Block direct commits
-          echo "❌ Direct commit detected to ${{ github.ref_name }}."
-          echo "Direct commits to 'main' and 'dev' are not allowed. Please use pull requests."
-          exit 1

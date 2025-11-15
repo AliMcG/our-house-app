@@ -1,0 +1,33 @@
+name: Branch Protection
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  prevent-direct-pushes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for direct push
+        run: |
+          echo "🔍 Checking push to ${{ github.ref_name }}..."
+
+          # Get the latest commit message to inspect it
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Commit message: $COMMIT_MSG"
+
+          # This workflow is designed to block direct pushes.
+          # If the commit message indicates it's a merge commit from a PR,
+          # we assume it's being handled by GitHub's PR merge checks and allow it to proceed.
+          # However, if it's NOT a merge commit, then it's a direct push from a local machine.
+          if [[ "$COMMIT_MSG" == *"Merge pull request"* ]]; then
+            echo "✅ Merge via pull request detected. Allowing."
+            exit 0 # Allow the push if it's a PR merge
+          else
+            echo "❌ Direct commit detected to ${{ github.ref_name }}."
+            echo "Direct pushes from local machines to 'main' and 'dev' are not allowed."
+            echo "Please use pull requests to merge changes into these branches."
+            exit 1 # Block the push if it's a direct commit
+          fi
