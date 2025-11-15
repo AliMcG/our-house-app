@@ -1,4 +1,4 @@
-## Initail set up
+## Initial set up
 
 - clone the repo
 - copy the `.env.example` and rename `.env`
@@ -41,7 +41,7 @@ If you are not familiar with the different technologies used in this project, pl
 - Todo Tree - Adds highlight to all // TODO comments and create a tree for tree traversal in the side menu of vscode
 - Code Spell Checker - checks the code and comments for spelling mistakes
 
-## Deployed on Vercal
+## Deployed on Vercel
 
 The site is live with Google Auth at https://our-house-app.vercel.app/
 
