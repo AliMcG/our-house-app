@@ -14,12 +14,16 @@ export default defineConfig({
         async 'db:insert'(doc) {
           // The new Date needs to applied here to stop being turned into a JSON string.
           doc.expires = new Date(Date.now() + 1 * (60 * 60 * 1000))
-          const uri = process.env.DATABASE_URL!;
+          const uri = process.env.DATABASE_URL;
+          const dbCollection = process.env.DATABASE_COLLECTION
+          if (!uri || !dbCollection) {
+            throw new Error('DATABASE_URL environment variable is not set.');
+          }
           const client = new MongoClient(uri);
           try {
             await client.connect();
             const db = client.db(process.env.DATABASE_NAME);
-            const collection = db.collection(process.env.DATABASE_COLLECTION!);
+            const collection = db.collection(dbCollection);
             const test = await collection.insertOne(doc);
             return null;
           } finally {
