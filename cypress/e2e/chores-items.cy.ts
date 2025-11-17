@@ -47,7 +47,7 @@ describe('Test suite for the Chores Items route', () => {
     cy.get('[data-cy="ChoresCard"]').contains('Test kitchen chores').should('exist');
     cy.get('[data-cy="ChoresCard"]').contains('Test kitchen chores').click();
     // make sure we are at the place we want to be
-    cy.url().should('include', 'chores/Test-kitchen-chores');
+    cy.url().should('match', /chores\/[a-f0-9]{24}/);
     cy.get('h1').should('contain', 'Test kitchen chores');
     // now navigate back
     cy.get('[data-cy="choresLink-back-button"]').click();

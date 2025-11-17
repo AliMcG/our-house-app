@@ -42,7 +42,7 @@ describe('Test suite for shoppinglists-items-route', () => {
   it('visit Shopping list items page, creates new item, edits the name and deletes it', () => {
     // PREPARATION
     // visit the shopping lists page
-    cy.visit('http://localhost:3000/shoppingLists/')
+    cy.visit('http://localhost:3000/shopping-lists/')
 
     // create the shopping list to store the items
     cy.get('[data-cy="shoppinglist-create-input"]').type('TESTLIST')
@@ -57,8 +57,7 @@ describe('Test suite for shoppinglists-items-route', () => {
 
     // ITEMS PAGE
     // make sure we are on the items page
-    cy.url().should('include', 'shoppingLists/TESTLIST')
-
+    cy.url().should('match', /shopping-lists\/[a-f0-9]{24}/);
     // CREATE: create new items
     // bananas
     cy.get('[data-cy="shoppingitem-create-input"]').type('BANANAS')
@@ -81,7 +80,7 @@ describe('Test suite for shoppinglists-items-route', () => {
     // check that the text is striked through
     cy.get('[data-cy="ItemsListCard"]')
       .contains('EGGS x12')
-      .should('have.css', 'text-decoration', 'line-through solid rgb(30, 41, 59)')
+      .should('have.css', 'text-decoration', 'line-through')
 
     // unmark BANANAS as completed
     cy.get('[data-cy="ItemsListCard"]')

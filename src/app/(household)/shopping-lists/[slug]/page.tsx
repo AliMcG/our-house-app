@@ -1,17 +1,17 @@
-import Card from "@/app/_components/Card";
 import AddShoppingItemForm from "@/app/_components/AddShoppingItemForm";
-import { api } from "@/trpc/server";
-import ItemsList from "./ItemsList";
-import Link from "next/link";
-import { navbarLinks } from "@/app/utils/navbarLinks";
-import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
+import Card from "@/app/_components/Card";
 import { convertURLtoString } from "@/app/utils/helperFunctions";
+import { navigation } from "@/app/utils/navigation-links";
+import { api } from "@/trpc/server";
+import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
+import Link from "next/link";
+import ItemsList from "./ItemsList";
 
 
 export default async function Page({ params }: { params: { slug: string } }) {
 
   const shoppingListId = convertURLtoString(params.slug);
-  const shoppingList = await api.shoppingList.findById.query({ listId: shoppingListId });
+  const shoppingList = await api.shoppingList.findById.query({ id: shoppingListId });
 
   const shoppingListItems = await api.shoppingListItem.list.query({ shoppingListId: shoppingListId });
 
@@ -20,7 +20,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
       <article className="flex min-h-screen flex-col bg-white pt-16 text-slate-800">
         <header className="flex items-center justify-center p-4">
           <Link
-            href={navbarLinks[0]!.href} className="w-[32px] h-[32px] mr-2 rounded-md hover:bg-gray-200 transition"
+            href={navigation[1]!.href} className="w-[32px] h-[32px] mr-2 rounded-md hover:bg-gray-200 transition"
             data-cy="back-to-shoppings-lists-link"
           >
             <ArrowUturnLeftIcon className="text-[#b372f0]" />

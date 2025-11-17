@@ -16,7 +16,7 @@ export default async function ShoppingLists() {
 
   /**
    * This is a temporary fix to get the current household.
-   * The updated logic in the AddShoppingListForm component requires the household ID to create a new shopping list.
+   * The updated logic in the AddShoppingListForm component requires the household Id to create a new shopping list.
    * // TODO: Implement proper household selection logic to allow users to select and switch between households.
    */
   const currentHousehold = householdList[0]

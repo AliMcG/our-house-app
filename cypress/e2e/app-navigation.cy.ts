@@ -1,6 +1,6 @@
 describe('Site navigation', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:3000/')
+    cy.visit('/')
     cy.loginByGoogleApi()
     cy.wait(2000)
   })
@@ -10,15 +10,15 @@ describe('Site navigation', () => {
   })
 
   it('visit home page', () => {
-    cy.visit('http://localhost:3000/home')
+    cy.visit('/home')
     cy.url().should('include', '/home')
   })
   it('visit Shopping list page', () => {
-    cy.visit('http://localhost:3000/shoppingLists')
-    cy.url().should('include', '/shoppingLists')
+    cy.visit('/shopping-lists')
+    cy.url().should('include', '/shopping-lists')
   })
   it('visit Chores page', () => {
-    cy.visit('http://localhost:3000/chores')
+    cy.visit('/chores')
     cy.url().should('include', '/chores')
   })
-})
+}) 

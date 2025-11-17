@@ -4,7 +4,7 @@
 // import { CreateHouseholdDialog } from "../modals/create-household-dialog";
 // import { InviteMemberDialog } from "../modals/invite-member-dialog";
 import { usePathname } from "next/navigation";
-import { navigation } from "@/app/utils/navbarLinks";
+import { navigation } from "@/app/utils/navigation-links";
 import { getRouteName } from "@/app/utils/helperFunctions";
 // import { api } from "@/trpc/react";
 

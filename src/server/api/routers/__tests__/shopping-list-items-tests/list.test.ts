@@ -1,6 +1,6 @@
 import { describe, expect } from "@jest/globals";
 import { createMockTRPCContext } from "../../../../../../jest.setup";
-import { fakeShoppingItemComplete, fakeShoppingListComplete } from "../../../../../../types/fake-data";
+import { fakeHouseholdComplete, fakeHouseholdShoppingListComplete, fakeShoppingItemComplete, fakeShoppingListComplete } from "../../../../../../types/fake-data";
 import { Context, createMockContext, MockContext } from '../../../../context';
 import { shoppingListItemRouter } from "../../shopping/shoppingListItem";
 import { Prisma } from "@prisma/client";
@@ -11,7 +11,7 @@ export type ShoppingListId = Prisma.ShoppingItemGetPayload<{
   }
 }>
 
-describe('Feature: ShoppingList API', () => {
+describe('Feature: Shopping Item API - List', () => {
   let mockCtx: MockContext
   let ctx: Context
 
@@ -23,24 +23,88 @@ describe('Feature: ShoppingList API', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  describe("Scenario: Successfully lists shopping list items", () => {
-    describe('Given that the user is valid and that lists exist', () => {
-      describe('When the List method is called', () => {
-        test("It should return all the shopping lists", async () => {
+  describe("Scenario: Successfully retrieve all items for a specific shopping list", () => {
+    describe('Given that the user is authenticated', () => {
+      describe('And a shopping list with a known Id exists', () => {
+        describe('And shopping items exist within that shopping list', () => {
+          describe('When the "list" query is executed with the shopping list`s Id', () => {
+            test("Then the response should contain all shopping items associated with the specified shopping list", async () => {
 
-          const mockShoppingList = fakeShoppingListComplete()
-          const mockShoppingItems = [fakeShoppingItemComplete(), fakeShoppingItemComplete()]
+              const mockShoppingList = fakeShoppingListComplete()
+              const mockShoppingItems = [fakeShoppingItemComplete(), fakeShoppingItemComplete()]
+              const mockHousehold = fakeHouseholdComplete()
+              const mockHouseholdShoppingList = fakeHouseholdShoppingListComplete()
 
-          const mockContext = createMockTRPCContext<ShoppingListId>(mockCtx.prisma, { shoppingListId: mockShoppingList.id });
+              const mockContext = createMockTRPCContext<ShoppingListId>(mockCtx.prisma, { shoppingListId: mockShoppingList.id });
 
-          jest.spyOn(ctx.prisma.shoppingList, 'findUnique').mockResolvedValueOnce(mockShoppingList);
-          jest.spyOn(ctx.prisma.shoppingItem, 'findMany').mockResolvedValueOnce(mockShoppingItems);
+              jest.spyOn(ctx.prisma.shoppingList, 'findUnique').mockResolvedValueOnce(mockShoppingList);
+              jest.spyOn(ctx.prisma.household, 'findMany').mockResolvedValueOnce([mockHousehold]);
+              jest.spyOn(ctx.prisma.householdShoppingList, 'findFirst').mockResolvedValueOnce(mockHouseholdShoppingList);
+              jest.spyOn(ctx.prisma.shoppingItem, 'findMany').mockResolvedValueOnce(mockShoppingItems);
 
-          const shoppingItems = await shoppingListItemRouter.list(mockContext);
+              const response = await shoppingListItemRouter.list(mockContext);
 
-          expect(Array.isArray(shoppingItems)).toBe(true);
-          expect(shoppingItems).toHaveLength(2);
-        });
+              expect(Array.isArray(response)).toBe(true);
+              expect(response).toHaveLength(2);
+            });
+          })
+        })
+      })
+    })
+  })
+  describe("Scenario: Attempt to retrieve items for a specific shopping list", () => {
+    describe('Given that the user is authenticated', () => {
+      describe('And a shopping list with a known Id exists', () => {
+        describe('And there are no shopping items exist within that shopping list', () => {
+          describe('When the "list" query is executed with with the shopping list`s Id', () => {
+            test("TThen the response should be an empty array", async () => {
+
+              const mockShoppingList = fakeShoppingListComplete()
+              const mockHousehold = fakeHouseholdComplete()
+              const mockHouseholdShoppingList = fakeHouseholdShoppingListComplete()
+
+              const mockContext = createMockTRPCContext<ShoppingListId>(mockCtx.prisma, { shoppingListId: mockShoppingList.id });
+
+              jest.spyOn(ctx.prisma.shoppingList, 'findUnique').mockResolvedValueOnce(mockShoppingList);
+              jest.spyOn(ctx.prisma.household, 'findMany').mockResolvedValueOnce([mockHousehold]);
+              jest.spyOn(ctx.prisma.householdShoppingList, 'findFirst').mockResolvedValueOnce(mockHouseholdShoppingList);
+              jest.spyOn(ctx.prisma.shoppingItem, 'findMany').mockResolvedValueOnce([]);
+
+              const response = await shoppingListItemRouter.list(mockContext);
+
+              expect(Array.isArray(response)).toBe(true);
+
+              expect(response).toHaveLength(0);
+            });
+          })
+        })
+      })
+    })
+  })
+  describe("Scenario: Attempt to retrieve items for a non-existent shopping list", () => {
+    describe('Given that the user is authenticated', () => {
+      describe('And a non-existent shopping list Id is provided', () => {
+        describe('And shopping items exist within that shopping list', () => {
+          describe('When the "list" query is executed with the non-existent shopping list Id', () => {
+            test("Then an error should be returned indicating that the shopping list was not found", async () => {
+
+              const mockShoppingList = fakeShoppingListComplete()
+              const mockContext = createMockTRPCContext<ShoppingListId>(mockCtx.prisma, { shoppingListId: mockShoppingList.id });
+
+              jest.spyOn(ctx.prisma.shoppingList, 'findUnique').mockResolvedValueOnce(null);
+              const itemsSpy = jest.spyOn(ctx.prisma.shoppingItem, 'findMany')
+
+              await expect(
+                shoppingListItemRouter.list(mockContext)
+              ).rejects.toMatchObject({
+                code: 'NOT_FOUND',
+                message: 'Shopping list not found.',
+              });
+
+              expect(itemsSpy).not.toHaveBeenCalled();
+            });
+          })
+        })
       })
     })
   })
