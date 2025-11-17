@@ -135,7 +135,7 @@ describe('Test suite for the Chores route', () => {
       .should('not.exist')
 
     // assert chores card does not exist
-    cy.get('[data-cy="ChoresCard"]')
+    cy.get('[data-cy="ChoresCard"]').contains('Updated test chores')
       .should('not.exist')
   });  
 });
