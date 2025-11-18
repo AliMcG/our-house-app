@@ -1,4 +1,4 @@
-import {  } from '@prisma/client';
+import { InviteStatus } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 import Decimal from 'decimal.js';
 
@@ -116,6 +116,29 @@ export function fakeHouseholdUserComplete() {
     id: faker.string.uuid(),
     userId: faker.string.uuid(),
     householdId: faker.string.uuid(),
+  };
+}
+export function fakeHouseholdInvite() {
+  return {
+    inviteeEmail: faker.lorem.words(5),
+    token: faker.lorem.words(5),
+    expiresAt: faker.date.anytime(),
+    updatedAt: faker.date.anytime(),
+    acceptedAt: undefined,
+  };
+}
+export function fakeHouseholdInviteComplete() {
+  return {
+    id: faker.string.uuid(),
+    householdId: faker.string.uuid(),
+    inviterUserId: faker.string.uuid(),
+    inviteeEmail: faker.lorem.words(5),
+    token: faker.lorem.words(5),
+    status: InviteStatus.PENDING,
+    expiresAt: faker.date.anytime(),
+    createdAt: new Date(),
+    updatedAt: faker.date.anytime(),
+    acceptedAt: undefined,
   };
 }
 export function fakeVerificationToken() {
