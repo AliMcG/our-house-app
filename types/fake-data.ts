@@ -120,7 +120,7 @@ export function fakeHouseholdUserComplete() {
 }
 export function fakeHouseholdInvite() {
   return {
-    inviteeEmail: faker.lorem.words(5),
+    invitedEmail: faker.lorem.words(5),
     token: faker.lorem.words(5),
     expiresAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),
@@ -132,7 +132,8 @@ export function fakeHouseholdInviteComplete() {
     id: faker.string.uuid(),
     householdId: faker.string.uuid(),
     inviterUserId: faker.string.uuid(),
-    inviteeEmail: faker.lorem.words(5),
+    invitedEmail: faker.lorem.words(5),
+    invitedUserId: undefined,
     token: faker.lorem.words(5),
     status: InviteStatus.PENDING,
     expiresAt: faker.date.anytime(),
