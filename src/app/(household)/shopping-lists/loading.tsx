@@ -15,18 +15,18 @@ export default function loading() {
       <div className="flex flex-col md:flex-row sm:mt-4 md:mt-8 gap-6">
         <div className="flex flex-col w-full max-w-[400px] h-[120px] place-content-center mx-auto rounded-md border border-purple-300 px-4 gap-4">
           <div className="h-6 md:h-8 rounded bg-gray-200"></div>
-          <div className="grid grid-cols-3 gap-6">
-            <div className="h-4 md:h-6 rounded bg-gray-200"></div>
-            <div className="h-4 md:h-6 rounded bg-gray-200"></div>
-            <div className="h-4 md:h-6 rounded bg-gray-200"></div>
+          <div className="flex justify-end gap-6">
+            <div className="h-4 md:h-6 w-10 rounded bg-gray-200"></div>
+            <div className="h-4 md:h-6 w-10 rounded bg-gray-200"></div>
+            <div className="h-4 md:h-6 w-10 rounded bg-gray-200"></div>
           </div>
         </div>
         <div className="flex flex-col w-full max-w-[400px] h-[120px] place-content-center mx-auto rounded-md border border-purple-300 px-4 gap-4">
           <div className="h-6 md:h-8 rounded bg-gray-200"></div>
-          <div className="grid grid-cols-3 gap-6">
-            <div className="h-4 md:h-6 rounded bg-gray-200"></div>
-            <div className="h-4 md:h-6 rounded bg-gray-200"></div>
-            <div className="h-4 md:h-6 rounded bg-gray-200"></div>
+          <div className="flex justify-end gap-6">
+            <div className="h-4 md:h-6 w-10 rounded bg-gray-200"></div>
+            <div className="h-4 md:h-6 w-10 rounded bg-gray-200"></div>
+            <div className="h-4 md:h-6 w-10 rounded bg-gray-200"></div>
           </div>
         </div>
       </div>
