@@ -122,12 +122,39 @@ table HouseholdUser {
   userId      String   [not null, note: "ObjectId"]
   householdId String   [not null, note: "ObjectId"]
 
-  user      User      [pk, ref: < User.id] // Relation to User
-  household Household [pk, ref: < Household.id] // Relation to Household
+  user      User      [pk, ref: < User.id] 
+  household Household [pk, ref: < Household.id]
 
    Indexes {
     (userId, householdId) [unique]
   }
+}
+
+table HouseholdInvite {
+  id            String       [pk, note: "Mapped to _id"]
+  householdId   String      [not null, note: "ObjectId"]
+  inviterUserId String      [not null, note: "ObjectId"]
+  invitedEmail  String
+  invitedUserId String?      [not null, note: "ObjectId"] 
+  token         String      [unique]
+  status        InviteStatus  [default: PENDING]
+  expiresAt     DateTime
+  createdAt     DateTime     [default: `now()`]
+  updatedAt     DateTime     [default: `updatedAt`]
+  acceptedAt    DateTime?
+
+  inviterUser User  [ref: < User.id, note: "Relation defined on User model"]
+   // To access the user who was invited (if registered)
+  invitedUser User?[ref: < User.id, note: "Relation defined on User model"]
+
+  household Household  [pk, ref: < Household.id]
+}
+
+enum InviteStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
 }
 
 ```
