@@ -2,7 +2,7 @@
 export default function loading() {
   // used purple borders to match our current theme but can be adjusted later
   return (
-    <div className="flex flex-col size-full bg-white p-8 pt-16 gap-4">
+    <div className="flex flex-col size-full bg-white p-8 gap-4">
 
       {/* header */}
       <div className="flex flex-col sm:flex-row gap-4">
