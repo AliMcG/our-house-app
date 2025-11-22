@@ -5,7 +5,7 @@ export default function loading() {
     <div className="flex flex-col size-full bg-white p-8 gap-4">
 
       {/* header */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row animate-pulse gap-4">
 
         <div className="w-[200px] h-[60px] place-content-center rounded-md border border-purple-300 px-4">
           <div className="h-2 md:h-4 rounded bg-gray-200"></div>
@@ -18,7 +18,7 @@ export default function loading() {
       </div>
 
       {/* main */}
-      <div className="flex flex-col overflow-y-auto gap-4">
+      <div className="flex flex-col animate-pulse overflow-y-auto gap-4">
 
           {/* Quick stats */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
