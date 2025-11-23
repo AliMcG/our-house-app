@@ -122,6 +122,7 @@ export const householdUserRouter = createTRPCRouter({
           throw new TRPCError({
             code: "NOT_IMPLEMENTED",
             message: 'User not deleted',
+            cause: e
           });
         }
       } else {

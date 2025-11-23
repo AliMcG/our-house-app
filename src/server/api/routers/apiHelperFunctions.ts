@@ -46,7 +46,7 @@ export const findHouseholdsByUser = async (
       throw new TRPCError({
         code: "NOT_FOUND",
         message: "No households found for this user",
-        cause: "Test field",
+        cause: error,
       });
     }
   } else {

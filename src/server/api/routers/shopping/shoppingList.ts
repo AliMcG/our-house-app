@@ -78,6 +78,7 @@ export const shoppingListRouter = createTRPCRouter({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to add shopping list to household",
+          cause: error
         });
       }
     }),
@@ -113,6 +114,7 @@ export const shoppingListRouter = createTRPCRouter({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to create shopping list",
+          cause: error
         });
       }
     }),
@@ -164,6 +166,7 @@ export const shoppingListRouter = createTRPCRouter({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to update shopping list",
+          cause: error
         });
       }
     }),
