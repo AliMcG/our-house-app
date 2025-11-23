@@ -8,7 +8,7 @@ export function fakeUser() {
   return {
     name: faker.person.fullName(),
     email: faker.internet.email(),
-    emailVerified: undefined,
+    emailVerified: null,
     image: faker.image.avatar(),
   };
 }
@@ -17,7 +17,7 @@ export function fakeUserComplete() {
     id: faker.string.uuid(),
     name: faker.person.fullName(),
     email: faker.internet.email(),
-    emailVerified: undefined,
+    emailVerified: null,
     image: faker.image.avatar(),
   };
 }
@@ -98,7 +98,7 @@ export function fakeHouseholdComplete() {
 export function fakeChoresItem() {
   return {
     name: faker.person.fullName(),
-    completedBy: undefined,
+    completedBy: null,
     active: faker.datatype.boolean(),
   };
 }
@@ -106,7 +106,7 @@ export function fakeChoresItemComplete() {
   return {
     id: faker.string.uuid(),
     name: faker.person.fullName(),
-    completedBy: undefined,
+    completedBy: null,
     active: faker.datatype.boolean(),
     choresId: faker.string.uuid(),
   };
@@ -121,25 +121,27 @@ export function fakeHouseholdUserComplete() {
 export function fakeHouseholdInvite() {
   return {
     invitedEmail: faker.lorem.words(5),
-    token: faker.lorem.words(5),
-    expiresAt: faker.date.anytime(),
+    invitedName: faker.lorem.words(5),
+    token: null,
+    expiresAt: null,
     updatedAt: faker.date.anytime(),
-    acceptedAt: undefined,
+    acceptedAt: null,
   };
 }
 export function fakeHouseholdInviteComplete() {
   return {
     id: faker.string.uuid(),
     householdId: faker.string.uuid(),
-    inviterUserId: faker.string.uuid(),
+    senderUserId: faker.string.uuid(),
     invitedEmail: faker.lorem.words(5),
-    invitedUserId: undefined,
-    token: faker.lorem.words(5),
+    invitedName: faker.lorem.words(5),
+    invitedUserId: null,
+    token: null,
     status: InviteStatus.PENDING,
-    expiresAt: faker.date.anytime(),
+    expiresAt: null,
     createdAt: new Date(),
     updatedAt: faker.date.anytime(),
-    acceptedAt: undefined,
+    acceptedAt: null,
   };
 }
 export function fakeVerificationToken() {
@@ -162,13 +164,13 @@ export function fakeAccount() {
     type: faker.lorem.words(5),
     provider: faker.lorem.words(5),
     providerAccountId: faker.lorem.words(5),
-    refresh_token: undefined,
-    access_token: undefined,
-    expires_at: undefined,
-    token_type: undefined,
-    scope: undefined,
-    id_token: undefined,
-    session_state: undefined,
+    refresh_token: null,
+    access_token: null,
+    expires_at: null,
+    token_type: null,
+    scope: null,
+    id_token: null,
+    session_state: null,
   };
 }
 export function fakeAccountComplete() {
@@ -178,13 +180,13 @@ export function fakeAccountComplete() {
     type: faker.lorem.words(5),
     provider: faker.lorem.words(5),
     providerAccountId: faker.lorem.words(5),
-    refresh_token: undefined,
-    access_token: undefined,
-    expires_at: undefined,
-    token_type: undefined,
-    scope: undefined,
-    id_token: undefined,
-    session_state: undefined,
+    refresh_token: null,
+    access_token: null,
+    expires_at: null,
+    token_type: null,
+    scope: null,
+    id_token: null,
+    session_state: null,
   };
 }
 export function fakeSession() {

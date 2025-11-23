@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
+ 
+ 
+ 
 import { defineConfig } from "cypress";
 import { MongoClient } from 'mongodb';
 import * as dotenv from "dotenv";

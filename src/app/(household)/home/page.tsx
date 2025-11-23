@@ -35,7 +35,6 @@ export default async function Home() {
   // TODO : determine current household logic how can we tell which household is current?
   // for now we will just take the first household in the list
   const currentHousehold = householdList[0]
-  console.log("Current Household:", currentHousehold);
 
   /**
    * // TODO

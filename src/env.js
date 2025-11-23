@@ -39,6 +39,7 @@ export const env = createEnv({
     UNIT_TESTER_ID: z.string(),
     UNIT_TEST_LIST_ID: z.string(),
     UNIT_TEST_HOUSEHOLD_ID: z.string(),
+    RESEND_API_KEY: z.string()
   },
 
   /**
@@ -70,7 +71,8 @@ export const env = createEnv({
     DATABASE_USER_ID: process.env.DATABASE_USER_ID,
     UNIT_TESTER_ID: process.env.UNIT_TESTER_ID,
     UNIT_TEST_LIST_ID: process.env.UNIT_TEST_LIST_ID,
-    UNIT_TEST_HOUSEHOLD_ID: process.env.UNIT_TEST_HOUSEHOLD_ID
+    UNIT_TEST_HOUSEHOLD_ID: process.env.UNIT_TEST_HOUSEHOLD_ID,
+    RESEND_API_KEY: process.env.RESEND_API_KEY
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
