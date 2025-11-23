@@ -13,6 +13,7 @@ generator custom_generator {
 
 datasource db {
   provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 // User modal can be updated as the application grows
