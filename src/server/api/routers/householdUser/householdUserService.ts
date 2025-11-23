@@ -1,6 +1,7 @@
 import { InviteStatus, PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { Resend } from 'resend';
+import crypto from 'crypto';
 
 export const findHouseholdUserUniqueId = async (
     householdId: string,
