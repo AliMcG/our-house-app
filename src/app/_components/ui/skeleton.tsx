@@ -9,11 +9,12 @@ import React from 'react';
   - no content or layout logic
   - focused on shape + animation
 */
-export function Skeleton({ className, children, ...props }: React.ComponentProps<"div">) {
+//TODO: DONT FORGET TO ADD THIS BACK BEFORE COMMITTING animate-pulse
+export function Skeleton({ className, children, ...props}: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="skeleton-group"
-      className={cn("flex flex-col gap-2 border animate-pulse", className)}
+      className={cn("flex flex-col gap-2 p-4 border border-gray-300 rounded-md", className)}
       {...props}
     >
       {children}
@@ -22,14 +23,14 @@ export function Skeleton({ className, children, ...props }: React.ComponentProps
 }
 
 // shared skeleton styles
-const base = "bg-accent rounded-md"
+const base = "bg-gray-200 rounded-md"
 
 /* Componsitional Variants */
 
 // Text: defaults to full width of container with round edges
 Skeleton.Text = function SkeletonText({
   className,
-  ...props,
+  ...props
 }: React.ComponentProps<"div">) {
   return (
     <div
