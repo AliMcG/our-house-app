@@ -13,7 +13,7 @@ export function Skeleton({ className, children, ...props}: React.ComponentProps<
   return (
     <div
       data-slot="skeleton-group"
-      className={cn("flex flex-col place-content-center gap-2 p-4 border border-gray-300 rounded-md animate-pulse", className)}
+      className={cn("flex flex-col place-content-center gap-2 w-full p-4 border border-gray-300 rounded-md animate-pulse", className)}
       {...props}
     >
       {children}
