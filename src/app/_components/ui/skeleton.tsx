@@ -34,7 +34,7 @@ Skeleton.Text = function SkeletonText({
   return (
     <div
       data-slot="skeleton"
-      className={cn(base, "h-4 w-full", className)}
+      className={cn(base, "h-2 w-full", className)}
       {...props}
     />
   )
