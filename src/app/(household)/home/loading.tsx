@@ -1,3 +1,6 @@
+import { Skeleton } from "@/app/_components/ui/skeleton"
+
+
 /* Custom skeleton for the Dashboard loader */
 export default function loading() {
   // used purple borders to match our current theme but can be adjusted later
@@ -7,13 +10,13 @@ export default function loading() {
       {/* header */}
       <div className="flex flex-col sm:flex-row animate-pulse gap-4">
 
-        <div className="w-[200px] h-[60px] place-content-center rounded-md border border-purple-300 px-4">
-          <div className="h-2 md:h-4 rounded bg-gray-200"></div>
-        </div>
- 
-        <div className="w-[180px] h-[60px] place-content-center rounded-md border border-purple-300 px-4">
-          <div className="h-2 rounded bg-gray-200"></div>
-        </div>
+        <Skeleton className="w-[200px] h-[60px]">
+          <Skeleton.Text />
+        </Skeleton>
+
+        <Skeleton className="w-[180px] h-[60px]">
+          <Skeleton.Text />
+        </Skeleton>
       
       </div>
 
@@ -23,55 +26,58 @@ export default function loading() {
           {/* Quick stats */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-            <div className="w-full h-[120px] place-content-center rounded-md border border-purple-300 px-4">
+            <Skeleton className="h-[120px]">
               <div className="grid grid-cols-3 gap-4">
-                <div className="col-span-2 h-2 rounded bg-gray-200"></div>
-                <div className="col-span-1 h-2 rounded bg-gray-200"></div>
-                <div className="col-span-3 h-4 rounded bg-gray-200"></div>
+                <Skeleton.Text className="col-span-2" />
+                <Skeleton.Text className="col-span-1" />
+                <Skeleton.Text className="col-span-3 h-4" />
               </div>
-            </div>
+            </Skeleton>
             
-            <div className="w-full h-[120px] place-content-center rounded-md border border-purple-300 px-4">
+            <Skeleton className="h-[120px]">
               <div className="grid grid-cols-3 gap-4">
-                <div className="col-span-2 h-2 rounded bg-gray-200"></div>
-                <div className="col-span-1 h-2 rounded bg-gray-200"></div>
-                <div className="col-span-3 h-4 rounded bg-gray-200"></div>
+                <Skeleton.Text className="col-span-2" />
+                <Skeleton.Text className="col-span-1" />
+                <Skeleton.Text className="col-span-3 h-4" />
               </div>
-            </div>
+            </Skeleton>
 
-            <div className="w-full h-[120px] place-content-center rounded-md border border-purple-300 px-4">
+            <Skeleton className="h-[120px]">
               <div className="grid grid-cols-3 gap-4">
-                <div className="col-span-2 h-2 rounded bg-gray-200"></div>
-                <div className="col-span-1 h-2 rounded bg-gray-200"></div>
-                <div className="col-span-3 h-4 rounded bg-gray-200"></div>
+                <Skeleton.Text className="col-span-2" />
+                <Skeleton.Text className="col-span-1" />
+                <Skeleton.Text className="col-span-3 h-4" />
               </div>
-            </div>
+            </Skeleton>
 
-            <div className="w-full h-[120px] place-content-center rounded-md border border-purple-300 px-4">
+            <Skeleton className="h-[120px]">
               <div className="grid grid-cols-3 gap-4">
-                <div className="col-span-2 h-2 rounded bg-gray-200"></div>
-                <div className="col-span-1 h-2 rounded bg-gray-200"></div>
-                <div className="col-span-3 h-4 rounded bg-gray-200"></div>
+                <Skeleton.Text className="col-span-2" />
+                <Skeleton.Text className="col-span-1" />
+                <Skeleton.Text className="col-span-3 h-4" />
               </div>
-            </div>
+            </Skeleton>
 
           </div>
 
           {/* Household members */}
-          <div className="w-full h-[120px] place-content-center rounded-md border border-purple-300 px-4">
+          <Skeleton>
             <div className="grid grid-cols-3 gap-4">
-              <div className="col-span-2 h-6 rounded bg-gray-200"></div>
-              <div className="col-span-1 h-6 rounded bg-gray-200"></div>
-              <div className="col-span-3 h-6 rounded bg-gray-200"></div>
+              <Skeleton.Text className="col-span-2 h-6" />
+              <Skeleton.Text className="col-span-1 h-6" />
+              <Skeleton.Text className="col-span-3 h-6" />
+              <Skeleton.Circle className="w-[40px] h-[40px] col-span-1 justify-self-center" />
+              <Skeleton.Text className="col-span-2 self-center" />
             </div>
-          </div>
+          </Skeleton>
 
           {/* Quick actions */}
-          <div className="flex flex-col h-[200px] place-content-center rounded-md border border-purple-300 px-4 gap-4">
-            <div className="h-6 w-full rounded bg-gray-200"></div>
-            <div className="h-2 w-full rounded bg-gray-200"></div>
-            <div className="h-16 w-full rounded bg-gray-200"></div>
-          </div>
+          <Skeleton>
+            <Skeleton.Text className="h-6" />
+            <Skeleton.Text />
+            <Skeleton.Button className="w-full max-w-[200px]" />
+            <Skeleton.Button className="w-full max-w-[200px]" />
+          </Skeleton>
 
       </div>
 
