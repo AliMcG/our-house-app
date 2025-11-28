@@ -56,5 +56,17 @@ Skeleton.Image = function SkeletonImage({
 }
 
 // Button: defaults to 60px by 120px rectangle with round edges
+Skeleton.Button = function SkeletonButton({
+  className,
+  ...props
+}: React.ComponentProps<"div">){
+  return (
+    <div
+      data-slot="skeleton"
+      className={cn(base, "h-[40px] w-[120px]", className)}
+      {...props}
+    />
+  )
+}
 
 // Circle: defaults to a 80px by 80px
