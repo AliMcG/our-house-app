@@ -9,12 +9,11 @@ import React from 'react';
   - no content or layout logic
   - focused on shape + animation
 */
-//TODO: DONT FORGET TO ADD THIS BACK BEFORE COMMITTING animate-pulse
 export function Skeleton({ className, children, ...props}: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="skeleton-group"
-      className={cn("flex flex-col gap-2 p-4 border border-gray-300 rounded-md", className)}
+      className={cn("flex flex-col gap-2 p-4 border border-gray-300 rounded-md animate-pulse", className)}
       {...props}
     >
       {children}
@@ -45,7 +44,7 @@ Skeleton.Text = function SkeletonText({
 Skeleton.Image = function SkeletonImage({
   className,
   ...props
-}: React.ComponentProps<"div">){
+}: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="skeleton"
@@ -59,7 +58,7 @@ Skeleton.Image = function SkeletonImage({
 Skeleton.Button = function SkeletonButton({
   className,
   ...props
-}: React.ComponentProps<"div">){
+}: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="skeleton"
@@ -70,3 +69,15 @@ Skeleton.Button = function SkeletonButton({
 }
 
 // Circle: defaults to a 80px by 80px
+Skeleton.Circle = function SkeletonCircle({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="skeleton"
+      className={cn(base, "h-[80px] w-[80px] rounded-full", className)}
+      {...props}
+    />
+  )
+}
