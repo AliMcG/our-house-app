@@ -8,7 +8,7 @@ export default function loading() {
       <Skeleton.Text className="flex h-6 sm:h-10 md:h-12 sm:w-[280px] self-center" />
 
       {/* Creation card */}
-      <Skeleton className="w-fullsm:w-[280px] h-[120px] md:h-[160px] self-center">
+      <Skeleton className="sm:w-[280px] h-[120px] md:h-[160px] self-center">
         <Skeleton.Text className="md:h-4" />
         <Skeleton.Text className="h-6 md:h-8" />
         <Skeleton.Button className="self-end" />
