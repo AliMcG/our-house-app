@@ -3,7 +3,6 @@ import { Skeleton } from "@/app/_components/ui/skeleton"
 
 /* Custom skeleton for the Dashboard loader */
 export default function loading() {
-  // used purple borders to match our current theme but can be adjusted later
   return (
     <div className="flex flex-col size-full bg-white p-8 gap-4">
     
