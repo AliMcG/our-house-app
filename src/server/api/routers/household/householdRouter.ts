@@ -47,6 +47,11 @@ export const householdRouter = createTRPCRouter({
             }
           }
         },
+        userInvites: {
+          include: {
+            inviterUser: true,
+          },
+        },
       }
     })
   }),
