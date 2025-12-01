@@ -24,7 +24,12 @@ export type HouseholdWithRelations = Prisma.HouseholdGetPayload<{
       }
     },
     chores: true,
-    shoppingLists: true
+    shoppingLists: true,
+    userInvites: {
+      include: {
+        inviterUser: true
+      }
+    }
   }
 }>
 
@@ -222,7 +227,7 @@ export default async function Home() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                 <CreateShoppingListDialog householdId={currentHousehold.id} />
+                  <CreateShoppingListDialog householdId={currentHousehold.id} />
                   <Button variant="outline" className="justify-start">
                     <Plus className="mr-2 h-4 w-4" />
                     Add Task
