@@ -1,11 +1,17 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import { addSingleUserToHousehold } from "../apiHelperFunctions";
 import {
-  addSingleUserToHousehold,
-} from "../apiHelperFunctions";
-import { createHouseholdInvite, findUserByEmail, sendEmailInvite } from "./householdUserService";
+  createHouseholdInvite,
+  findUserByEmail,
+  sendEmailInvite,
+} from "./householdUserService";
 import { checkUserIsOwnerOfHousehold } from "../household/householdService";
 
 /**
@@ -13,10 +19,17 @@ import { checkUserIsOwnerOfHousehold } from "../household/householdService";
  */
 export const householdUserRouter = createTRPCRouter({
   inviteToHousehold: protectedProcedure
-    .input(z.object({ householdId: z.string().min(1), invitedEmail: z.string().email().min(1), invitedName: z.string().min(1), senderName: z.string().min(1) }))
+    .input(
+      z.object({
+        householdId: z.string().min(1),
+        invitedEmail: z.string().email().min(1),
+        invitedName: z.string().min(1),
+        senderName: z.string().min(1),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
-      const { householdId, invitedEmail, invitedName, senderName } = input
-      const senderUserId = ctx.session.user.id
+      const { householdId, invitedEmail, invitedName, senderName } = input;
+      const senderUserId = ctx.session.user.id;
       const isHouseholdOwner = await checkUserIsOwnerOfHousehold(
         householdId,
         senderUserId,
@@ -28,62 +41,153 @@ export const householdUserRouter = createTRPCRouter({
           message: `You are not the owner of the household - no permission to send invites`,
         });
       }
-
-      const newHouseholdInvite = await createHouseholdInvite(householdId, senderUserId, invitedEmail, invitedName, ctx.db)
-      const householdInviteId = newHouseholdInvite.id
-      const userFoundByEmail = await findUserByEmail(invitedEmail, ctx.db);
-      if (!userFoundByEmail) {
-        /**
-         * This is now a new person to send an email invite to
-         */
-        const emailSent = await sendEmailInvite(invitedEmail, senderName, householdInviteId, ctx.db)
-        return emailSent
-      }
-      // If userFoundByEmail then we can send an internal invite to the already registered user.
-    }),
-  /**
-   * Current assumption that the user to add is already a signed up user -
-   * Future Feature to develop - send email request to completely new user.
-   */
-  addNewUserToHousehold: protectedProcedure
-    .input(z.object({ householdId: z.string(), userEmail: z.string().email() }))
-    .mutation(async ({ ctx, input }) => {
-      const newMemberId = await findUserByEmail(input.userEmail, ctx.db);
-      if (!newMemberId) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `User with email ${input.userEmail} not found`,
-        });
-      }
       try {
-        const result = await addSingleUserToHousehold(
-          input.householdId,
-          newMemberId.id,
+        const newHouseholdInvite = await createHouseholdInvite(
+          householdId,
+          senderUserId,
+          invitedEmail,
+          invitedName,
           ctx.db,
         );
-        return result;
-      } catch (e) {
-        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        const householdInviteId = newHouseholdInvite.id;
+        const userFoundByEmail = await findUserByEmail(invitedEmail, ctx.db);
+        let isNewUser = true;
+        if (userFoundByEmail) {
           /**
-           * Prisma error codes: https://www.prisma.io/docs/orm/reference/error-reference#error-codes
+           * update the invite record with the invitedUserId
            */
-          if (e.code === "P2002") {
+          await ctx.db.householdInvite.update({
+            where: { id: householdInviteId },
+            data: { invitedUserId: userFoundByEmail.id },
+          });
+          isNewUser = false;
+        }
+        if (!userFoundByEmail) {
+          /**
+           * This is now a new person to send an email invite to
+           */
+          const emailSent = await sendEmailInvite(
+            invitedEmail,
+            senderName,
+            householdInviteId,
+            isNewUser,
+            ctx.db,
+          );
+          return emailSent;
+        }
+      } catch (e) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Error creating invite`,
+          cause: e,
+        });
+      }
+    }),
+  findInviteByToken: publicProcedure
+    .input(z.object({ inviteToken: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const { inviteToken } = input;
+      try {
+        return await ctx.db.householdInvite.findUnique({
+          where: { token: inviteToken },
+          include: { household: true, inviterUser: true },
+        });
+      } catch (e) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Invite with token ${inviteToken} not found`,
+          cause: e,
+        });
+      }
+    }),
+  /**
+   * Route to handle the result of the invite being accepted or declined.
+   * A user can either accept or decline an invite, via the link in the email or via the dashboard.
+   * The email link will direct to a route /accept-invite?inviteToken=xxxx - this route will call this procedure with the token and accepted (true/false).
+   * The dashboard will have a list of pending invites with accept/decline buttons - which will call this procedure with the userId and accepted.
+   * Input: userId?, inviteToken?, accepted: 'accept' | 'decline'
+   * This route will:
+   * 1. Validate the inviteToken or userId to find the invite record.
+   * 2. If accepted is 'accept', add the user to the household via addSingleUserToHousehold function.
+   * 3. Update the invite record with status 'accepted' or 'declined'.
+   * 4. Return the result.
+   */
+  processUserHouseholdInvite: protectedProcedure
+    .input(
+      z.object({
+        inviteToken: z.string().min(1).optional(),
+        userId: z.string().email().min(1).optional(),
+        accepted: z.boolean(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Find the invite record
+      const inviteRecord = await ctx.db.householdInvite.findFirst({
+        where: input.inviteToken
+          ? { token: input.inviteToken }
+          : { invitedUserId: input.userId },
+      });
+      if (!inviteRecord) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Invite not found`,
+        });
+      }
+      const { householdId, id } = inviteRecord;
+      if (!input.accepted) {
+        // Update invite record to declined
+        const updatedInvite = await ctx.db.householdInvite.update({
+          where: { id: id },
+          data: { status: "DECLINED" },
+        });
+        return updatedInvite;
+      }
+
+      // If the user already exists, use the userId from the UI input
+      if (input.userId && input.accepted) {
+        try {
+          const result = await addSingleUserToHousehold(
+            householdId,
+            input.userId,
+            ctx.db,
+          );
+          await ctx.db.householdInvite.update({
+            where: { id: id },
+            data: { status: "ACCEPTED" },
+          });
+          return result;
+        } catch (e) {
+          if (e instanceof Prisma.PrismaClientKnownRequestError) {
             /**
-             * TRPC error is caught by the onError hook in the client code
+             * Prisma error codes: https://www.prisma.io/docs/orm/reference/error-reference#error-codes
              */
-            throw new TRPCError({
-              code: "INTERNAL_SERVER_ERROR",
-              message: `Email address already in use: ${input.userEmail}`,
-              cause: e
-            });
-          } else {
-            throw new TRPCError({
-              code: "UNPROCESSABLE_CONTENT",
-              message: e.code,
-              cause: e
-            });
+            if (e.code === "P2002") {
+              /**
+               * TRPC error is caught by the onError hook in the client code
+               */
+              throw new TRPCError({
+                code: "CONFLICT",
+                message: `Unable to add user: ${input.userId} to household: ${householdId} - user may already be a member of the household.`,
+                cause: e,
+              });
+            } else {
+              throw new TRPCError({
+                code: "UNPROCESSABLE_CONTENT",
+                message: e.code,
+                cause: e,
+              });
+            }
           }
         }
+      }
+      if (input.inviteToken && input.accepted) {
+        // The assumption here is that the user has accepted the invite via email link
+        // but is not yet registered in the system. Or they are registered but we don't have their userId.
+        // In a real system, we would likely have more logic here to handle user registration.
+        throw new TRPCError({
+          code: "NOT_IMPLEMENTED",
+          message: `Accepting invites via token without userId is not implemented.`,
+        });
       }
     }),
 
@@ -121,8 +225,8 @@ export const householdUserRouter = createTRPCRouter({
         } catch (e) {
           throw new TRPCError({
             code: "NOT_IMPLEMENTED",
-            message: 'User not deleted',
-            cause: e
+            message: "User not deleted",
+            cause: e,
           });
         }
       } else {
