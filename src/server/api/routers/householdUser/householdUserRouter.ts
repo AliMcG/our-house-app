@@ -87,10 +87,28 @@ export const householdUserRouter = createTRPCRouter({
     .input(z.object({ inviteToken: z.string().min(1) }))
     .query(async ({ ctx, input }) => {
       const { inviteToken } = input;
+      /** at this point we just need to make sure the token is valid:
+       * - hash token before looking for it (todo: after invite acceptance logic is working)
+       * - token exists
+       * - token is not used
+       * - token not expired
+       */
       try {
+        // retrieve invite details, inviters name and household name.
         return await ctx.db.householdInvite.findUnique({
           where: { token: inviteToken },
-          include: { household: true, inviterUser: true },
+          include: {
+            household: {
+              select: {
+                name: true,
+              }
+            },
+            inviterUser: {
+              select: {
+                name: true,
+              }
+            }
+          }
         });
       } catch (e) {
         throw new TRPCError({
