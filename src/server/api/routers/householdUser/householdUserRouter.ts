@@ -95,7 +95,7 @@ export const householdUserRouter = createTRPCRouter({
        */
       try {
         // retrieve invite details, inviters name and household name.
-        return await ctx.db.householdInvite.findUnique({
+        const invite = await ctx.db.householdInvite.findUnique({
           where: { token: inviteToken },
           include: {
             household: {
@@ -110,6 +110,10 @@ export const householdUserRouter = createTRPCRouter({
             }
           }
         });
+
+        // invite is valid
+        return invite;
+
       } catch (e) {
         throw new TRPCError({
           code: "NOT_FOUND",
