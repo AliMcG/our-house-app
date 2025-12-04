@@ -111,6 +111,14 @@ export const householdUserRouter = createTRPCRouter({
           }
         });
 
+        // check invite exists
+        if (!invite) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: `Invite with token ${inviteToken} not found`,
+          });
+        }
+
         // invite is valid
         return invite;
 
