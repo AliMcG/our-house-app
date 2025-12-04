@@ -130,6 +130,14 @@ export const householdUserRouter = createTRPCRouter({
           });
         }
 
+        // invite not used
+        if (invite.status != "PENDING") {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: `Invite with token ${inviteToken} already used`,
+          });
+        }
+
         // invite is valid
         return invite;
 
