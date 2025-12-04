@@ -119,6 +119,17 @@ export const householdUserRouter = createTRPCRouter({
           });
         }
 
+        // invite not expired
+        const now = new Date();
+        const isExpired = invite.expiresAt && now > invite.expiresAt;
+
+        if (isExpired) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: `Invite with token ${inviteToken} has expired`,
+          });
+        }
+
         // invite is valid
         return invite;
 
