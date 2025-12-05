@@ -76,7 +76,7 @@ export const sendEmailInvite = async (
   const emailInviteLink = `${getBaseUrl()}/invite/${token}`;
 
   const sent = await resend.emails.send({
-    from: `process.env.RESEND_API_DOMAIN`,
+    from: `onboarding@ourhousetheapp.com`,
     to: invitedEmail,
     subject: "Invite to join OurHouse app",
     html: emailHtmlTemplate(senderName, emailInviteLink, isNewUser),
