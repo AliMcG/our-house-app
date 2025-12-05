@@ -164,8 +164,8 @@ export const householdUserRouter = createTRPCRouter({
   processUserHouseholdInvite: protectedProcedure
     .input(
       z.object({
-        inviteToken: z.string().min(1).optional(),
-        userId: z.string().email().min(1).optional(),
+        inviteToken: z.string().min(1),
+        userId: z.string().min(1),
         accepted: z.boolean(),
       }),
     )
@@ -176,68 +176,77 @@ export const householdUserRouter = createTRPCRouter({
           ? { token: input.inviteToken }
           : { invitedUserId: input.userId },
       });
+      // unexpected issue finding invite by token
       if (!inviteRecord) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: `Invite not found`,
         });
       }
-      const { householdId, id } = inviteRecord;
-      if (!input.accepted) {
-        // Update invite record to declined
-        const updatedInvite = await ctx.db.householdInvite.update({
-          where: { id: id },
-          data: { status: "DECLINED" },
-        });
-        return updatedInvite;
-      }
 
+      const { householdId, id } = inviteRecord;
+      // NOTE: status should only say if it is available or not?
+      // NOTE: do we need to add extra states to the status?
+      // if (!input.accepted) {
+      //   // Update invite record to declined
+      //   const updatedInvite = await ctx.db.householdInvite.update({
+      //     where: { id: id },
+      //     data: { status: "DECLINED" },
+      //   });
+      //   return updatedInvite;
+      // }
+
+      // NOTE: this if statement is not needed
       // If the user already exists, use the userId from the UI input
-      if (input.userId && input.accepted) {
-        try {
-          const result = await addSingleUserToHousehold(
-            householdId,
-            input.userId,
-            ctx.db,
-          );
-          await ctx.db.householdInvite.update({
-            where: { id: id },
-            data: { status: "ACCEPTED" },
-          });
-          return result;
-        } catch (e) {
-          if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      // if (input.userId && input.accepted) {
+      try {
+        // add user to household
+        const inviteSuccess = await addSingleUserToHousehold(
+          householdId,
+          input.userId,
+          ctx.db,
+        );
+        // mark invite as accepted and expired
+        const expiresNow = new Date;
+        await ctx.db.householdInvite.update({
+          where: { id: id },
+          data: { status: "ACCEPTED", expiresAt: expiresNow },
+        });
+        return inviteSuccess;
+      } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+          /**
+           * Prisma error codes: https://www.prisma.io/docs/orm/reference/error-reference#error-codes
+           */
+          if (e.code === "P2002") {
             /**
-             * Prisma error codes: https://www.prisma.io/docs/orm/reference/error-reference#error-codes
+             * TRPC error is caught by the onError hook in the client code
              */
-            if (e.code === "P2002") {
-              /**
-               * TRPC error is caught by the onError hook in the client code
-               */
-              throw new TRPCError({
-                code: "CONFLICT",
-                message: `Unable to add user: ${input.userId} to household: ${householdId} - user may already be a member of the household.`,
-                cause: e,
-              });
-            } else {
-              throw new TRPCError({
-                code: "UNPROCESSABLE_CONTENT",
-                message: e.code,
-                cause: e,
-              });
-            }
+            throw new TRPCError({
+              code: "CONFLICT",
+              message: `Unable to add user: ${input.userId} to household: ${householdId} - user may already be a member of the household.`,
+              cause: e,
+            });
+          } else {
+            throw new TRPCError({
+              code: "UNPROCESSABLE_CONTENT",
+              message: e.code,
+              cause: e,
+            });
           }
         }
       }
-      if (input.inviteToken && input.accepted) {
-        // The assumption here is that the user has accepted the invite via email link
-        // but is not yet registered in the system. Or they are registered but we don't have their userId.
-        // In a real system, we would likely have more logic here to handle user registration.
-        throw new TRPCError({
-          code: "NOT_IMPLEMENTED",
-          message: `Accepting invites via token without userId is not implemented.`,
-        });
-      }
+      // }
+      // NOTE: we should not need this as to reach this point the person who accepts will be a registed user
+      // if (input.inviteToken && input.accepted) {
+      //   // The assumption here is that the user has accepted the invite via email link
+      //   // but is not yet registered in the system. Or they are registered but we don't have their userId.
+      //   // In a real system, we would likely have more logic here to handle user registration.
+      //   throw new TRPCError({
+      //     code: "NOT_IMPLEMENTED",
+      //     message: `Accepting invites via token without userId is not implemented.`,
+      //   });
+      // }
     }),
 
   deleteUserFromHousehold: protectedProcedure
