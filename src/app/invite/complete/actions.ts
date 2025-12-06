@@ -3,7 +3,7 @@
 import { api } from "@/trpc/server";
 
 
-type JoinResult = { success: true, household: string } | { success: false, message: string }
+type JoinResult = { success: true, householdName: string } | { success: false, message: string }
 
 export async function acceptInviteAction(token: string, userId: string, userEmail: string): Promise<JoinResult> {
   try {
@@ -19,7 +19,7 @@ export async function acceptInviteAction(token: string, userId: string, userEmai
       };
     }
 
-    // validate invite email and loggedin users email
+    // validate invite email and logged in users email
     if (invite.invitedEmail !== userEmail) {
       return {
         success: false,
@@ -33,11 +33,11 @@ export async function acceptInviteAction(token: string, userId: string, userEmai
       userId: userId,
       inviteToken: token
     }
-    const mutate = api.householdUserRouter.processUserHouseholdInvite.mutate(userToHousehold);
+    await api.householdUserRouter.processUserHouseholdInvite.mutate(userToHousehold);
 
     return {
       success: true,
-      household: invite.household.name
+      householdName: invite.household.name
     }
 
   }catch(e) {
