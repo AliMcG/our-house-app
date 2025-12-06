@@ -41,6 +41,35 @@ export const householdUserRouter = createTRPCRouter({
           message: `You are not the owner of the household - no permission to send invites`,
         });
       }
+      /**
+       * Check that the invited email is not already a member of the household
+       * or that there is not already a pending invite for this email and household
+       */
+      const existingUser = await ctx.db.householdUser.findFirst({
+        where: {
+          householdId: householdId,
+          user: { email: invitedEmail },
+        },
+      });
+      if (existingUser) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: `User with email ${invitedEmail} is already a member of the household`,
+        });
+      }
+      const existingInvite = await ctx.db.householdInvite.findFirst({
+        where: {
+          householdId: householdId,
+          invitedEmail: invitedEmail,
+          status: "PENDING",
+        },
+      });
+      if (existingInvite) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: `An invite has already been sent to ${invitedEmail} for this household`,
+        });
+      }
       try {
         const newHouseholdInvite = await createHouseholdInvite(
           householdId,
@@ -62,19 +91,18 @@ export const householdUserRouter = createTRPCRouter({
           });
           isNewUser = false;
         }
-        if (!userFoundByEmail) {
-          /**
-           * This is now a new person to send an email invite to
-           */
-          const emailSent = await sendEmailInvite(
-            invitedEmail,
-            senderName,
-            householdInviteId,
-            isNewUser,
-            ctx.db,
-          );
-          return emailSent;
-        }
+        /**
+         * Send email invite to the invited email address
+         * The variable isNewUser indicates if the email is for a new user or an existing user
+         */
+        const emailSent = await sendEmailInvite(
+          invitedEmail,
+          senderName,
+          householdInviteId,
+          isNewUser,
+          ctx.db,
+        );
+        return emailSent;
       } catch (e) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
@@ -87,31 +115,31 @@ export const householdUserRouter = createTRPCRouter({
     .input(z.object({ inviteToken: z.string().min(1) }))
     .query(async ({ ctx, input }) => {
       const { inviteToken } = input;
-      /** at this point we just need to make sure the token is valid:
-       * - hash token before looking for it (todo: after invite acceptance logic is working)
-       * - token exists
-       * - token is not used
-       * - token not expired
-       */
       try {
-        // retrieve invite details, inviters name and household name.
+        /**
+         * Retrieve the invite by token and include household name and inviter's name
+         * These details are needed to display on the invite acceptance page
+         */
         const invite = await ctx.db.householdInvite.findUnique({
           where: { token: inviteToken },
           include: {
             household: {
               select: {
                 name: true,
-              }
+              },
             },
             inviterUser: {
               select: {
                 name: true,
-              }
-            }
-          }
+              },
+            },
+          },
         });
 
-        // check invite exists
+        /**
+         * If no invite found with that token
+         * throw not found error
+         */
         if (!invite) {
           throw new TRPCError({
             code: "NOT_FOUND",
@@ -119,18 +147,27 @@ export const householdUserRouter = createTRPCRouter({
           });
         }
 
-        // invite not expired
+        /**
+         * Check if invite is expired, if so update status to EXPIRED
+         * We can also choose to delete expired invites instead? 
+         * If expired throw error
+         */
         const now = new Date();
         const isExpired = invite.expiresAt && now > invite.expiresAt;
-
         if (isExpired) {
+          await ctx.db.householdInvite.update({
+            where: { id: invite.id },
+            data: { status: "EXPIRED" },
+          });
           throw new TRPCError({
             code: "BAD_REQUEST",
             message: `Invite with token ${inviteToken} has expired`,
           });
         }
 
-        // invite not used
+        /**
+         * Check if invite has already been used and throw error if so
+         */
         if (invite.status != "PENDING") {
           throw new TRPCError({
             code: "BAD_REQUEST",
@@ -138,9 +175,7 @@ export const householdUserRouter = createTRPCRouter({
           });
         }
 
-        // invite is valid
         return invite;
-
       } catch (e) {
         throw new TRPCError({
           code: "NOT_FOUND",
@@ -170,13 +205,15 @@ export const householdUserRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // Find the invite record
+      /**
+       * Find the invite record by either inviteToken or userId
+       * Throw error if not found
+       */
       const inviteRecord = await ctx.db.householdInvite.findFirst({
         where: input.inviteToken
           ? { token: input.inviteToken }
           : { invitedUserId: input.userId },
       });
-      // unexpected issue finding invite by token
       if (!inviteRecord) {
         throw new TRPCError({
           code: "NOT_FOUND",
@@ -185,32 +222,20 @@ export const householdUserRouter = createTRPCRouter({
       }
 
       const { householdId, id } = inviteRecord;
-      // NOTE: status should only say if it is available or not?
-      // NOTE: do we need to add extra states to the status?
-      // if (!input.accepted) {
-      //   // Update invite record to declined
-      //   const updatedInvite = await ctx.db.householdInvite.update({
-      //     where: { id: id },
-      //     data: { status: "DECLINED" },
-      //   });
-      //   return updatedInvite;
-      // }
 
-      // NOTE: this if statement is not needed
-      // If the user already exists, use the userId from the UI input
-      // if (input.userId && input.accepted) {
       try {
-        // add user to household
+        /**
+         * Add user to household and update invite status to ACCEPTED
+         */
         const inviteSuccess = await addSingleUserToHousehold(
           householdId,
           input.userId,
           ctx.db,
         );
-        // mark invite as accepted and expired
-        const expiresNow = new Date;
+        const acceptedAt = new Date();
         await ctx.db.householdInvite.update({
           where: { id: id },
-          data: { status: "ACCEPTED", expiresAt: expiresNow },
+          data: { status: "ACCEPTED", acceptedAt: acceptedAt },
         });
         return inviteSuccess;
       } catch (e) {
@@ -236,17 +261,6 @@ export const householdUserRouter = createTRPCRouter({
           }
         }
       }
-      // }
-      // NOTE: we should not need this as to reach this point the person who accepts will be a registed user
-      // if (input.inviteToken && input.accepted) {
-      //   // The assumption here is that the user has accepted the invite via email link
-      //   // but is not yet registered in the system. Or they are registered but we don't have their userId.
-      //   // In a real system, we would likely have more logic here to handle user registration.
-      //   throw new TRPCError({
-      //     code: "NOT_IMPLEMENTED",
-      //     message: `Accepting invites via token without userId is not implemented.`,
-      //   });
-      // }
     }),
 
   deleteUserFromHousehold: protectedProcedure
