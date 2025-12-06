@@ -78,7 +78,7 @@ export const sendEmailInvite = async (
   const sent = await resend.emails.send({
     from: `onboarding@ourhousetheapp.com`,
     to: invitedEmail,
-    subject: "Invite to join OurHouse app",
+    subject: isNewUser ? "Invite to join OurHouse app" : "You've been invited to join a household on OurHouse app",
     html: emailHtmlTemplate(senderName, emailInviteLink, isNewUser),
   });
 

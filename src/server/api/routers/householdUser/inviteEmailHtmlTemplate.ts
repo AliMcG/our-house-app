@@ -3,13 +3,16 @@ export const emailHtmlTemplate = (
   emailInviteLink: string,
   isNewUser: boolean,
 ): string => {
+  const conditionalHeader = isNewUser
+    ? "Invite to OurHouse App"
+    : "Invite to a household on OurHouse App";
   const conditionalSentence = isNewUser
-    ? "To get started, simply click the button below to accept your invitation and set up your account:"
-    : "To access this shared household, simply click the button below to log in to your account:";
+    ? "To get started, simply click the button below to accept your invitation and set up your account."
+    : "To access this shared household, simply click the button below to accept your invitation and then log in to your account.";
   return `
   <html>
 <head>
-  <title>Invite to OurHouse App</title>
+  <title>${conditionalHeader}</title>
   <style>
     body {
       font-family: sans-serif;
@@ -42,7 +45,7 @@ export const emailHtmlTemplate = (
     .button {
       display: inline-block;
       background-color: #b372f0;
-      color: #000;
+      color: #fff;
       padding: 12px 25px;
       text-decoration: none;
       border-radius: 5px;
@@ -79,18 +82,10 @@ export const emailHtmlTemplate = (
     </div>
     <div class="footer">
       <p>This invitation will expire in three days</p>
+      <p>If you did not request this invitation please ignore this email, no further action is required</p>
       <p>&copy; ${new Date().getFullYear()} OurHouse App. All rights reserved.</p>
     </div>
   </div>
 </body>
 </html>`;
 };
-
-/**
- *       <p>
-        If the button above doesn't work, you can also copy and paste the following link into your browser:
-      </p>
-      <p style="word-break: break-all;">
-        <a href="${emailInviteLink}">${emailInviteLink}</a>
-      </p>
- */
