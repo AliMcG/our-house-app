@@ -149,7 +149,7 @@ export const householdUserRouter = createTRPCRouter({
 
         /**
          * Check if invite is expired, if so update status to EXPIRED
-         * We can also choose to delete expired invites instead? 
+         * We can also choose to delete expired invites instead?
          * If expired throw error
          */
         const now = new Date();
@@ -266,21 +266,32 @@ export const householdUserRouter = createTRPCRouter({
   deleteUserFromHousehold: protectedProcedure
     .input(
       z.object({
-        userEmail: z.string().email().min(1),
+        userToDeleteId: z.string().min(1),
         householdId: z.string().min(1),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const userId = await findUserByEmail(input.userEmail, ctx.db);
-      if (!userId) {
+      
+      const { userToDeleteId, householdId } = input;
+      const { id } = ctx.session.user;
+      // check that user exists
+      const userIsMember = await ctx.db.householdUser.findUnique({
+        where: {
+          userId_householdId: {
+            userId: userToDeleteId,
+            householdId: householdId,
+          },
+        },
+      });
+      if (!userIsMember) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: `User with email findUserByEmail ${input.userEmail} not found`,
+          message: `User with name ${input.userToDeleteId} not found`,
         });
       }
       const isHouseholdOwner = await checkUserIsOwnerOfHousehold(
-        input.householdId,
-        ctx.session.user.id,
+        householdId,
+        id,
         ctx.db,
       );
       if (isHouseholdOwner) {
@@ -288,8 +299,8 @@ export const householdUserRouter = createTRPCRouter({
           const result = ctx.db.householdUser.delete({
             where: {
               userId_householdId: {
-                userId: userId.id,
-                householdId: input.householdId,
+                userId: userToDeleteId,
+                householdId: householdId,
               },
             },
           });
