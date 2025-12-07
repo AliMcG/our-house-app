@@ -32,9 +32,15 @@ export function getRouteName(pathname: string, navItems: NavItemType[]) {
     return '';
   }
 
-  const foundItem = navItems.find(item => item.href === pathname);
-  if (foundItem) {
-    return foundItem.name;
+   const exactMatch = navItems.find(item => item.href === pathname);
+  if (exactMatch) {
+    return exactMatch.name;
+  }
+
+  // Then, try for a prefix match (for nested/dynamic routes)
+  const prefixMatch = navItems.find(item => pathname.startsWith(item.href));
+  if (prefixMatch) {
+    return prefixMatch.name;
   }
 
   return 'Unknown Route';
