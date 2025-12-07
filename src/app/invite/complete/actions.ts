@@ -19,19 +19,12 @@ export async function acceptInviteAction(token: string, userId: string, userEmai
       };
     }
 
-    // validate invite email and logged in users email
-    if (invite.invitedEmail !== userEmail) {
-      return {
-        success: false,
-        message: `Your email: ${userEmail} does not match the email invite: ${invite.invitedEmail}`
-      };
-    }
-
     // at this point we can now add user to household
     const userToHousehold = {
       accepted: true,
       userId: userId,
       inviteToken: token
+      
     }
     await api.householdUserRouter.processUserHouseholdInvite.mutate(userToHousehold);
 

@@ -155,9 +155,8 @@ export const householdUserRouter = createTRPCRouter({
         const now = new Date();
         const isExpired = invite.expiresAt && now > invite.expiresAt;
         if (isExpired) {
-          await ctx.db.householdInvite.update({
+          await ctx.db.householdInvite.delete({
             where: { id: invite.id },
-            data: { status: "EXPIRED" },
           });
           throw new TRPCError({
             code: "BAD_REQUEST",
