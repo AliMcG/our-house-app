@@ -1,9 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import {
-  addSingleUserToHousehold,
-} from "../apiHelperFunctions";
+import { addSingleUserToHousehold } from "../apiHelperFunctions";
 import { TRPCError } from "@trpc/server";
 import { checkUserIsOwnerOfHousehold } from "./householdService";
 
@@ -42,26 +40,35 @@ export const householdRouter = createTRPCRouter({
           include: {
             shoppingList: {
               include: {
-                _count: true
-              }
-            }
-          }
+                _count: true,
+              },
+            },
+          },
         },
         userInvites: {
           include: {
             inviterUser: true,
           },
         },
-      }
-    })
+      },
+    });
   }),
 
-  locate: protectedProcedure
-    .input(z.object({ householdId: z.string() }))
+  findById: protectedProcedure
+    .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {
+      const { id } = input;
       return ctx.db.household.findUnique({
         where: {
-          id: input.householdId,
+          id: id,
+        },
+        include: {
+          createdBy: true,
+          members: {
+            select: {
+              user: true,
+            },
+          },
         },
       });
     }),
