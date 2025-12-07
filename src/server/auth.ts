@@ -21,7 +21,6 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      token: string
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
@@ -39,40 +38,14 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
-  /**
-   * AliMcG's hacky attempt to use events or callbacks to log sign-in info
-   * for debugging invite acceptance flow.
-   * @see https://next-auth.js.org/configuration/events
-   * The hope is to be able to add a token/ inviteToken to the session
-   * when the user signs in so that we can use it in the
-   * google-invite-callback route to identify the invite being accepted.
-   */
-  // events: {
-  //   async signIn(message) {
-  //     console.log("User signed in:", message);
-  //   },
-  // },
-  // C:\Code\our-house-app\node_modules\next-auth\src\core\types.ts
-  // C:\Code\our-house-app\node_modules\next-auth\core\types.d.ts
   callbacks: {
-    //  jwt: ({ token, user, account, profile, trigger }) => {
-    //   console.log("JWT signIn callback:", { token, user, account, profile });
-    //   if (trigger === "signIn") {
-    //     console.log("JWT signIn callback:", { token, user, account, profile });
-    //   }
-    //   if (user) {
-    //     token.id = user.id;
-    //     token.email = user.email;
-    //   }
-    //   return token;
-    // },
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       if (account?.provider === 'google' && user.email) {
         user.email = normalizeEmail(user.email);
       }
       return true;
     },
-    session: ({ session, user, token }) => {
+    session: ({ session, user }) => {
       const email = session.user?.email
         ? normalizeEmail(session.user.email)
         : undefined;
@@ -82,7 +55,6 @@ export const authOptions: NextAuthOptions = {
         user: {
           ...session.user,
           id: user.id,
-          token,
           email,
         },
       }
