@@ -21,7 +21,6 @@ export default async function Members({
   params: Promise<{ householdId: string }>;
 }) {
   const { householdId } = await params;
-  console.log("Members page - householdId:", householdId);
   const currentHousehold = await api.householdRouter.findById.query({
     id: householdId,
   });

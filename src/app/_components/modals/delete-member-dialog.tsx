@@ -71,7 +71,6 @@ export function DeleteMemberDialog({
       householdId,
       userToDeleteId,
     };
-    console.log("Deleting member with data:", fullData);
     mutate(fullData);
   }
   return (
