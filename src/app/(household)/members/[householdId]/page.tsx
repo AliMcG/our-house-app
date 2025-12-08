@@ -18,9 +18,9 @@ import { DeleteMemberDialog } from "@/app/_components/modals/delete-member-dialo
 export default async function Members({
   params,
 }: {
-  params: { householdId: string };
+  params: Promise<{ householdId: string }>;
 }) {
-  const {householdId} = params
+  const { householdId } = await params;
   console.log("Members page - householdId:", householdId);
   const currentHousehold = await api.householdRouter.findById.query({
     id: householdId,
@@ -32,7 +32,7 @@ export default async function Members({
         <div className="flex gap-4">
           {/* Household members */}
           {currentHousehold && (
-            <Card className="flex flex-1 w-full">
+            <Card className="flex w-full flex-1">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>

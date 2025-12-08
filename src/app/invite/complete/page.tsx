@@ -9,10 +9,11 @@ import SuccessRedirect from "./SuccessComponent";
 export default async function CompleteInvitePage({
   searchParams,
 }: {
-  searchParams: { inviteToken?: string };
+  searchParams: Promise<{ inviteToken?: string }>;
 }) {
+  const {inviteToken} = await searchParams;
   const session = await getServerAuthSession();
-  const token = searchParams.inviteToken;
+  const token = inviteToken;
 
   // user must be signed before anything else
   if (!session) {

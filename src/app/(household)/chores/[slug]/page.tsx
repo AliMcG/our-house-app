@@ -7,9 +7,13 @@ import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import ItemsList from "./ItemsList";
 
-
-export default async function Page({ params }: { params: { slug: string } }) {
-  const choreId = convertURLtoString(params.slug);
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const choreId = convertURLtoString(slug);
   const choreList = await api.chores.findById.query({ listId: choreId });
 
   const choreListItems = await api.choresItem.list.query({ listId: choreId });
@@ -20,7 +24,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
         <header className="flex items-center justify-center p-4">
           <Link
             href={navigation[2]!.href}
-            className="w-[32px] h-[32px] mr-2 rounded-md hover:bg-gray-200 transition"
+            className="mr-2 h-[32px] w-[32px] rounded-md transition hover:bg-gray-200"
             data-cy="choresLink-back-button"
           >
             <ArrowUturnLeftIcon className="text-[#b372f0]" />
@@ -36,12 +40,11 @@ export default async function Page({ params }: { params: { slug: string } }) {
         </div>
 
         <div className="p-4">
-          {choreListItems.length
-            ?
+          {choreListItems.length ? (
             <ItemsList list={choreListItems} />
-            :
+          ) : (
             <p className="text-center">No items in this list</p>
-          }
+          )}
         </div>
       </article>
     </div>
