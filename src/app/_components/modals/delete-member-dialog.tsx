@@ -18,7 +18,6 @@ import FormItem from "../form/FormItem";
 import FormLabel from "../form/FormLabel";
 import GenericForm from "../form/GenericForm";
 import Inputfield from "../form/InputField";
-import { useSession } from "next-auth/react";
 
 export function DeleteMemberDialog({
   householdId,
@@ -32,7 +31,7 @@ export function DeleteMemberDialog({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { data: sessionData } = useSession();
+
 
   // Using the apiName to determine which api to use dynamically.
   const { mutate } =
