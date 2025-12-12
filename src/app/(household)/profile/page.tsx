@@ -1,6 +1,5 @@
 import AddHouseHoldForm from "./AddHouseholdForm";
 import { api } from "@/trpc/server";
-import AddUserToHouseHoldForm from "./AddUserToHouseholdForm";
 import DeleteUserToHouseHoldForm from "./deleteUserToHouseholdForm";
 import DeleteHouseHoldForm from "./deleteHouseholdForm";
 import EditHouseHoldForm from "./editHouseholdForm";
@@ -29,7 +28,6 @@ export default async function Profile() {
           <AddHouseHoldForm />
           <EditHouseHoldForm />
           <DeleteHouseHoldForm />
-          <AddUserToHouseHoldForm />
           <DeleteUserToHouseHoldForm />
         </div>
       </div>

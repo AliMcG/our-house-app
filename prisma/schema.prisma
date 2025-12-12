@@ -154,7 +154,6 @@ enum InviteStatus {
   PENDING
   SENDING_ERROR
   ACCEPTED
-  DECLINED
   EXPIRED
 }
 
