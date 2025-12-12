@@ -1,0 +1,22 @@
+name: Restrict Direct Commits
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const protectedBranches = ['main', 'dev'];
+            const branch = context.ref.split('/').pop();
+
+            if (!protectedBranches.includes(branch)) {
+              core.setFailed(`Pushing to branch '${branch}' is not allowed. Only 'main' and 'dev' are permitted.`);
+            }
