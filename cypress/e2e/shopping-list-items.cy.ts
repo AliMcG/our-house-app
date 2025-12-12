@@ -39,6 +39,11 @@ describe('Test suite for shoppinglists-items-route', () => {
     cy.logout();
   });
 
+   it('Visits the shopping-lists page without issue', () => {
+    cy.visit('/shopping-lists');
+    cy.get('h1').should('contain', 'Shopping Lists');
+  });
+
   it('visit Shopping list items page, creates new item, edits the name and deletes it', () => {
     // PREPARATION
     // visit the shopping lists page
