@@ -6,8 +6,9 @@ generator client {
 
 // Use either the command `npx prisma generate` or `npm i` to re-generate the mock data after any schema changes. 
 generator custom_generator {
-  provider = "prisma-generator-fake-data"
-  output   = "../types/fake-data.ts"
+  provider     = "prisma-generator-fake-data"
+  output       = "../types/fake-data.ts"
+  emptyValueAs = "null"
 }
 
 datasource db {
@@ -17,17 +18,19 @@ datasource db {
 
 // User modal can be updated as the application grows
 model User {
-  id                String          @id @default(auto()) @map("_id") @db.ObjectId
+  id                String            @id @default(auto()) @map("_id") @db.ObjectId
   name              String
-  email             String       @unique
+  email             String            @unique
   emailVerified     DateTime?
   image             String
   accounts          Account[]
   sessions          Session[]
   shoppingLists     ShoppingList[]
   chores            Chores[]
-  createdHouseholds Household[]     @relation("CreatedHouseholds")
-  householdMembers  HouseholdUser[] // Relation to households through the join table
+  createdHouseholds Household[]       @relation("CreatedHouseholds")
+  householdMembers  HouseholdUser[]
+  invitesSent       HouseholdInvite[] @relation("InvitesSent")
+  invitesReceived   HouseholdInvite[] @relation("InvitesReceived")
 }
 
 model ShoppingItem {
@@ -36,7 +39,7 @@ model ShoppingItem {
   quantity       Int
   active         Boolean
   ShoppingList   ShoppingList? @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
-  shoppingListId String     @db.ObjectId
+  shoppingListId String        @db.ObjectId
 }
 
 model ShoppingList {
@@ -102,6 +105,7 @@ model Household {
   members       HouseholdUser[]
   shoppingLists HouseholdShoppingList[] @relation("HouseholdShoppingList_Household")
   chores        HouseholdChores[]       @relation("HouseholdChores_Household")
+  userInvites   HouseholdInvite[]
 }
 
 model ChoresItem {
@@ -110,7 +114,7 @@ model ChoresItem {
   completedBy String?
   active      Boolean
   Chores      Chores? @relation(fields: [choresId], references: [id], onDelete: Cascade)
-  choresId    String @db.ObjectId
+  choresId    String  @db.ObjectId
 }
 
 model HouseholdUser {
@@ -121,6 +125,36 @@ model HouseholdUser {
   household   Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
 
   @@unique([userId, householdId]) // Ensures unique pairs
+}
+
+model HouseholdInvite {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  householdId   String       @db.ObjectId
+  senderUserId  String       @map("inviterUserId") @db.ObjectId
+  invitedEmail  String
+  invitedName   String
+  invitedUserId String?      @db.ObjectId // Optional: Link to user if invited is already registered
+  token         String?      @unique
+  status        InviteStatus @default(PENDING)
+  expiresAt     DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  acceptedAt    DateTime?
+
+  // To access the user who sent the invite
+  inviterUser User  @relation(fields: [senderUserId], references: [id], name: "InvitesSent")
+  // To access the user who was invited (if registered)
+  invitedUser User? @relation(fields: [invitedUserId], references: [id], name: "InvitesReceived")
+
+  // To access the household the invite is for
+  household Household @relation(fields: [householdId], references: [id])
+}
+
+enum InviteStatus {
+  PENDING
+  SENDING_ERROR
+  ACCEPTED
+  EXPIRED
 }
 
 // The following models are required for next-auth to work

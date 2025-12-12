@@ -8,6 +8,8 @@ import GoogleProvider from "next-auth/providers/google";
 
 import { env } from "@/env";
 import { db } from "@/server/db";
+import { normalizeEmail } from "@/utils/normalizeEmail";
+
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -37,13 +39,27 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    async signIn({ user, account }) {
+      if (account?.provider === 'google' && user.email) {
+        user.email = normalizeEmail(user.email);
+      }
+      return true;
+    },
+    session: ({ session, user }) => {
+      const email = session.user?.email
+        ? normalizeEmail(session.user.email)
+        : undefined;
+      
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: user.id,
+          email,
+        },
+      }
+    },
+
   },
   adapter: PrismaAdapter(db),
   providers: [

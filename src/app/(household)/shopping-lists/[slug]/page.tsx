@@ -7,20 +7,28 @@ import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import ItemsList from "./ItemsList";
 
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const shoppingListId = convertURLtoString(slug);
+  const shoppingList = await api.shoppingList.findById.query({
+    id: shoppingListId,
+  });
 
-export default async function Page({ params }: { params: { slug: string } }) {
-
-  const shoppingListId = convertURLtoString(params.slug);
-  const shoppingList = await api.shoppingList.findById.query({ id: shoppingListId });
-
-  const shoppingListItems = await api.shoppingListItem.list.query({ shoppingListId: shoppingListId });
+  const shoppingListItems = await api.shoppingListItem.list.query({
+    shoppingListId: shoppingListId,
+  });
 
   return (
     <div>
       <article className="flex min-h-screen flex-col bg-white pt-16 text-slate-800">
         <header className="flex items-center justify-center p-4">
           <Link
-            href={navigation[1]!.href} className="w-[32px] h-[32px] mr-2 rounded-md hover:bg-gray-200 transition"
+            href={navigation[1]!.href}
+            className="mr-2 h-[32px] w-[32px] rounded-md transition hover:bg-gray-200"
             data-cy="back-to-shoppings-lists-link"
           >
             <ArrowUturnLeftIcon className="text-[#b372f0]" />
@@ -35,11 +43,11 @@ export default async function Page({ params }: { params: { slug: string } }) {
           </Card>
         </div>
         <div className="p-4">
-          {shoppingListItems.length
-            ? <ItemsList list={shoppingListItems} />
-            :
+          {shoppingListItems.length ? (
+            <ItemsList list={shoppingListItems} />
+          ) : (
             <p className="text-center">No items in this list</p>
-          }
+          )}
         </div>
       </article>
     </div>

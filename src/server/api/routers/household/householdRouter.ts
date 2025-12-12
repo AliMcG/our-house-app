@@ -1,11 +1,9 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import {
-  addSingleUserToHousehold,
-  checkUserIsOwnerOfHousehold,
-} from "./apiHelperFunctions";
+import { addSingleUserToHousehold } from "../apiHelperFunctions";
 import { TRPCError } from "@trpc/server";
+import { checkUserIsOwnerOfHousehold } from "./householdService";
 
 /**
  * household router handles routes to list, locate, create, edit and delete a household.
@@ -31,7 +29,7 @@ export const householdRouter = createTRPCRouter({
       // TODO review which relations are actually needed here to optimize performance
       // It might be that we need to create separate endpoints for different use cases
       include: {
-        createdBy: true, 
+        createdBy: true,
         members: {
           include: {
             user: true,
@@ -42,21 +40,35 @@ export const householdRouter = createTRPCRouter({
           include: {
             shoppingList: {
               include: {
-                _count: true
-              }
-            }
-          }
+                _count: true,
+              },
+            },
+          },
         },
-      }
-    })
+        userInvites: {
+          include: {
+            inviterUser: true,
+          },
+        },
+      },
+    });
   }),
 
-  locate: protectedProcedure
-    .input(z.object({ householdId: z.string() }))
+  findById: protectedProcedure
+    .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {
+      const { id } = input;
       return ctx.db.household.findUnique({
         where: {
-          id: input.householdId,
+          id: id,
+        },
+        include: {
+          createdBy: true,
+          members: {
+            select: {
+              user: true,
+            },
+          },
         },
       });
     }),

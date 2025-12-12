@@ -3,34 +3,11 @@ import { TRPCError } from "@trpc/server";
 import { ObjectId } from "bson";
 
 /**
- * Seperate reusable database logic to own functions to avoid creating new context
+ * Separate reusable database logic to own functions to avoid creating new context
  * re docs = https://trpc.io/docs/server/server-side-calls
  */
 
-export const findUserByEmail = async (
-  userEmail: string,
-  prismaCtx: PrismaClient,
-) => {
-  const userId = await prismaCtx.user.findUnique({
-    where: {
-      email: userEmail,
-    },
-  });
-  return userId?.id;
-};
-export const findHouseholdUserUniqueId = async (
-  householdId: string,
-  userId: string,
-  prismaCtx: PrismaClient,
-) => {
-  const userToDelete = await prismaCtx.householdUser.findFirst({
-    where: {
-      householdId: householdId,
-      userId: userId,
-    },
-  });
-  return userToDelete?.id;
-};
+
 export const addSingleUserToHousehold = async (
   householdId: string,
   userId: string,
@@ -44,37 +21,13 @@ export const addSingleUserToHousehold = async (
   });
   return addedUser;
 };
-export const checkUserIsOwnerOfHousehold = async (
-  householdId: string,
-  userId: string,
-  prismaCtx: PrismaClient,
-) => {
-  if (!householdId || !userId) {
-    return false;
-  }
-  try {
-    const isOwner = await prismaCtx.household.findFirst({
-      where: {
-        id: householdId,
-        createdById: userId,
-      },
-    });
-    if (isOwner) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error("Error checking ownership:", error);
-    return false;
-  }
-};
+
 
 export const findHouseholdsByUser = async (
   userId: string,
   prismaCtx: PrismaClient,
 ) => {
-  
+
   if (ObjectId.isValid(userId)) {
     try {
       const householdUserRecords = await prismaCtx.householdUser.findMany({
@@ -93,7 +46,7 @@ export const findHouseholdsByUser = async (
       throw new TRPCError({
         code: "NOT_FOUND",
         message: "No households found for this user",
-        cause: "Test field",
+        cause: error,
       });
     }
   } else {

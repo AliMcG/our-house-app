@@ -1,9 +1,9 @@
-import { householdRouter } from "@/server/api/routers/householdRouter";
+import { householdRouter } from "@/server/api/routers/household/householdRouter";
 import { shoppingListRouter } from "@/server/api/routers/shopping/shoppingList";
 import { shoppingListItemRouter } from "./routers/shopping/shoppingListItem";
 import { choresRouter } from "./routers/chores";
 import { choresItemRouter } from "./routers/choresItem";
-import { householdUserRouter } from "./routers/householdUserRouter"
+import { householdUserRouter } from "./routers/householdUser/householdUserRouter"
 import { createTRPCRouter, createCallerFactory } from "@/server/api/trpc";
 
 /**
