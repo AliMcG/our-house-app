@@ -78,6 +78,7 @@ Cypress.Commands.add("loginByGoogleApi", () => {
 Cypress.Commands.add("logout", () => {
   cy.log("Logging out of site");
   // we need to be more specific with selection here
+  cy.wait(3000)
   cy.get('[data-cy="auth-button"]').contains("Sign out").click();
 })
 
@@ -87,6 +88,6 @@ Cypress.Commands.add('login', () => {
   cy.session([], () => {
     cy.visit('http://localhost:3000/')
     cy.loginByGoogleApi()
-    cy.wait(3000)
+    cy.wait(5000)
   })
 })
