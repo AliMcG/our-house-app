@@ -1,54 +1,51 @@
 'use client'
 
-// import { useSession } from "next-auth/react";
-// import { CreateHouseholdDialog } from "../modals/create-household-dialog";
-// import { InviteMemberDialog } from "../modals/invite-member-dialog";
-import { usePathname } from "next/navigation";
-import { navigation } from "@/app/utils/navigation-links";
-import { getRouteName } from "@/app/utils/helperFunctions";
-// import { api } from "@/trpc/react";
+import React, { useState } from "react";
+import { Button } from '../ui/button'
+import { cn } from '@/app/utils/cn'
+import {
+  Menu,
+  X,
+} from 'lucide-react'
+
+
+// Only the title prop is required to identify the header
+interface HeaderProps {
+  title: string;
+  description?: string;
+  children?: React.ReactNode;
+}
 
 /**
- * // TODO this component is a Work In Progress
- * The header should show the name of the page and also hold a quick create button
- * depending on the page you are on.
- * on the dashboard it should be to create a new household
- * on the shopping-lists page it should be to create a new shopping list
- * on the tasks page it should be to create a new task
- * 
- * But not clear how to implement this yet.
+ * Responsible for rendering the Header component for app pages
+ * @param {string} title - the page main title
+ * @param {string} description - optional short description under page title
+ * @param {React.ReactNode} children - the quick menu options 
+ * @returns React.Component
  */
-export default function Header(): JSX.Element {
-    // const householdList = api.householdRouter.list.useQuery();
-    const pathname = usePathname()
-    const currentRouteName = getRouteName(pathname, navigation);
-    // const session = useSession();
-    // const userId = session.data?.user?.id
+export default function Header({ 
+  title, 
+  description, 
+  children 
+}: HeaderProps) {
+  // resuse the description prop or use a default value
+  const headerMsg = description ?? "Manage your household, lists, and tasks";
 
-    return (
-
-        <header className="fixed flex bg-slate-50 border-b border-slate-200 px-6 h-20 py-4 w-screen">
-            <div className="flex items-center justify-between">
-                <div className="md:ml-24">
-                    <h1 className="text-2xl font-bold text-slate-700">
-                        {currentRouteName ? `${currentRouteName}` : 'Dashboard'}
-                    </h1>
-                    <p className="text-sm text-gray-500">
-                        Manage your household, lists, and tasks
-                    </p>
-                </div>
-                {/* Work out the logic to show the correct create button */}
-                {/* <div className="flex items-center space-x-4">
-                    {currentHousehold && (
-                        <InviteMemberDialog
-                            householdId={currentHousehold.id}
-                        />
-                    )}
-                    <CreateHouseholdDialog
-                        householdId={currentHousehold.id}                   />
-                </div> */}
-            </div>
-        </header>
-
-    );
+  return (
+    <header className="grid grid-cols-[1fr_40px] grid-rows-2 w-screen h-20 pl-[60px] sm:grid-rows-[60%_40%] sm:grid-cols-[1fr_80px] md:px-4  bg-slate-50 border-b border-slate-200">
+      <h1 className="col-span-1 text-2xl font-bold self-end text-slate-700">
+          { title }
+      </h1>
+      <p className="row-start-2 col-start-1 col-span-1 text-sm self-center text-gray-500">
+          { headerMsg }
+      </p>
+      { 
+        children && (
+          <section>
+            {children}
+          </section>
+        ) 
+      }
+    </header>
+  );
 }
