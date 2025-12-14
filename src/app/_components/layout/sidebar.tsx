@@ -70,7 +70,7 @@ export function Sidebar() {
           </div>
 
           {/* User info */}
-          <div className="border-b border-gray-200 p-4">
+          <section className="border-b border-gray-200 p-4">
             <div className="flex items-center space-x-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-full overflow-hidden">
                 <Image
@@ -80,7 +80,6 @@ export function Sidebar() {
                   height={40}
                   className="flex justify-center w-full h-auto"
                 />
-
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 truncate">
@@ -91,10 +90,10 @@ export function Sidebar() {
                 </p>
               </div>
             </div>
-          </div>
+          </section>
 
           {/* Navigation */}
-          <nav className="flex-1 space-y-1 p-4">
+          <nav className="flex-1 space-y-1 p-4" aria-label="Main">
             {navigation.map((item) => {
               const Icon = item.icon
               const isActive = pathname === item.href
@@ -122,9 +121,11 @@ export function Sidebar() {
               )
             })}
           </nav>
-          <div className="p-4">
+
+          {/* Auth Button */}
+          <section className="p-4">
             <AuthButton size="small" />
-          </div>
+          </section>
         </div>
       </div>
       {/* Mobile overlay */}
