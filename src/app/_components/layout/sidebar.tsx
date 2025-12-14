@@ -16,6 +16,10 @@ import Image from "next/image";
 import HomePageImage from "@/public/home_logo_final.svg";
 
 
+/**
+ * It is for the apps Header (sidebar) component
+ * @returns a Fragment full of elements
+ */
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
@@ -34,7 +38,10 @@ export function Sidebar() {
       <Button
         variant="ghost"
         size="icon"
-        className="fixed top-4 left-4 z-50 md:hidden"
+        className={cn(
+          "fixed top-[20px] left-[8px] transition-transform duration-200 ease-in-out z-50 md:hidden",
+          isOpen ? "translate-x-[162px]" : "translate-x-0"
+        )}
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -42,7 +49,7 @@ export function Sidebar() {
 
       {/* Sidebar */}
       <div className={cn(
-        "fixed inset-y-0 left-0 z-40 w-48 h-screen transform bg-slate-50 border-r border-gray-200 transition-transform duration-200 ease-in-out md:relative md:translate-x-0",
+        "fixed left-0 w-[220px] h-screen z-40 overflow-hidden transform bg-slate-50 border-r border-gray-200 transition-transform duration-200 ease-in-out md:relative md:translate-x-0",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="flex h-full flex-col">
