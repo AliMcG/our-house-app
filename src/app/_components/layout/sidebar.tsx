@@ -55,8 +55,8 @@ export function Sidebar() {
         <div className="flex h-full flex-col">
           {/* Header */}
           <div className="flex h-20 items-center border-b border-gray-200 px-4">
-            <div className="flex items-center space-x-2">
-              <div className="flex h-8 w-8 items-center justify-center">
+            <Link href="/home" className="flex items-center gap-2">
+              <div className="flex h-auto w-8">
                 <Image
                   src={HomePageImage as string}
                   alt="logo"
@@ -66,7 +66,7 @@ export function Sidebar() {
                 />
               </div>
               <span className="text-lg font-semibold text-gray-900">Our House</span>
-            </div>
+            </Link>
           </div>
 
           {/* User info */}
