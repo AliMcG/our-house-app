@@ -12,8 +12,8 @@ export default async function HouseholdLayout({ children }: { children: React.Re
 
 
   return (
-    <div className="grid grid-cols-1 grid-rows-1 md:grid-cols-[220px_1fr] h-screen w-screen overflow-hidden">
-      <header className="fixed top-0 left-0 h-screen w-[0px] md:w-[220px] z-[999] md:relative">
+    <div className="grid grid-cols-1 grid-rows-1 md:grid-cols-[200px_1fr] h-screen w-screen overflow-hidden">
+      <header className="fixed top-0 left-0 h-screen w-[0px] md:w-[200px] z-[999] md:relative">
         <Sidebar />
       </header>
       <main className="w-full h-full overflow-x-hidden overflow-y-auto">
