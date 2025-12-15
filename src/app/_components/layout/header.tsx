@@ -20,13 +20,13 @@ interface HeaderProps {
  * Responsible for rendering the Header component for app pages
  * @param {string} title - the page main title
  * @param {string} description - optional short description under page title
- * @param {React.ReactNode} children - the quick menu options 
+ * @param {React.ReactNode} children - the quick menu options
  * @returns React.Component
  */
 export default function Header({ 
   title, 
   description, 
-  children 
+  children = []
 }: HeaderProps) {
   // resuse the description prop or use a default value
   const headerMsg = description ?? "Manage your household, lists, and tasks";
@@ -43,7 +43,7 @@ export default function Header({
           { headerMsg }
       </p>
       { 
-        children && (
+        React.Children.count(children) > 0 && (
           <section className="fixed top-0 right-0 h-screen w-[0px] md:relative md:w-full md:h-full md:row-span-2 md:col-start-2">
             {/* Mobile menu button */}
             <Button
@@ -61,9 +61,15 @@ export default function Header({
               "fixed right-0 w-[220px] h-screen z-40 overflow-hidden transform bg-slate-50 border-l border-gray-200 transition-transform duration-200 ease-in-out md:relative md:w-full md:h-full md:bg-none md:border-none md:translate-x-0",
               isOpen ? "translate-x-0" : "translate-x-[220px]"
             )}>
-              <div className="flex flex-col h-full pt-[100px] px-2 md:py-2 md:items-end md:justify-center">
-                {children}
-              </div>
+              <nav className="h-full pt-[100px] px-2 md:py-2">
+                <ul className="flex flex-col h-full md:items-end md:justify-center">
+                  {React.Children.map(children, (child, index) => (
+                    <li key={index} className="flex place-content-center">
+                      {child}
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             </div>
             {/* Mobile overlay */}
             {isOpen && (
