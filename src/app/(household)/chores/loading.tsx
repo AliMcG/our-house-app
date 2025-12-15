@@ -4,8 +4,7 @@ import { Skeleton } from "@/app/_components/ui/skeleton"
 /* Custom skeleton for the Shopping list (landing page) loader */
 export default function loading() {
   return (
-    <div className="flex flex-col size-full bg-white pt-[96px] p-8 gap-4">
-      <Skeleton.Text className="h-6 sm:h-10 md:h-12 sm:w-[280px] self-center" />
+    <div className="flex flex-col size-full bg-white gap-4">
 
       {/* Creation card */}
       <Skeleton className="sm:w-[280px] h-[120px] md:h-[160px] self-center">
@@ -15,7 +14,7 @@ export default function loading() {
       </Skeleton>
 
       {/* Possible shopping list card */}
-      <div className="flex flex-col md:flex-row items-center sm:mt-4 md:mt-8 gap-6">
+      <div className="flex flex-col md:flex-row items-center gap-6">
         <Skeleton className="max-w-[400px] h-[120px]">
           <Skeleton.Text className="h-6 md:h-8" />
           <div className="flex justify-end gap-6">
