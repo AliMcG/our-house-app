@@ -27,9 +27,8 @@ export default async function ShoppingLists() {
 
   return (
     <>
-      <Header title="Shopping Lists" description="Manage multiple shopping lists" />
-      <article className="flex min-h-screen flex-col bg-white pt-16 text-slate-800">
-        <div className="mt-5 flex justify-center">
+      <div className="flex min-h-screen flex-col bg-white text-slate-800">
+        <div className="flex justify-center">
           <Card>
             <AddShoppingListForm householdId={currentHousehold?.id} />
           </Card>
@@ -37,7 +36,7 @@ export default async function ShoppingLists() {
         {shoppingList?.map((listItem, index) => {
           return <ShoppingListCard key={index} shoppingList={listItem} />
         })}
-      </article>
+      </div>
     </>
   );
 }
