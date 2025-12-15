@@ -7,6 +7,7 @@ import {
   EllipsisVertical as Menu,
   X,
 } from 'lucide-react'
+import { useWindowSize } from "@/hooks/useWindowSize";
 
 
 // Only the title prop is required to identify the header
@@ -28,6 +29,8 @@ export default function Header({
   description, 
   children = []
 }: HeaderProps) {
+  // track window size for accessibility.
+  const windowSize = useWindowSize();
   // resuse the description prop or use a default value
   const headerMsg = description ?? "Manage your household, lists, and tasks";
 
@@ -53,6 +56,10 @@ export default function Header({
                 "fixed top-[20px] right-[8px] transition-transform duration-200 ease-in-out z-50 md:hidden"
               )}
               onClick={() => setIsOpen(!isOpen)}
+              aria-controls="page-quick-actions"
+              aria-expanded={isOpen}
+              aria-label="Toggle quick actions menu"
+              aria-hidden={isOpen}
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
@@ -61,7 +68,12 @@ export default function Header({
               "fixed right-0 w-[220px] h-screen z-40 overflow-hidden transform bg-slate-50 border-l border-gray-200 transition-transform duration-200 ease-in-out md:relative md:w-full md:h-full md:bg-none md:border-none md:translate-x-0",
               isOpen ? "translate-x-0" : "translate-x-[220px]"
             )}>
-              <nav className="h-full pt-[100px] px-2 md:py-2">
+              <nav 
+                id="page-quick-actions" 
+                className="h-full pt-[100px] px-2 md:py-2"
+                aria-label="Page quick actions"
+                hidden={windowSize.width != undefined && windowSize.width >= 768 ? false : !isOpen}
+              >
                 <ul className="flex flex-col h-full md:items-end md:justify-center">
                   {React.Children.map(children, (child, index) => (
                     <li key={index} className="flex place-content-center">
