@@ -44,7 +44,7 @@ export default function Header({
       </p>
       { 
         children && (
-          <section className="fixed top-0 right-0 h-screen w-[0px] z-[999] md:relative md:w-full md:h-full md:row-span-2 md:col-start-2">
+          <section className="fixed top-0 right-0 h-screen w-[0px] md:relative md:w-full md:h-full md:row-span-2 md:col-start-2">
             {/* Mobile menu button */}
             <Button
               variant="ghost"
@@ -58,7 +58,7 @@ export default function Header({
             </Button>
             {/* Sidebar */}
             <div className={cn(
-              "fixed right-0 w-[220px] h-screen z-40 overflow-hidden transform bg-slate-50 border-l border-gray-200 transition-transform duration-200 ease-in-out md:relative md:w-full md:h-full md:border-none md:translate-x-0",
+              "fixed right-0 w-[220px] h-screen z-40 overflow-hidden transform bg-slate-50 border-l border-gray-200 transition-transform duration-200 ease-in-out md:relative md:w-full md:h-full md:bg-none md:border-none md:translate-x-0",
               isOpen ? "translate-x-0" : "translate-x-[220px]"
             )}>
               <div className="flex flex-col h-full pt-[100px] px-2 md:py-2 md:items-end md:justify-center">
