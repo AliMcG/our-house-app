@@ -14,6 +14,7 @@ import AuthButton from '../AuthenticationButton'
 import { useSession } from 'next-auth/react'
 import Image from "next/image";
 import HomePageImage from "@/public/home_logo_final.svg";
+import { useWindowSize } from '@/hooks/useWindowSize'
 
 
 /**
@@ -24,6 +25,9 @@ export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
   const session = useSession();
+  // track window size for accessibility.
+  // If the window is resized to desktop size, we want to ensure the menu is visible
+  const windowSize = useWindowSize();
 
   const user = {
     name: session.data?.user?.name,
@@ -43,6 +47,10 @@ export function Sidebar() {
           isOpen ? "translate-x-[162px]" : "translate-x-0"
         )}
         onClick={() => setIsOpen(!isOpen)}
+        aria-controls="main-navigation-menu" 
+        aria-expanded={isOpen}
+        aria-label="Toggle main navigation menu" 
+        aria-hidden={isOpen}
       >
         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
       </Button>
@@ -93,7 +101,12 @@ export function Sidebar() {
           </section>
 
           {/* Navigation */}
-          <nav className="flex-1 space-y-1 p-4" aria-label="Main">
+          <nav
+            id="main-navigation-menu" 
+            className="flex-1 space-y-1 p-4" 
+            aria-label="Main navigation menu"
+            hidden={windowSize.width != undefined && windowSize.width >= 768 ? false : !isOpen}
+          >
             {navigation.map((item) => {
               const Icon = item.icon
               const isActive = pathname === item.href
