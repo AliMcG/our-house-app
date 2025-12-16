@@ -1,26 +1,24 @@
 import { getServerAuthSession } from "@/server/auth";
 import { redirect } from "next/navigation";
 import { Sidebar } from "../_components/layout/sidebar";
-import Header from "../_components/layout/header";
+
 
 export default async function HouseholdLayout({ children }: { children: React.ReactNode }) {
+  // only authorised users can access household routes
   const session = await getServerAuthSession();
   if (!session) {
     return redirect('/')
   }
-// TODO review the CSS for layout to ensure proper spacing and alignment on all pages and devices.
+
 
   return (
-    <article>
-      <div className="md:pl-[80px]">
-        <Header />
-      </div>
-      <div className="fixed top-0 left-0 z-[999]">
+    <div className="grid grid-cols-1 grid-rows-1 md:grid-cols-[200px_1fr] h-screen w-screen overflow-hidden">
+      <header className="fixed top-0 left-0 h-screen w-[0px] md:w-[200px] z-40 md:relative">
         <Sidebar />
-      </div>
-      <main className="md:pl-[80px]">
+      </header>
+      <main className="w-full h-full overflow-x-hidden overflow-y-auto">
         {children}
       </main>
-    </article>
+    </div>
   );
 }

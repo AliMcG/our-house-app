@@ -23,33 +23,31 @@ export default async function Page({
   });
 
   return (
-    <div>
-      <article className="flex min-h-screen flex-col bg-white pt-16 text-slate-800">
-        <header className="flex items-center justify-center p-4">
-          <Link
-            href={navigation[1]!.href}
-            className="mr-2 h-[32px] w-[32px] rounded-md transition hover:bg-gray-200"
-            data-cy="back-to-shoppings-lists-link"
-          >
-            <ArrowUturnLeftIcon className="text-[#b372f0]" />
-          </Link>
-          <h1 className="text-center text-3xl font-extrabold tracking-tight md:text-[2rem] lg:text-[3rem] xl:text-[4rem]">
-            {shoppingList?.title}
-          </h1>
-        </header>
-        <div className="mt-5 flex justify-center">
-          <Card>
-            <AddShoppingItemForm listId={shoppingList?.id} />
-          </Card>
-        </div>
-        <div className="p-4">
-          {shoppingListItems.length ? (
-            <ItemsList list={shoppingListItems} />
-          ) : (
-            <p className="text-center">No items in this list</p>
-          )}
-        </div>
-      </article>
+    <div className="flex min-h-screen flex-col bg-white text-slate-800">
+      <div className="flex items-center justify-center pb-4">
+        <Link
+          href={navigation[1]!.href}
+          className="mr-2 h-[32px] w-[32px] rounded-md transition hover:bg-gray-200"
+          data-cy="back-to-shoppings-lists-link"
+        >
+          <ArrowUturnLeftIcon className="text-[#b372f0]" />
+        </Link>
+        <h2 className="text-center text-3xl font-extrabold tracking-tight md:text-[2rem] lg:text-[3rem] xl:text-[4rem]">
+          {shoppingList?.title}
+        </h2>
+      </div>
+      <div className="mt-5 flex justify-center">
+        <Card>
+          <AddShoppingItemForm listId={shoppingList?.id} />
+        </Card>
+      </div>
+      <div className="p-4">
+        {shoppingListItems.length ? (
+          <ItemsList list={shoppingListItems} />
+        ) : (
+          <p className="text-center">No items in this list</p>
+        )}
+      </div>
     </div>
   );
 }

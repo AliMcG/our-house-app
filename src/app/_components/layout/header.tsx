@@ -1,54 +1,98 @@
 'use client'
 
-// import { useSession } from "next-auth/react";
-// import { CreateHouseholdDialog } from "../modals/create-household-dialog";
-// import { InviteMemberDialog } from "../modals/invite-member-dialog";
-import { usePathname } from "next/navigation";
-import { navigation } from "@/app/utils/navigation-links";
-import { getRouteName } from "@/app/utils/helperFunctions";
-// import { api } from "@/trpc/react";
+import React, { useState } from "react";
+import { Button } from '../ui/button'
+import { cn } from '@/app/utils/cn'
+import {
+  EllipsisVertical as Menu,
+  X,
+} from 'lucide-react'
+import { useWindowSize } from "@/hooks/useWindowSize";
+
+
+// Only the title prop is required to identify the header
+interface HeaderProps {
+  title: string;
+  description?: string;
+  children?: React.ReactNode;
+}
 
 /**
- * // TODO this component is a Work In Progress
- * The header should show the name of the page and also hold a quick create button
- * depending on the page you are on.
- * on the dashboard it should be to create a new household
- * on the shopping-lists page it should be to create a new shopping list
- * on the tasks page it should be to create a new task
- * 
- * But not clear how to implement this yet.
+ * Responsible for rendering the Header component for app pages
+ * @param {string} title - the page main title
+ * @param {string} description - optional short description under page title
+ * @param {React.ReactNode} children - the quick menu options
+ * @returns React.Component
  */
-export default function Header(): JSX.Element {
-    // const householdList = api.householdRouter.list.useQuery();
-    const pathname = usePathname()
-    const currentRouteName = getRouteName(pathname, navigation);
-    // const session = useSession();
-    // const userId = session.data?.user?.id
+export default function Header({ 
+  title, 
+  description, 
+  children = []
+}: HeaderProps) {
+  // track window size for accessibility.
+  const windowSize = useWindowSize();
+  // resuse the description prop or use a default value
+  const headerMsg = description ?? "Manage your household, lists, and tasks";
 
-    return (
+  // state to manage mobile menu toggle
+  const [isOpen, setIsOpen] = useState(false)
 
-        <header className="fixed flex bg-slate-50 border-b border-slate-200 px-6 h-20 py-4 w-screen">
-            <div className="flex items-center justify-between">
-                <div className="md:ml-24">
-                    <h1 className="text-2xl font-bold text-slate-700">
-                        {currentRouteName ? `${currentRouteName}` : 'Dashboard'}
-                    </h1>
-                    <p className="text-sm text-gray-500">
-                        Manage your household, lists, and tasks
-                    </p>
-                </div>
-                {/* Work out the logic to show the correct create button */}
-                {/* <div className="flex items-center space-x-4">
-                    {currentHousehold && (
-                        <InviteMemberDialog
-                            householdId={currentHousehold.id}
-                        />
-                    )}
-                    <CreateHouseholdDialog
-                        householdId={currentHousehold.id}                   />
-                </div> */}
+  return (
+    <header className="grid grid-cols-[1fr_40px] grid-rows-2 w-screen h-20 pl-[60px] sm:grid-rows-[60%_40%] sm:grid-cols-[1fr_80px] md:w-full md:px-4 md:grid-cols-[max(360px)_1fr] bg-slate-50 border-b border-slate-200">
+      <h1 className="col-span-1 text-2xl font-bold self-end text-slate-700">
+          { title }
+      </h1>
+      <p className="row-start-2 col-start-1 col-span-1 text-sm self-center text-gray-500">
+          { headerMsg }
+      </p>
+      { 
+        React.Children.count(children) > 0 && (
+          <section className="fixed top-0 right-0 h-screen w-[0px] md:relative md:w-full md:h-full md:row-span-2 md:col-start-2">
+            {/* Mobile menu button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn(
+                "fixed top-[20px] right-[8px] transition-transform duration-200 ease-in-out z-50 md:hidden"
+              )}
+              onClick={() => setIsOpen(!isOpen)}
+              aria-controls="page-quick-actions"
+              aria-expanded={isOpen}
+              aria-label="Toggle quick actions menu"
+              aria-hidden={isOpen}
+            >
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+            {/* Sidebar */}
+            <div className={cn(
+              "fixed right-0 w-[220px] h-screen z-40 overflow-hidden transform bg-slate-50 border-l border-gray-200 transition-transform duration-200 ease-in-out md:relative md:w-full md:h-full md:bg-none md:border-none md:translate-x-0",
+              isOpen ? "translate-x-0" : "translate-x-[220px]"
+            )}>
+              <nav 
+                id="page-quick-actions" 
+                className="h-full pt-[100px] px-2 md:py-2"
+                aria-label="Page quick actions"
+                hidden={windowSize.width != undefined && windowSize.width >= 768 ? false : !isOpen}
+              >
+                <ul className="flex flex-col h-full md:items-end md:justify-center">
+                  {React.Children.map(children, (child, index) => (
+                    <li key={index} className="flex place-content-center">
+                      {child}
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             </div>
-        </header>
-
-    );
+            {/* Mobile overlay */}
+            {isOpen && (
+              <div
+                className="fixed inset-0 z-30 bg-gray-600 bg-opacity-75 md:hidden"
+                onClick={() => setIsOpen(false)}
+              />
+            )}
+          </section>
+        ) 
+      }
+    </header>
+  );
 }

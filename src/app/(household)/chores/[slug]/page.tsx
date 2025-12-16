@@ -20,8 +20,8 @@ export default async function Page({
 
   return (
     <div>
-      <article className="flex min-h-screen flex-col bg-white pt-16 text-slate-800">
-        <header className="flex items-center justify-center p-4">
+      <article className="flex min-h-screen flex-col bg-white text-slate-800">
+        <header className="flex items-center justify-center">
           <Link
             href={navigation[2]!.href}
             className="mr-2 h-[32px] w-[32px] rounded-md transition hover:bg-gray-200"
