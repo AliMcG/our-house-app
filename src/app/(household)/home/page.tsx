@@ -4,6 +4,7 @@ import { InviteMemberDialog } from "@/app/_components/modals/invite-member-dialo
 import { Badge } from "@/app/_components/ui/badge";
 import { Button } from "@/app/_components/ui/button";
 import Header from "@/app/_components/layout/header";
+import { getServerAuthSession } from "@/server/auth";
 import {
   Card,
   CardContent,
@@ -50,11 +51,20 @@ export type HouseholdWithRelations = Prisma.HouseholdGetPayload<{
 export default async function Home() {
   const householdList: HouseholdWithRelations[] =
     await api.householdRouter.list.query();
+  const session = await getServerAuthSession();
+  if (!session) {
+    // This should never happen due to layout protection, but TypeScript requires it
+    throw new Error('User session not found');
+  }
 
   // TODO : determine current household logic how can we tell which household is current?
   // for now we will just take the first household in the list
   const currentHousehold = householdList[0];
 
+  // navigate to the profile page
+  function goToProfile() {
+    window.location.href = "/profile";
+  }
   /**
    * // TODO
    * Need to update the relationship between household and main sections in the Prisma schema
@@ -75,7 +85,8 @@ export default async function Home() {
       <Header title="Dashboard">
         <CreateHouseholdDialog />
       </Header>
-      <div>
+      <section>
+        {/* New User No Households */}
         {!currentHousehold ? (
           <section className="flex flex-col items-center p-2 text-center gap-4">
             <Users className="h-12 w-12 text-gray-400" />
@@ -89,7 +100,43 @@ export default async function Home() {
             <CreateHouseholdDialog />
           </section>
         ) : (
-          <div className="ml-24 space-y-6">
+          <div className="flex flex-col gap-4 p-4">
+            {/* Household selector */}
+            <section className="flex flex-col gap-2">
+              <h2 className="text-sm font-medium">Households</h2>
+              <ul className="flex overflow-y-auto gap-2 w-full pb-4 border-b-2 border-gray-200">
+                {householdList.map((household, index) => {
+                  if (household.createdBy.id === session.user.id) {
+                    // User is the creator of the household, show edit icon
+                    return (
+                      <li 
+                        key={index + household.id}
+                        className="relative"
+                      >
+                        <Button variant="outline" className="pr-9">{household.name}</Button>
+                        <Link
+                          href={"/profile"}
+                          className="absolute top-0 right-0 block h-full px-2"
+                        >
+                          <span className="flex h-full w-full items-center">
+                            <Edit2Icon className="mx-auto h-4 w-4 text-muted-foreground" />
+                          </span>
+                        </Link>
+                      </li>
+                    );
+                  } else {
+                    return (
+                      <li 
+                        key={index + household.id}
+                        className="relative"
+                      >
+                        <Button variant="outline">{household.name}</Button>
+                      </li>
+                    );
+                  }
+                })}
+              </ul>
+            </section>
             {/* Quick stats */}
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
               <Card>
@@ -253,7 +300,7 @@ export default async function Home() {
             </Card>
           </div>
         )}
-      </div>
+      </section>
     </>
   );
 }
