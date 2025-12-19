@@ -90,9 +90,9 @@ export default async function Home() {
         {!currentHousehold ? (
           <section className="flex flex-col items-center p-2 text-center gap-4">
             <Users className="h-12 w-12 text-gray-400" />
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-lg font-semibold text-gray-900">
               No Households
-            </h3>
+            </h2>
             <p className="text-gray-500">
               Create your first household to get started with managing lists and
               tasks.
@@ -138,7 +138,8 @@ export default async function Home() {
               </ul>
             </section>
             {/* Quick stats */}
-            <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-labelledby="quick-stats">
+              <h2 id="quick-stats" className="sr-only">Quick Stats</h2>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
