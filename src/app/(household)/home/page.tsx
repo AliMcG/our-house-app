@@ -102,8 +102,8 @@ export default async function Home() {
         ) : (
           <div className="flex flex-col gap-4 p-4">
             {/* Household selector */}
-            <section className="flex flex-col gap-2">
-              <h2 className="text-sm font-medium">Households</h2>
+            <section className="flex flex-col gap-2" aria-labelledby="households-list">
+              <h2 id="households-list" className="text-sm font-medium">Households</h2>
               <ul className="flex overflow-y-auto gap-2 w-full pb-4 border-b-2 border-gray-200">
                 {householdList.map((household, index) => {
                   if (household.createdBy.id === session.user.id) {
