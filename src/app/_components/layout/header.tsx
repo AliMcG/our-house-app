@@ -47,7 +47,7 @@ export default function Header({
       </p>
       { 
         React.Children.count(children) > 0 && (
-          <section className="fixed top-0 right-0 h-screen w-[0px] md:relative md:w-full md:h-full md:row-span-2 md:col-start-2">
+          <section className="fixed top-0 right-0 h-screen w-[0px] z-30 md:relative md:w-full md:h-full md:row-span-2 md:col-start-2">
             {/* Mobile menu button */}
             <Button
               variant="ghost"
