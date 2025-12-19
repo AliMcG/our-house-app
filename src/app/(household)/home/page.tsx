@@ -138,7 +138,7 @@ export default async function Home() {
               </ul>
             </section>
             {/* Quick stats */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
@@ -166,7 +166,7 @@ export default async function Home() {
                 <Link href={`/chores`}>
                   <CardContent>
                     <div className="text-2xl font-bold">
-                      chores list count
+                      0
                       {/* {currentHousehold._count?.tasks || 0} */}
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -184,7 +184,7 @@ export default async function Home() {
                 <Link href={`/calender`}>
                   <CardContent>
                     <div className="text-2xl font-bold">
-                      number of calender events
+                      0
                       {/* {currentHousehold._count?.calendarEvents || 0} */}
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -210,7 +210,7 @@ export default async function Home() {
                   </CardContent>
                 </Link>
               </Card>
-            </div>
+            </section>
 
             {/* Household members */}
             <Card>
