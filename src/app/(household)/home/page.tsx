@@ -216,65 +216,63 @@ export default async function Home() {
 
             {/* Household members */}
             <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Household Members</CardTitle>
-                    <CardDescription>
-                      People who have access to this household
-                    </CardDescription>
-                  </div>
+              <CardHeader className="sm:flex-row sm:justify-between gap-2">
+                <div className="sm:w-3/6">
+                  <CardTitle>Household Members</CardTitle>
+                  <CardDescription>
+                    People who have access to this household
+                  </CardDescription>
+                </div>
+                <div className="flex flex-wrap justify-start gap-2 sm:justify-end sm:w-3/6">
                   <InviteMemberDialog householdId={currentHousehold.id} />
+                  <Link href={`/members/${currentHousehold.id}`}>
+                    <Button>
+                      Edit Member
+                      <span className="flex h-full w-full pl-2 items-center">
+                        <Edit2Icon className="h-4 w-4 text-slate-100" />
+                      </span>
+                    </Button>
+                  </Link>
                 </div>
               </CardHeader>
-              <CardContent>
-                <Link
-                  href={`/members/${currentHousehold.id}`}
-                  className="rounded-2xl border-2 border-solid border-slate-400 shadow-lg"
-                >
-                  <div className="space-y-4">
-                    {currentHousehold.members?.map((member) => (
-                      <div
-                        key={member.id}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="flex items-center space-x-3">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
-                            <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full">
-                              <Image
-                                src={member.user.image ? member.user.image : ""}
-                                alt="logo"
-                                width={40}
-                                height={40}
-                                className="flex h-auto w-full justify-center"
-                              />
-                            </div>
-                          </div>
-
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">
-                              {member.user?.name}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {member.user?.email}
-                            </p>
-                          </div>
-                        </div>
-                        <Badge
-                          variant={
-                            member.userId === currentHousehold.createdById
-                              ? "default"
-                              : "secondary"
-                          }
-                        >
-                          {member.userId === currentHousehold.createdById
-                            ? "Owner"
-                            : "member"}
-                        </Badge>
+              <CardContent className="flex flex-col gap-2">
+                {currentHousehold.members?.map((member) => (
+                  <div
+                    key={member.id}
+                    className="flex items-center justify-between gap-2"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-12 h-12 overflow-hidden rounded-full border-4 border-blue-100">
+                        <Image
+                          src={member.user.image ? member.user.image : ""}
+                          alt="logo"
+                          width={40}
+                          height={40}
+                          className="flex h-auto w-full justify-center"
+                        />
                       </div>
-                    ))}
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">
+                          {member.user?.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {member.user?.email}
+                        </p>
+                      </div>
+                    </div>
+                    <Badge
+                      variant={
+                        member.userId === currentHousehold.createdById
+                          ? "default"
+                          : "secondary"
+                      }
+                    >
+                      {member.userId === currentHousehold.createdById
+                        ? "Owner"
+                        : "member"}
+                    </Badge>
                   </div>
-                </Link>
+                ))}
               </CardContent>
             </Card>
 
