@@ -139,6 +139,7 @@ export default async function Home() {
             </section>
             {/* Quick stats */}
             <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-labelledby="quick-stats">
+              {/* this header is for accessibility only */}
               <h2 id="quick-stats" className="sr-only">Quick Stats</h2>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -149,11 +150,11 @@ export default async function Home() {
                 </CardHeader>
                 <Link href={`/shopping-lists`}>
                   <CardContent>
-                    <div className="text-2xl font-bold">
-                      {currentHousehold.shoppingLists.length || 0}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Active lists
+                    <p className="flex flex-col items-start">
+                      <span className="text-2xl font-bold">
+                        {currentHousehold.shoppingLists.length || 0}
+                      </span>
+                      <span className="text-xs text-muted-foreground">Active lists</span>
                     </p>
                   </CardContent>
                 </Link>
@@ -166,12 +167,12 @@ export default async function Home() {
                 </CardHeader>
                 <Link href={`/chores`}>
                   <CardContent>
-                    <div className="text-2xl font-bold">
-                      0
-                      {/* {currentHousehold._count?.tasks || 0} */}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Pending tasks
+                    <p className="flex flex-col items-start">
+                      <span className="text-2xl font-bold">
+                        0
+                        {/* {currentHousehold._count?.tasks || 0} */}
+                      </span>
+                      <span className="text-xs text-muted-foreground">Pending tasks</span>
                     </p>
                   </CardContent>
                 </Link>
@@ -184,12 +185,12 @@ export default async function Home() {
                 </CardHeader>
                 <Link href={`/calender`}>
                   <CardContent>
-                    <div className="text-2xl font-bold">
-                      0
-                      {/* {currentHousehold._count?.calendarEvents || 0} */}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Upcoming events
+                    <p className="flex flex-col items-start">
+                      <span className="text-2xl font-bold">
+                        0
+                        {/* {currentHousehold._count?.calendarEvents || 0} */}
+                      </span>
+                      <span className="text-xs text-muted-foreground">Upcoming events</span>
                     </p>
                   </CardContent>
                 </Link>
@@ -202,11 +203,11 @@ export default async function Home() {
                 </CardHeader>
                 <Link href={`/profile`}>
                   <CardContent>
-                    <div className="text-2xl font-bold">
-                      {currentHousehold.members?.length || 0}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Active members
+                    <p className="flex flex-col items-start">
+                      <span className="text-2xl font-bold">
+                        {currentHousehold.members?.length || 0}
+                      </span>
+                      <span className="text-xs text-muted-foreground">Active members</span>
                     </p>
                   </CardContent>
                 </Link>
