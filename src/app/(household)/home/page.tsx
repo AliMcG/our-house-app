@@ -60,6 +60,7 @@ export default async function Home() {
   // TODO : determine current household logic how can we tell which household is current?
   // for now we will just take the first household in the list
   const currentHousehold = householdList[0];
+  console.log("Current Household:", currentHousehold);
 
   // navigate to the profile page
   function goToProfile() {
@@ -215,67 +216,69 @@ export default async function Home() {
             </section>
 
             {/* Household members */}
-            <Card>
-              <CardHeader className="sm:flex-row sm:justify-between gap-2">
-                <div className="sm:w-3/6">
-                  <CardTitle>Household Members</CardTitle>
-                  <CardDescription>
-                    People who have access to this household
-                  </CardDescription>
-                </div>
-                <div className="flex flex-wrap justify-start gap-2 sm:justify-end sm:w-3/6">
-                  <InviteMemberDialog householdId={currentHousehold.id} />
-                  <Link href={`/members/${currentHousehold.id}`}>
-                    <Button>
-                      Edit Member
-                      <span className="flex h-full w-full pl-2 items-center">
-                        <Edit2Icon className="h-4 w-4 text-slate-100" />
-                      </span>
-                    </Button>
-                  </Link>
-                </div>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-2">
-                {currentHousehold.members?.map((member) => (
-                  <div
-                    key={member.id}
-                    className="flex items-center justify-between gap-2"
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="w-12 h-12 overflow-hidden rounded-full border-4 border-blue-100">
-                        <Image
-                          src={member.user.image ? member.user.image : ""}
-                          alt="logo"
-                          width={40}
-                          height={40}
-                          className="flex h-auto w-full justify-center"
-                        />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {member.user?.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {member.user?.email}
-                        </p>
-                      </div>
-                    </div>
-                    <Badge
-                      variant={
-                        member.userId === currentHousehold.createdById
-                          ? "default"
-                          : "secondary"
-                      }
-                    >
-                      {member.userId === currentHousehold.createdById
-                        ? "Owner"
-                        : "member"}
-                    </Badge>
+            {(currentHousehold.createdBy.id === session.user.id) &&
+              <Card>
+                <CardHeader className="sm:flex-row sm:justify-between gap-2">
+                  <div className="flex flex-col gap-1 sm:w-3/6">
+                    <CardTitle>Household Members</CardTitle>
+                    <CardDescription>
+                      People who have access to this household
+                    </CardDescription>
                   </div>
-                ))}
-              </CardContent>
-            </Card>
-
+                  <div className="flex flex-wrap justify-start gap-2 sm:justify-end sm:w-3/6">
+                    <InviteMemberDialog householdId={currentHousehold.id} />
+                    <Link href={`/members/${currentHousehold.id}`}>
+                      <Button>
+                        Edit Member
+                        <span className="flex h-full w-full pl-2 items-center">
+                          <Edit2Icon className="h-4 w-4 text-slate-100" />
+                        </span>
+                      </Button>
+                    </Link>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-2">
+                  {currentHousehold.members?.map((member) => (
+                    <div
+                      key={member.id}
+                      className="flex items-center justify-between gap-2"
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="w-12 h-12 overflow-hidden rounded-full border-4 border-blue-100">
+                          <Image
+                            src={member.user.image ? member.user.image : ""}
+                            alt="logo"
+                            width={40}
+                            height={40}
+                            className="flex h-auto w-full justify-center"
+                          />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
+                            {member.user?.name}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {member.user?.email}
+                          </p>
+                        </div>
+                      </div>
+                      <Badge
+                        variant={
+                          member.userId === currentHousehold.createdById
+                            ? "default"
+                            : "secondary"
+                        }
+                      >
+                        {member.userId === currentHousehold.createdById
+                          ? "Owner"
+                          : "member"}
+                      </Badge>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            }
+            
             {/* Quick actions */}
             <Card>
               <CardHeader>
