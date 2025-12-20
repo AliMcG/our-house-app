@@ -216,7 +216,7 @@ export default async function Home() {
             </section>
 
             {/* Household members */}
-            {(currentHousehold.createdBy.id === session.user.id) &&
+            {(currentHousehold.createdBy.id !== session.user.id) &&
               <Card>
                 <CardHeader className="sm:flex-row sm:justify-between gap-2">
                   <div className="flex flex-col gap-1 sm:w-3/6">
@@ -287,18 +287,16 @@ export default async function Home() {
                   Common tasks to manage your household
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                  <CreateShoppingListDialog householdId={currentHousehold.id} />
-                  <Button variant="outline" className="justify-start">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Task
-                  </Button>
-                  <Button variant="outline" className="justify-start">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Schedule Event
-                  </Button>
-                </div>
+              <CardContent className="flex flex-col sm:flex-row sm:flex-wrap gap-4 text-left">
+                <CreateShoppingListDialog householdId={currentHousehold.id} />
+                <Button variant="outline" className="justify-start">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Task
+                </Button>
+                <Button variant="outline" className="justify-start">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Schedule Event
+                </Button>
               </CardContent>
             </Card>
           </div>
