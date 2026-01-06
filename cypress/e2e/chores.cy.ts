@@ -27,6 +27,7 @@
 describe('Test suite for the Chores route', () => {
   beforeEach(() => {
     cy.login();
+    cy.visit('/chores');
   });
 
   after(() => {
@@ -34,19 +35,16 @@ describe('Test suite for the Chores route', () => {
   });
 
   it  ('Visits the chores page without issue', () => {
-    cy.visit('/chores');
     cy.get('h1').should('contain', 'Chores');
   });
 
   it('Creates a new chores list named "Test chores"', () => {
-    cy.visit('/chores');
     cy.get('[data-cy="chores-create-input').type('Test chores');
     cy.get('[data-cy="chores-create-submit').click();
     cy.get('[data-cy="ChoresCard"]').contains('Test chores').should('exist');
   });
 
   it('Checks that we can cancel an edit action', () => {
-    cy.visit('/chores');
     // can we click the edit button
     cy.get('[data-cy="ChoresCard"]')
       .contains('Test chores')
@@ -68,7 +66,6 @@ describe('Test suite for the Chores route', () => {
   });
 
   it('Changes the chores name to "Updated test chores"', () => {
-    cy.visit('/chores');
     // click on edit button
     cy.get('[data-cy="ChoresCard"]')
       .contains('Test chores')
@@ -94,7 +91,6 @@ describe('Test suite for the Chores route', () => {
   });
 
   it('Checks that we cancel a delete action', () => {
-    cy.visit('/chores');
     // can we click the edit button
     cy.get('[data-cy="ChoresCard"]')
       .contains('Updated test chores')
@@ -117,7 +113,6 @@ describe('Test suite for the Chores route', () => {
   });
 
   it('Able to delete a chores named "Updated test chores', () => {
-    cy.visit('/chores');
     // can we click the edit button
     cy.get('[data-cy="ChoresCard"]')
       .contains('Updated test chores')
