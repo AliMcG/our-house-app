@@ -91,10 +91,22 @@ Cypress.Commands.add("logout", () => {
 
 // Custom command to login to the site
 Cypress.Commands.add('login', () => {
-  cy.session([], () => {
-    cy.visit('http://localhost:3000/')
-    cy.loginByGoogleApi()
-    cy.wait(5000)
+  // use a unique key so the cache is reliable
+  const sessionKey = Cypress.env("databaseUserId");
+  
+  // session will cache the state so it doesn't have to run the login command again
+  cy.session(sessionKey, () => {
+    // perform login
+    cy.loginByGoogleApi();
+    
+    // verify the login worked before finishing the session to avoid caching failed login state
+    cy.visit('/');
+    cy.get('[data-cy="auth-button"]', { timeout: 2000 }).contains("Sign out");
+  }, {
+    // validate every time the session is restored
+    validate() {
+      cy.request('/api/auth/session').its('status').should('eq', 200);
+    }
   })
 })
 
