@@ -26,8 +26,12 @@ describe('Site navigation', () => {
     cy.url().should('include', '/shopping-lists');
   });
 
-  it('visit Chores page', () => {
-    cy.visit('/chores')
-    cy.url().should('include', '/chores')
+  it('should navigate to the Chores page', () => {
+    cy.get('#main-navigation-menu')
+    .contains('Chores')
+    .should('be.visible')
+    .click();
+    cy.get('h1', { timeout: 10000 }).should('contain', 'Chores');
+    cy.url().should('include', '/chores');
   })
 }) 
