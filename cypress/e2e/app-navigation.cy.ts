@@ -1,9 +1,8 @@
 describe('Site navigation', () => {
   beforeEach(() => {
-    cy.visit('/')
-    cy.loginByGoogleApi()
-    cy.wait(2000)
-  })
+    cy.login();
+    cy.visit('/');
+  });
 
   afterEach(() => {
     cy.logout()
