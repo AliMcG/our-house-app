@@ -8,10 +8,16 @@ describe('Site navigation', () => {
     cy.logout()
   })
 
-  it('visit home page', () => {
-    cy.visit('/home')
-    cy.url().should('include', '/home')
-  })
+  it('should navigate to the home/dashboard page', () => {
+    cy.get('#main-navigation-menu')
+    .contains('Dashboard')
+    .should('be.visible')
+    .click();
+
+    cy.get('h1', { timeout: 10000 }).should('contain', 'Dashboard');
+    cy.url().should('include', '/home');
+  });
+
   it('visit Shopping list page', () => {
     cy.visit('/shopping-lists')
     cy.url().should('include', '/shopping-lists')
