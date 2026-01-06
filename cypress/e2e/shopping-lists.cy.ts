@@ -19,16 +19,19 @@ describe('Test suite for shoppinglists-route', () => {
   beforeEach(() => {
     // login to the app
     cy.login();
+    cy.visit('shopping-lists');
   });
   
   after(() => {
     // make sure you logout from the app
     cy.logout();
   });
+
+  it('visit Shopping list page', () => {
+    cy.get('h1').should('contain', 'Shopping Lists');
+  });
   
-  it('visit Shopping list page, creates new list, edits the name and deletes it', () => {
-    // visit page
-    cy.visit('http://localhost:3000/shopping-lists')
+  it('creates new list', () => {
 
     // CREATE: create new list
     cy.get('[data-cy="shoppinglist-create-input"]').type('FUNCTIONAL TEST LIST')
@@ -38,8 +41,9 @@ describe('Test suite for shoppinglists-route', () => {
     cy.get('[data-cy="ShoppingListCard"]')
       .contains('FUNCTIONAL TEST LIST')
       .should('exist');
+  });
 
-    // EDIT: try to edit but cancel
+  it('try to edit list name but cancels', () => {
     cy.get('[data-cy="ShoppingListCard"]')
       .contains('FUNCTIONAL TEST LIST')
       .parents('[data-cy="ShoppingListCard"]')
@@ -53,7 +57,9 @@ describe('Test suite for shoppinglists-route', () => {
     cy.get('[data-cy="ShoppingListCard"]')
       .contains('FUNCTIONAL TEST LIST')
       .should('exist');
-    
+  });
+
+  it('edist list name', () => {
     // EDIT: list name
     cy.get('[data-cy="ShoppingListCard"]')
       .contains('FUNCTIONAL TEST LIST')
@@ -71,7 +77,9 @@ describe('Test suite for shoppinglists-route', () => {
     cy.get('[data-cy="ShoppingListCard"]')
       .contains('FUNCTIONAL TEST LIST EDITED')
       .should('exist');
-    
+  });
+
+  it('tries to delete a list but cancels', () => {
     // DELETE: try to delete but cancel
     cy.get('[data-cy="ShoppingListCard"]')
       .contains('FUNCTIONAL TEST LIST EDITED')
@@ -86,7 +94,9 @@ describe('Test suite for shoppinglists-route', () => {
     cy.get('[data-cy="ShoppingListCard"]')
       .contains('FUNCTIONAL TEST LIST EDITED')
       .should('exist');
+  });
 
+  it('deletes a list', () => {
     // DELETE: delete list
     cy.get('[data-cy="ShoppingListCard"]')
       .contains('FUNCTIONAL TEST LIST EDITED')
