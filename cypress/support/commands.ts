@@ -21,6 +21,8 @@ const genRanHex = (length: number) =>
     .map(() => Math.floor(Math.random() * 16).toString(16))
     .join("");
 
+// https://developers.google.com/identity/protocols/oauth2
+// https://next-auth.js.org/providers/google
 Cypress.Commands.add("loginByGoogleApi", () => {
   cy.log("Logging in to Google");
   // clear old sessions.
@@ -82,12 +84,14 @@ Cypress.Commands.add("loginByGoogleApi", () => {
 
 // Custom command to logout of the site
 Cypress.Commands.add("logout", () => {
-  cy.log("Logging out of site");
-  // we need to be more specific with selection here
-  cy.wait(3000)
   cy.get('[data-cy="auth-button"]').contains("Sign out").click();
-})
 
+  // verify we are at the login page
+  cy.url().should('eq', 'http://localhost:3000/');
+
+  // clear Cypress Session cache.
+  Cypress.session.clearAllSavedSessions();
+});
 
 // Custom command to login to the site
 Cypress.Commands.add('login', () => {
@@ -107,8 +111,5 @@ Cypress.Commands.add('login', () => {
     validate() {
       cy.request('/api/auth/session').its('status').should('eq', 200);
     }
-  })
-})
-
-//https://developers.google.com/identity/protocols/oauth2
-//https://next-auth.js.org/providers/google
+  });
+});
