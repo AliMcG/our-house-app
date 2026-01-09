@@ -1,24 +1,37 @@
 describe('Site navigation', () => {
   beforeEach(() => {
-    cy.visit('/')
-    cy.loginByGoogleApi()
-    cy.wait(2000)
-  })
+    cy.login();
+    cy.visit('/');
+  });
 
   afterEach(() => {
     cy.logout()
   })
 
-  it('visit home page', () => {
-    cy.visit('/home')
-    cy.url().should('include', '/home')
-  })
-  it('visit Shopping list page', () => {
-    cy.visit('/shopping-lists')
-    cy.url().should('include', '/shopping-lists')
-  })
-  it('visit Chores page', () => {
-    cy.visit('/chores')
-    cy.url().should('include', '/chores')
+  it('should navigate to the home/dashboard page', () => {
+    cy.get('#main-navigation-menu')
+    .contains('Dashboard')
+    .should('be.visible')
+    .click();
+    cy.get('h1', { timeout: 10000 }).should('contain', 'Dashboard');
+    cy.url().should('include', '/home');
+  });
+
+  it('should navigate to the Shopping list page', () => {
+    cy.get('#main-navigation-menu')
+    .contains('Shopping Lists')
+    .should('be.visible')
+    .click();
+    cy.get('h1', { timeout: 10000 }).should('contain', 'Shopping Lists');
+    cy.url().should('include', '/shopping-lists');
+  });
+
+  it('should navigate to the Chores page', () => {
+    cy.get('#main-navigation-menu')
+    .contains('Chores')
+    .should('be.visible')
+    .click();
+    cy.get('h1', { timeout: 10000 }).should('contain', 'Chores');
+    cy.url().should('include', '/chores');
   })
 }) 
