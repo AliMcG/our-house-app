@@ -4,9 +4,8 @@ import { Skeleton } from "@/app/_components/ui/skeleton"
 /* Custom skeleton for the Shopping list (landing page) loader */
 export default function loading() {
   return (
-    <div className="flex flex-col size-full bg-white p-8 gap-4">
-      <Skeleton.Text className="flex h-6 sm:h-10 md:h-12 sm:w-[280px] self-center" />
-
+    <div className="flex flex-col size-full bg-white gap-4">
+ 
       {/* Creation card */}
       <Skeleton className="sm:w-[280px] h-[120px] md:h-[160px] self-center">
         <Skeleton.Text className="md:h-4" />

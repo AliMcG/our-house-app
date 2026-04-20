@@ -18,3 +18,13 @@ import './commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+Cypress.on('uncaught:exception', (err) => {
+  // We ignore "Error in input stream" because it's a known artifact
+  // of Next.js hydration/stream being interrupted by Cypress.
+  if (err.message.includes('Error in input stream')) {
+    return false;
+  }
+  // Let other actual errors still fail the tests
+  return true;
+});

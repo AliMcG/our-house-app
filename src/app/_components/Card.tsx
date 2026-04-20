@@ -7,8 +7,8 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export default function Card({ className, children, ...rest }: CardProps) {
   return (
-    <div className={cn("flex flex-col w-80 justify-center items-center border-gray-400 border rounded-md p-4", className)} {...rest}>
+    <article className={cn("flex flex-col w-80 justify-center items-center border-gray-400 border rounded-md p-4", className)} {...rest}>
       {children}
-    </div>
+    </article>
   );
 }

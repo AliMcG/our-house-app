@@ -31,122 +31,128 @@
  */
 
 describe('Test suite for shoppinglists-items-route', () => {
-  beforeEach(() => {
+  before(() => {
     cy.login();
-  });
-
-  afterEach(() => {
-    cy.logout();
-  });
-
-   it('Visits the shopping-lists page without issue', () => {
     cy.visit('/shopping-lists');
-    cy.get('h1').should('contain', 'Shopping Lists');
   });
 
-  it('visit Shopping list items page, creates new item, edits the name and deletes it', () => {
-    // PREPARATION
-    // visit the shopping lists page
-    cy.visit('http://localhost:3000/shopping-lists/')
-
-    // create the shopping list to store the items
-    cy.get('[data-cy="shoppinglist-create-input"]').type('TESTLIST')
-    cy.get('[data-cy="shoppinglist-create-submit"]').click()
-    cy.get('[data-cy="ShoppingListCard"]')
-      .contains('TESTLIST')
-      .should('exist')
-    // lets navigate to the items page
-    cy.get('[data-cy="ShoppingListCard"]')
-      .contains('TESTLIST')
-      .click()
-
-    // ITEMS PAGE
-    // make sure we are on the items page
-    cy.url().should('match', /shopping-lists\/[a-f0-9]{24}/);
-    // CREATE: create new items
-    // bananas
-    cy.get('[data-cy="shoppingitem-create-input"]').type('BANANAS')
-    cy.get('[data-cy="shoppingitem-create-submit"]').click()
-    cy.get('[data-cy="ItemsListCard"]').contains('BANANAS x1').should('exist')
-    // eggs
-    cy.get('[data-cy="shoppingitem-create-input"]').type('EGGS')
-    cy.get('[data-cy="shoppingitem-create-quantity"]').type('12')
-    cy.get('[data-cy="shoppingitem-create-submit"]').click()
-    cy.get('[data-cy="ItemsListCard"]').contains('EGGS x12').should('exist')
-
-    // ACTIVE: marks an item as completed
-    // mark BANANAS as completed
-    cy.get('[data-cy="ItemsListCard"]')
-      .contains('EGGS x12')
-      .parents('[data-cy="ItemsListCard"]')
-      .find('[data-cy="ItemsListCard-btn-active"]')
-      .click() 
-
-    // check that the text is striked through
-    cy.get('[data-cy="ItemsListCard"]')
-      .contains('EGGS x12')
-      .should('have.css', 'text-decoration', 'line-through')
-
-    // unmark BANANAS as completed
-    cy.get('[data-cy="ItemsListCard"]')
-      .contains('EGGS x12')
-      .parents('[data-cy="ItemsListCard"]')
-      .find('[data-cy="ItemsListCard-btn-active"]')
-      .click()
-    
-    // check that the text is not striked through
-    cy.get('[data-cy="ItemsListCard"]')
-      .contains('EGGS x12')
-      .should('not.have.css', 'text-decoration', 'line-through rgb(30, 41, 59)')
-
-    // DELETE: try to delete but cancel
-    cy.get('[data-cy="ItemsListCard"]')
-      .contains('EGGS x12')
-      .parents('[data-cy="ItemsListCard"]')
-      .find('[data-cy="ItemsListCard-btn-delete"]')
-      .click()
-    
-    // cancel the delete
-    cy.get('[data-cy="confirmModal-btn-cancel"]').click()
-  
-    // make sure the item is not deleted
-    cy.get('[data-cy="ItemsListCard"]').contains('EGGS x12').should('exist')
-
-    // DELETE: delete the item
-    cy.get('[data-cy="ItemsListCard"]')
-      .contains('EGGS x12')
-      .parents('[data-cy="ItemsListCard"]')
-      .find('[data-cy="ItemsListCard-btn-delete"]')
-      .click()
-    
-    // confirm the delete
-    cy.get('[data-cy="confirmModal-btn-Delete"]').click()
-
-    // make sure the item is deleted
-    cy.get('[data-cy="ItemsListCard"]').contains('EGGS x12').should('not.exist')
-
-    // CLEAN UP
-
-    // delete the BANANAS item
-    cy.get('[data-cy="ItemsListCard"]')
-      .contains('BANANAS x1')
-      .parents('[data-cy="ItemsListCard"]')
-      .find('[data-cy="ItemsListCard-btn-delete"]')
-      .click()
-    cy.get('[data-cy="confirmModal-btn-Delete"]').click()
-
-    cy.wait(500)
-
-    // Use the back button to return to the lists page
-    cy.get('[data-cy="back-to-shoppings-lists-link"]').click()
-
+  after(() => {
+    // clean up
+    cy.visit('/shopping-lists');
     // delete the shopping list: TESTLIST
     cy.get('[data-cy="ShoppingListCard"]')
       .contains('TESTLIST')
       .parents('[data-cy="ShoppingListCard"]')
       .find('[data-cy="ShoppingListCard-delete-TESTLIST"]')
       .click()
-    cy.get('[data-cy="confirmModal-btn-Delete"]').click()
+    cy.get('[data-cy="confirmModal-btn-Delete"]').click();
+    cy.logout();
+  });
 
+  it('create the shopping list card to start testing', () => {
+    // create the shopping list to store the items
+    cy.get('[data-cy="shoppinglist-create-input"]').type('TESTLIST')
+    cy.get('[data-cy="shoppinglist-create-submit"]').click()
+    cy.get('[data-cy="ShoppingListCard"]')
+      .contains('TESTLIST')
+      .should('exist');
+  });
+
+  
+  describe('List items', () => {
+    beforeEach(() => {
+      cy.login();
+      cy.visit('/shopping-lists');
+      // lets navigate to the items page
+      cy.get('[data-cy="ShoppingListCard"]')
+        .contains('TESTLIST')
+        .click()
+    });
+
+    it('visit Shopping list items page', () => {
+      // ITEMS PAGE
+      // make sure we are on the items page
+      cy.url().should('match', /shopping-lists\/[a-f0-9]{24}/);
+    });
+
+    it('creates new item, edits the name and deletes it', () => {
+      // CREATE: create new items
+      // bananas
+      cy.get('[data-cy="shoppingitem-create-input"]').type('BANANAS')
+      cy.get('[data-cy="shoppingitem-create-submit"]').click()
+      cy.get('[data-cy="ItemsListCard"]').contains('BANANAS x1').should('exist')
+      // eggs
+      cy.get('[data-cy="shoppingitem-create-input"]').type('EGGS')
+      cy.get('[data-cy="shoppingitem-create-quantity"]').type('12')
+      cy.get('[data-cy="shoppingitem-create-submit"]').click()
+      cy.get('[data-cy="ItemsListCard"]').contains('EGGS x12').should('exist');
+    });
+
+    it('marks items as complete', () => {
+      // ACTIVE: marks an item as completed
+      // mark BANANAS as completed
+      cy.get('[data-cy="ItemsListCard"]')
+        .contains('EGGS x12')
+        .parents('[data-cy="ItemsListCard"]')
+        .find('[data-cy="ItemsListCard-btn-active"]')
+        .click() 
+
+      // check that the text is striked through
+      cy.get('[data-cy="ItemsListCard"]')
+        .contains('EGGS x12')
+        .should('have.css', 'text-decoration', 'line-through')
+    });
+
+    it('unmarks item as complete', () => {
+            // unmark BANANAS as completed
+      cy.get('[data-cy="ItemsListCard"]')
+        .contains('EGGS x12')
+        .parents('[data-cy="ItemsListCard"]')
+        .find('[data-cy="ItemsListCard-btn-active"]')
+        .click()
+      
+      // check that the text is not striked through
+      cy.get('[data-cy="ItemsListCard"]')
+        .contains('EGGS x12')
+        .should('not.have.css', 'text-decoration', 'line-through rgb(30, 41, 59)')
+    });
+
+    it('tries to deletes an item but cancels', () => {
+      // DELETE: try to delete but cancel
+      cy.get('[data-cy="ItemsListCard"]')
+        .contains('EGGS x12')
+        .parents('[data-cy="ItemsListCard"]')
+        .find('[data-cy="ItemsListCard-btn-delete"]')
+        .click()
+      
+      // cancel the delete
+      cy.get('[data-cy="confirmModal-btn-cancel"]').click()
+    
+      // make sure the item is not deleted
+      cy.get('[data-cy="ItemsListCard"]').contains('EGGS x12').should('exist')
+    });
+
+    it('deletes an item', () => {
+      // DELETE: delete the item
+      cy.get('[data-cy="ItemsListCard"]')
+        .contains('EGGS x12')
+        .parents('[data-cy="ItemsListCard"]')
+        .find('[data-cy="ItemsListCard-btn-delete"]')
+        .click()
+      
+      // confirm the delete
+      cy.get('[data-cy="confirmModal-btn-Delete"]').click()
+
+      // make sure the item is deleted
+      cy.get('[data-cy="ItemsListCard"]').contains('EGGS x12').should('not.exist')
+    });
+
+    it('back button to return to the shopping lists page', () => {
+      // Use the back button to return to the lists page
+      cy.get('[data-cy="back-to-shoppings-lists-link"]').click();
+      cy.get('[data-cy="ShoppingListCard"]')
+      .contains('TESTLIST')
+      .should('exist');
+    });
   });
 });

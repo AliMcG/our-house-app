@@ -1,4 +1,5 @@
 import Card from "@/app/_components/Card";
+import Header from "@/app/_components/layout/header";
 import AddShoppingListForm from "../../_components/AddShoppingListForm";
 import ShoppingListCard from "./ShoppingListCard";
 import { api } from "@/trpc/server";
@@ -25,20 +26,17 @@ export default async function ShoppingLists() {
   }
 
   return (
-    <article className="flex min-h-screen flex-col bg-white pt-16 text-slate-800">
-      <header className="flex items-center justify-center p-4">
-        <h1 className="text-center text-3xl font-extrabold tracking-tight md:text-[2rem] lg:text-[3rem] xl:text-[4rem]">
-          Shopping Lists
-        </h1>
-      </header>
-      <div className="mt-5 flex justify-center">
-        <Card>
-          <AddShoppingListForm householdId={currentHousehold?.id} />
-        </Card>
+    <>
+      <div className="flex min-h-screen flex-col bg-white text-slate-800">
+        <div className="flex justify-center">
+          <Card>
+            <AddShoppingListForm householdId={currentHousehold?.id} />
+          </Card>
+        </div>
+        {shoppingList?.map((listItem, index) => {
+          return <ShoppingListCard key={index} shoppingList={listItem} />
+        })}
       </div>
-      {shoppingList?.map((listItem, index) => {
-        return <ShoppingListCard key={index} shoppingList={listItem} />
-      })}
-    </article>
+    </>
   );
 }
